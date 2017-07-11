@@ -1,0 +1,572 @@
+//JAVASCRIPT CODE SNIPPETS
+
+/*TRUTHY VALUES
+
+You can just check if the variable has a truthy value or not. That means
+
+if( value ) {
+}
+will evaluate to true if value is not:
+
+null
+undefined
+NaN
+empty string ("")
+0
+false
+The above list represents all possible falsy values in ECMA-/Javascript. Find it in the specification at the ToBoolean section.
+
+Furthermore, if you do not know whether a variable exists (that means, if it was declared) you should check with the typeof operator. For instance
+*/
+if( typeof foo !== 'undefined' ) {
+    // foo could get resolved and it's defined
+}
+//If you can be sure that a variable is declared at least, you should directly check if it has a truthy value like shown above.
+
+//SELF RUNNING SCRIPT
+
+! function foo(){
+ // your other code here
+ 
+	setTimeout(foo, 10000);
+ 
+}();
+
+//or
+
+(function foo(){
+ // some code…
+})()
+
+
+//with parameters
+
+(function(window, document, $, undefined){
+  var foo;
+  console.log(foo === undefined); //Returns 'true'
+})(window, document, jQuery);
+
+//is the same as:
+
+(function(mark, loves, drinking, coffee){
+  mark.open('http://www.google.com'); //window
+  loves.getElementById('menu'); //document
+  drinking('#menu').hide(); //jQuery
+  var foo;
+  console.log(foo === coffee); //undefined
+})(window, document, jQuery);
+
+//It’s worth pointing out that the parameter names are purely for convention. 
+
+alert( ( function( a, b ){
+	return ( a - b );
+} )( 10, 20 ) );
+
+/////////////////////////////////////////////////////////////////////////////////
+//DRAGGING
+/////////////////////////////////////////////////////////////////////////////////
+
+//setup drop area
+
+<div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+//make object draggable
+
+<img id="drag1" src="img_logo.gif" draggable="true"
+ondragstart="drag(event)" width="336" height="69">
+
+//allow drag and drop
+
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+/*what should happen when the element is dragged
+*sets the data type and the value of the dragged data; in this case the object's id
+*/
+
+function drag(ev) {
+    ev.dataTransfer.setData("Text", ev.target.id);
+}
+
+/*ondragover event specifies where the dragged data can be dropped.
+*To allow a drop, we must prevent the default handling of the element.
+*/
+
+event.preventDefault()
+
+// do the drop
+
+function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("Text");
+    ev.target.appendChild(document.getElementById(data));
+}
+
+/*SUMMARY
+*Call preventDefault() to prevent the browser default handling of the data (default is open as link on drop)
+*Get the dragged data with the dataTransfer.getData("Text") method. This method will return any data that was 
+*set to the same type in the setData() method
+*The dragged data is the id of the dragged element ("drag1")
+*Append the dragged element into the drop element
+*/
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//FILES
+/////////////////////////////////////////////////////////////////////////////////
+<input id="fileItem" type="file">
+
+<input id="myfiles" multiple type="file">
+
+</body>
+
+<script>
+
+var pullfiles=function(){ 
+    // love the query selector
+    var fileInput = document.querySelector("#myfiles");
+    var files = fileInput.files;
+    // cache files.length 
+    var fl=files.length;
+    var i=0;
+
+    while ( i < fl) {
+        // localize file var in the loop
+        var file = files[i];
+        alert(file.name);
+        i++;
+    }    
+}
+
+// set the input element onchange to call pullfiles
+document.querySelector("#myfiles").onchange=pullfiles;
+
+//a.t
+</script>
+
+/////////////////////////////////////////////////////////////////////////////////
+//AUTO LOGOUT
+/////////////////////////////////////////////////////////////////////////////////
+Call below function in your header file, so that whenever user does any activity at that time page gets refreshed and check whether session time outs or not.
+
+function auto_logout($field)
+{
+    $t = time();
+    $t0 = $_SESSION[$field];
+    $diff = $t - $t0;
+    if ($diff > 1500 || !isset($t0))
+    {          
+        return true;
+    }
+    else
+    {
+        $_SESSION[$field] = time();
+    }
+}
+
+Use something like this in header
+
+    if(auto_logout("user_time"))
+    {
+        session_unset();
+        session_destroy();
+        location("login.php");          
+        exit;
+    }       
+
+User_time is the session name. I hope this answer will help you. What actually this code does is : "Checks whether diff is greater than 1500 seconds or not. If not then set new session time." You can change time diff(1500) according to your requirement.
+
+/////////////////////////////////////////////////////////////////////////////////
+//JAVASCRIPT PROMPTS
+/////////////////////////////////////////////////////////////////////////////////
+//Confirm
+
+		var r = confirm("Press a button!");
+		if (r == true) {
+			txt = "You pressed OK!";
+		} else {
+			txt = "You pressed Cancel!";
+		}	
+
+/////////////////////////////////////////////////////////////////////
+//REFRESH ON INACTIVITY
+/////////////////////////////////////////////////////////////////////////////////
+//Here is a simple script using JQuery that handles mousemove and keypress events. If the time expires, the page reload.
+
+<script type="text/javascript">
+idleTime = 0;
+$(document).ready(function () {
+    //Increment the idle time counter every minute.
+    var idleInterval = setInterval(timerIncrement, 60000); // 1 minute
+
+    //Zero the idle timer on mouse movement.
+    $(this).mousemove(function (e) {
+        idleTime = 0;
+    });
+    $(this).keypress(function (e) {
+        idleTime = 0;
+    });
+});
+
+function timerIncrement() {
+    idleTime = idleTime + 1;
+    if (idleTime > 19) { // 20 minutes
+        window.location.reload();
+    }
+}
+</script>   
+
+//I think that it will be better to use keydown event (because it will occur before keypress) + add click event. And you can join events in one method: $(this).on('mousemove keydown click', function () { idleTime = 0; });
+
+//PROTOTYPE
+
+function myFunction(){
+	this.name = "Mario";
+	this.attack = function attack( enemy ){
+		//attach code
+	}
+}
+
+var my_object = new myFunction;
+
+my_object.prototype.defend = function defend(){
+	//defend code 
+}
+
+//INHERITANCE
+
+function myChildFunction(){
+	this.defend = function defend(){
+		//defend code
+	}
+}
+
+var my_child_object = new myChildFunction;
+
+my_child_object.prototype = new myFunction;
+
+alert( my_child_object.name );
+
+//ANONYMOUS
+
+var f1 = function(){
+	alert("This is f1");
+}
+
+f1();
+
+var f2 = function( a, b ){
+	alert( "Sum = " + ( a + b ).toString() );
+}
+
+f2( 10, 20 );
+
+var f3 = function(){
+	var s = 0;
+	for( var i = 0; i < arguments.length; i++ ){
+		s += arguments[i];
+	}
+	alert( "Sum = " + s.toString() );
+}
+
+f3( 1, 2, 3, 4, 5 );
+
+var f4 = function( a, b ){
+	return ( a - b );
+}
+
+f4( 2, 10 ).toString();
+
+//CALLBACK
+
+function f1( a, b, c ){
+	alert( "Sum = " + ( a + b ).toString() );
+	c( a, b );
+}
+
+function f2( a, b ){
+	alert( "Difference = " + ( a - b ).toString() );
+}
+
+function f3( a, b ){
+	alert( "Multiplied result = " + ( a * b ).toString() );
+}
+
+f1( 10, 20, f2 );
+
+//EVERY
+
+array.every( function( y, i, ary ){ 
+	return ( v % 2 == 0 ) ? true : false;
+} )
+
+// y = value, i = index, ary = array
+function isEven( y, i, ary ){
+	return ( v % 2 == 0 ) ? true : false;
+}
+
+var a = [ 2, 7, 38, 12, 6, 8 ];
+
+//returns false because 7 is not an even number
+alert( a.every( isEven ) ); // false
+
+//FILTER
+
+array.filter( function( y, i, ary ){ 
+	return ( v % 2 == 0 ) ? true : false;
+} )
+
+//b will contain all except 7
+var b = a.filter( isEven );
+alert( b ); // 2, 38, 12, 6, 8
+
+//FOREACH
+
+function addOne( v, i, ary ){
+	ary[i] = v + 1;
+}
+
+a.forEach( addOne );
+
+alert( a );
+
+//MAP
+
+function m1( v, i, ary ){
+	return v * v;
+}
+
+var b = a.map( m1 );
+alert( b ); // 100, 400, 900
+
+//SOME
+
+//if at least one value is true, it returns true 
+alert( a.some( isEven ) ); 
+
+//NESTED/INNER
+
+function f1( a, b ){
+	function f2(){
+		//code 
+	}
+	function f3(){
+		//code
+	}
+	f2();
+	f3();
+}
+
+//will execute f2 and f3 
+f1( 10, 20 );
+
+//INITIALIZE-REPLACE
+
+function initialize( a, b ){
+	function dispSum(){
+		alert( "Sum = " + ( a + b ).toString() );
+	}
+	
+	dispSum();
+	
+	//this function is replacing itself and next time it is executed dispSum() will no longer exist
+	initialize = function( a, b ){
+		alert( "Difference = " + ( a - b ).toString() );
+	}
+}
+
+initialize( 10, 20 ); //Sum 
+initialize( 10, 20 ); //Diff 
+initialize( 10, 20 ); //Diff 
+initialize( 10, 20 ); //Diff ...
+
+/////////////////////////////////////////////////////////////////////
+//ARRAY OF FUNCTIONS
+/////////////////////////////////////////////////////////////////////////////////
+var ary = [];
+
+ary[0] = function(){
+	alert( "First" );
+}
+ary[1] = function(){
+	alert( "Second" );
+}
+
+if( typeof ary[1] === "function" ){
+	ary[1]();
+}
+
+/////////////////////////////////////////////////////////////////////
+//EVENTS
+/////////////////////////////////////////////////////////////////////////////////
+function attachEvent(){
+	var btn = document.getElementById( "my_button" );
+	if( btn ){
+		btn.onclick = function(){
+			alert( "I am now a function" );
+		}
+	} 
+}
+
+/*////////////////////////////////////////////////////////////////////
+
+CLOSURE
+
+Variables defined outside a scope are closures because they are available inside a scope/object.
+Function with preserved values are closures.
+Internal/private variables/members become accessible outside of thier scope; Therefore, maintain changes after function execution. */
+
+function startNumGenTil( n ){
+	var current_num = 0;
+	var max = n;
+	return function(){
+		return ( current_num < max ) ? current_num++ : current;
+	}
+}
+
+var gen_now;
+gen_now = startNumGenTil( 5 );
+alert( gen_now() );
+alert( gen_now() );
+alert( gen_now() );
+alert( gen_now() );
+alert( gen_now() );
+alert( gen_now() );
+alert( gen_now() );
+
+var addTo = function( passed ){
+	var add = function( inner ){
+		return passed + inner;
+	}
+	return add;
+}
+
+var addThree = new addTo( 3 );
+var addFour = new addTo( 4 );
+
+console.log( addThree ); 
+// returns function( inner ) ...
+console.log( addFour ); 
+// returns function( inner ) ...
+console.log( addThree( 1 ) ); 
+// returns 4 
+/* anonymous function is returned:
+	function( inner ){
+		return 3 + inner;
+	}
+ that takes in an argument (inner) in this case 1
+so it returns 3 + 1 = 4 */
+console.log( addFour( 1 ) ); 
+// returns 5
+
+function Person( pName ){
+	var _name = pName;
+	this.getName = function(){
+		return _name;
+	}
+}
+
+var me = new Person( "Mario" );
+me.getName(); // Mario 
+
+/////////////////////////////////////////////////////////////////////
+//CONSTRUCTOR
+/////////////////////////////////////////////////////////////////////////////////
+var d = new Function( "a", "b", "alert( 'Sum = ' + ( a + b ).toString() );" );
+or 
+var d = new Function( "a, b, c ", "alert( 'Sum = ' + ( a + b + c ).toString() );" );
+/* equals
+var d = function( a, b ){
+	alert( "Sum = " + ( a + b ).toString() );
+}
+*/
+d( 10, 20 );
+
+/////////////////////////////////////////////////////////////////////
+//ASSOCIATIVE/KEY ARRAY 
+/////////////////////////////////////////////////////////////////////////////////
+var ary = [];
+ary[ "ary1" ] = 1000;
+ary[ "ary2" ] = "ary2";
+//objects are arrays(associative/key not index), functions, variables, and objects which means we can use object notation
+alert( ary.ary1.toString() );
+
+/*////////////////////////////////////////////////////////////////////////////////
+
+CALL, APPLY, BIND
+
+You use call or apply when you want to pass a different "this" value to the function. In essence, this means that you want to execute a function as if it were a method of a particular object. The only difference between the two is that call expects parameters separated by commas, while apply expects parameters in an array.
+*/
+
+var obj = { num: 2 };
+var functionName = function( arg1, arg2, arg3 ){
+
+}
+functionName.call( obj, arg1, arg2, arg3 );
+functionName.apply( obj, [ arg1, arg2, arg3 ] ); //only takes array as arguments
+var bound = functionName.bind( obj );
+bound( arg1, arg2, arg3 );//executes the function 
+
+example:
+
+function Product(name, price) {
+    this.name = name;
+    this.price = price;
+
+    if (price < 0)
+        throw RangeError('Cannot create product "' + name + '" with a negative price');
+    return this;
+}
+
+function Food(name, price) {
+    Product.apply(this, arguments);
+    this.category = 'food';
+}
+Food.prototype = new Product();
+
+function Toy(name, price) {
+    Product.apply(this, arguments);
+    this.category = 'toy';
+}
+Toy.prototype = new Product();
+
+var cheese = new Food('feta', 5);
+var fun = new Toy('robot', 40);
+/*
+What Product.apply(this, arguments) does is the Product constructor is applied as a function within each of the Food and Toy constructors, and each of these object instances are being passed as this. Thus, each of Food and Toy now have this.name and this.category properties.
+
+You use .call() when you want to cause a function to execute with a different this value. It sets the this value as specified, sets the arguments as specified and then calls the function. The difference between .call() and just executing the function is the value of the this pointer when the function executes. When you execute the function normally, javascript decides what the this pointer will be (usually the global context window unless the function is called as a method on an object). When you use .call(), you specify exactly what you want this to be set to.
+
+You use .apply() when the arguments you want to pass to a function are in an array. .apply() can also cause a function to execute with a specific this value. .apply() is most often used when you have an indeterminate number of arguments that are coming from some other source. It is often used too pass the arguments from one function call to another by using the special local variable arguments which contains an array of arguments that were passed to your current function.
+
+call is used when you want to control the scope that will be used in the function called. You might want the this keyword to be something else than the scope you assigned the function to, in those cases you need to use call or apply to bring the right scope into the function.
+
+It also allows you to call utility methods outside the scope, but still bring the local scope into the method, f.ex when using "private" functions:
+*/
+var obj = (function() {
+    var privateFn = function() {
+        alert(this.id);
+    }
+    return {
+        id: 123,
+        publicFn: function() {
+            privateFn.call(this);
+        }
+    };
+}());
+
+obj.publicFn();
+/*
+In the example above, privateFn is not exposed in obj but it can still be constructed as if it was a part of the public scope (using this in the same way).
+
+You would probably use the second way in your example, but sometimes you want to use one object's functions on another object. An example would be using Array methods on Array-like objects like NodeLists
+*/
+var el = document.getElementById("foo");
+[].forEach.call(el.children, function(child, index) {
+    //Iterate over an element's children, performing an action on each one
+});
+
+////////////////////////////////////////////////////////////////////////////////
+// STRINGS
+////////////////////////////////////////////////////////////////////////////////

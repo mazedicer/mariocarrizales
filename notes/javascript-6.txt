@@ -1,0 +1,559 @@
+//////////////////////////////////////////////////////
+//SCOPE
+//////////////////////////////////////////////////////
+//block scope
+{
+	let scopeVar = "42";
+	const scopeConts = "73";
+}
+console.log( scopeVar ) //Error
+console.log( scopeConst ) //Error 
+
+//////////////////////////////////////////////////////
+//VARIABLES
+//////////////////////////////////////////////////////
+var - available globally
+let - available in a block only
+const PI = "this variable cannot be change"
+
+//////////////////////////////////////////////////////
+//DATA TYPES
+//////////////////////////////////////////////////////
+typeof true = boolean
+typeof  3.14 = number
+typeof  "string" = string
+typeof  Symbol() = symbol
+typeof  {a:1} = object
+[1,2,3] = object
+undefined = undefined
+
+//////////////////////////////////////////////////////
+//STRINGS
+//////////////////////////////////////////////////////
+let fname = "Mario";
+let lname = "Carrizales";
+document.write( '${fname} ${lname}<br>' );
+
+let num1 = 10;
+let num2 = 20;
+document.write( '10 * 20 = ${num1 * num2}<br>' );
+
+function doMath( strings, ...values ){
+	if( strings[0] == 'Add' ){
+		document.write( '${values[0]} + ${values[1]} = ${values[0] + $values[1]}' );
+	}else if( strings[0] == 'Sub' ){
+		subtract....
+	}
+}
+doMath 'Add${10} ${20}';
+
+//strings unicode code point escapes 
+console.log( '\u{1F680}' ); //prints a rocket character 
+
+//strings iterate
+for( let c of fname ){
+	document.write( '${c}<br>' );
+}
+
+//strings into arrays with spread operator 
+let chars = [ ...'abc' ]; //[ 'a', 'b', 'c' ]
+
+//strings REPEAT
+"Hello ".repeat( 3 ); //Hello Hello Hello 
+
+//strings containment
+fname.startsWith( "Ma" ); //true 
+fname.endsWith( "io" );//true 
+fname.includes( "rio" );//true
+	//set starting position 
+	'hello'.startsWith( 'ello', 1 ) //true 
+	'hello'.endsWith( 'hell', 4 ) //true 
+	'hello'.includes( 'ell', 2 )  //false 
+
+//strings MULTILINE
+let `this is a
+multiline
+string`;
+
+//strings raw 
+//espapes are not interpreted
+let raw = String.raw`Not a newline: \n`;
+console.log( raw === 'Not a newline: \\n' ); //true 
+
+//////////////////////////////////////////////////////
+//FUNCTIONS
+//////////////////////////////////////////////////////
+//functions DEFAULT FUNCTION PARAMETERS
+function getSum( num1 = 1, num2 = 2 ){}
+
+//function with spread operator as n arguments 
+function getSumMore( ...vals ){
+	for( let i = 0; i < vals.length; i++ ){
+	
+	}
+}
+
+//////////////////////////////////////////////////////
+//ARRAY
+//////////////////////////////////////////////////////
+let values_array = [ 1, 2, 3, 4,5 ];
+
+//array chaos 
+let[ ,,chaos ] = values_array;
+${chaos}//3
+
+let [ , ...last4 ] = values_array;
+${last4[0]}//2
+
+//array.reduce( callback( accumulator, current_value, current_index, array ), initial_value )
+/* accumulator - accumulates the callback's return values. Or initial_value, if supplied.
+	current_value - the element being processed in the array 
+	current_index - index of the element being processed in the array
+	array - the array reduce was called upon 
+	initial_value - optional value to use as the first argument to the first call
+		of the callback. If provided, the accumulator will be equal to initial_value
+		and current_value will be equal to array[0].
+		If not provided, the accumulator will be equal to array[0],
+		and current_value will be equal to array[1]*/
+//array.reduce( callback, [] ) passing an empty array as initial_value
+var flattened = [ [0,1], [2,3], [4,5] ].reduce( ( acc, cur )=> acc.concat( cur ) );
+// [ 0, 1, 2, 3, 4, 5 ]
+
+//array.reduce( callback, {} ) passing an empty object as initial_value
+//will return an object with keys as the array elements and values to be assigned 
+var names = [ 'Alice', 'Bob', 'Tif', 'Bruce', 'Alice'];
+var countedNames = names.reduce( function( all_names, name ){
+	if( name in allNames ){
+		allNames[ name ]++;
+	}else{
+		allNames[ name ]= 1;
+	}
+	return allNames;
+}, {} );
+// { 'Alice': 2, 'Bob': 1, 'Tiff': 1, 'Bruce': 1 }
+
+//array.reduce() with spread operator 
+var friends = [{
+  name: 'Anna',
+  books: ['Bible', 'Harry Potter'],
+  age: 21
+},{
+  name: 'Bob',
+  books: ['War and peace', 'Romeo and Juliet'],
+  age: 26
+}]
+// add all friend's books + additional books from initial_value
+var allbooks = friends.reduce( function( prev, curr ){
+	return [ ...prev, ...curr.books ];
+}, [ 'Alphabet' ] );
+// [ 'Alphabet', 'Bible', 'Harry Potter', 'War and peace', 'Romeo and Juliet' ]
+
+//array.reduce() returning an object 
+var arr = [ {x:1}, {x:2}, {x:3} ];
+arr.reduce( function( acc, cur ){
+	return { x: acc.x + cur.x };
+} );
+// { x: 7 }
+
+//array.reduce() with Piping
+/* piping is a term used for a list of function that transform an initial_value */
+function increment(input) { return input + 1;}
+function decrement(input) { return input — 1; }
+function double(input) { return input * 2; }
+let pipeline = [ increment, double, decrement ];
+const result = pipeline.reduce( function( acc, cur ){
+	return cur( acc );
+}, 1 );
+// 3
+
+//array from array-like objects 
+let array1 = Array.of( 1,2,3 );
+let array2 = Array.from( "word" );
+let array3 = Array.from( array1, (value) => value * 2 );
+
+for( let val of array3 ){
+	document.write( '${val}<br>' );
+}
+
+const array_like = { length: 2, 0: 'a', 1: 'b' };
+const arr = Array.from( array_like );
+for ( const x of arr ) { // OK, iterable
+    console.log( x );
+}
+// a 
+// b
+
+//array from dom elements 
+const span = document.querySelectorAll( 'span.name' );
+const names2 = Array.from( spans, ( s )=>{
+	s.textContent;
+} );
+
+//array from entries, keys, values 
+Array.from( [ 'a', 'b' ].keys() ); // [ 0, 1 ]
+Array.from( [ 'a', 'b' ].values() ); // [ 'a', 'b' ]
+Array.from( [ 'a', 'b' ].entries() ); // [ [ 0, 'a' ], [ 1, 'b' ] ]
+
+//array with spread operator 
+[ ...[ 'a', 'b' ].keys() ] // [ 0, 1 ]
+
+//array iterate over index element pairs 
+for( const [ index, element ] of [ 'a', 'b' ].entries() ){
+	console.log( index, element );
+}
+
+//array Array.of()
+Array.of( 7 ) // [ 7 ]
+Array( 7 ) // [ , , , , , , ]
+
+//array find 
+[ 6, -5, 8 ].find( x => x < 0 ); // -5 
+[ 6, 5, 8 ].find( x => x < 0 ); // undefined 
+
+//array findIndex 
+[ 6, -5, 8 ].findIndex( x => x < 0 ); // 1
+[ 6, 5, 8 ].findIndex( x => x < 0 ); // -1, no such element  
+
+//array copyWithin( target index, start, end )
+/*It copies the elements whose indices are in the range [start,end] to index target and subsequent indices. shallow copies part of an array to another location in the same array and returns it, without modifying its size. */
+[ 'alpha', 'bravo', 'charlie', 'delta' ].copyWithin( 2, 0 );
+// [ 'alpha', 'bravo', 'alpha', 'bravo' ]
+
+//SETS
+
+var random_set = new Set();
+random_set.add( 10 );
+random_set.add( "word" );
+random_set.has( 10 );//true
+random_set.size;//2
+random_set.delete( 10 );
+
+for( let val of random_set ){
+	...
+}
+
+//MAPS
+
+key-value pairs
+
+var my_map = new Map();
+my_map.set( "key1", "Value 1" );
+my_map.set( "key2", "Value 2" );
+my_map.get( "key1" );//Value 1
+my_map.size;//2
+
+my_map.forEach( function( value, key ){
+
+} );
+
+//////////////////////////////////////////////////////
+//PROMISES
+//////////////////////////////////////////////////////
+/*
+A deferred object is the interface to a promise. It has a property object called promise that you
+can access with deferred.promise.
+	deferred.promise has a status and a value property. 
+		by default the status = "pending", value = undefined.*/
+	var deferred = Promise.defer() // defer object 
+	deferred // Object {promise: Promise }
+	var promise = deferred.promise; 
+	promise // Promise { [[PromieStatus]]: "pending", [[PromiseValue]]: undefined }
+	promise === deferred.promise // true 
+/* A deferred object also has two methods: resolve() and reject()
+the promise object property has two methods: then() and catch()
+The deferred.resolve() states that it has completed	with a given value. Any function waiting on
+that the deferred object can continue execution with that value. 
+The status of the promise object will be "resolved", you can now use the then() function.*/
+//This code will not execute unless the promise's status is resolved 
+promise.then( (value) => { console.log( value * 10 ) } );
+//after resolving the promise with a value, the above code will execute 
+deferred.resolve( 7 ) // 70
+//we can use the catch function for when the promise is rejected
+promise.catch( (error ) => {
+	console.log( `PROMISE CAUGHT AN ERROR: ${error.message}` );
+});
+//after rejecting the promise, the above code will execute and the then() function will not run.
+deferred.reject( new Error( "Someone fucked up!" ) );
+
+/* the most immediate benefit of promises is chaining
+A common need is to execute two or more asynchronous operations back to back, where each subsequent operation starts when the previous operation succeeds, with the result from the previous step. We accomplish this by creating a promise chain.
+Async operations. */
+doSomething()
+	.then( result => doSomethingElse( value ) )
+	//value = newResult 
+	.then( newResult => doThirdThing( newResult ) )
+	//newResult = finalResult 
+	.then( finalResult => console.log( `Got the final result: ${finalResult}` ) )
+	.catch( failureCallback );
+//example 2
+var p1 = Promise.resolve( "Resolve Me" );
+p1.then( ( res ) => document.write( '${res}<br>' ) );//Resolve Me 
+//example 3
+var p2 = new Promise( function( resolve, reject ){
+	setTimeout( () => resolve( "Resolve Me 2" ), 2000 );
+} );
+p2.then( ( res ) => document.write( '${res}<br>' ) );//Resolve Me 
+//example 4
+var p3 = new Promise( function( resolve, reject ){
+	let val = 18;
+	if( val == 6 ){
+		resolve( "good" );
+	}else{
+		reject( "bad" );
+	}
+} );
+p3.then( ( val ) => document.write( '${val}<br>' ) , ( err ) => document.write( '${err}<br>' );//bad
+//example 5
+let doggyStyle = function(){
+	return new Promise( function( resolve, reject ){
+		resolve( 'fucking her doggy style' );
+	});
+}
+let missionary = function( doggy_style_her ){
+	return new Promise( function( resolve, reject ){
+		resolve( doggy_style_her + 'fucking her missionary style' );
+	});
+}
+let sixtyNine = function( missionary_style ){
+	return new Promise( function( resolve, reject ){
+		resolve( missionary_style + 'eating each other' );
+	});
+}
+doggyStyle()
+	.then( function( result ){
+		return missionary( result + ", " );
+	})
+	.then( function( result ){
+		return sixtyNine( result + ", " );
+	})
+	.then( function( result ){
+		console.log( result + ', finished cumming' );
+	});
+//promise run all in parallel 
+Promise.all( [ doggyStyle(), missionary(), sixtyNine() ] )
+	.then( function(){
+		console.log( ', all finished')
+	});
+//promise wait for one to finish 
+Promise.race( [ doggyStyle(), missionary(), sixtyNine() ] )
+	.then( function(){
+		console.log( ', finished')
+	});
+//example 6
+//apiservice.js
+class APIService{
+	getData( endpoint ){
+		var deferred = Promise.defer();
+		fetch( endpoint, fetchConfig )
+			.then( (data)=> {
+				deferred.resolve( data )
+			} );
+			return deferred.promise;
+	}
+}	
+//domainlogic.js
+var APIService = require( "./APIService" )
+var loadData = function( endpoint ){
+	APIService.getData( endpoint )
+		.then( (data)=>{
+			//do something with data
+		})
+		.catch( (error)=>{
+			//handle error 
+		});
+}	
+loadData( endPoint )
+//SWITCH
+
+let val1 = 1, val2 = 2;
+[ val1, val2] = [ val2, val1 ];
+${val2}//1
+
+//ARROW FUNCTIONS
+//this in arrow functions come from parent scope 
+exports = { i: "am exports" }
+console.log( this ); // { i: "am exports" }
+let util = {
+	f1: function(){
+		console.log( this ) 
+	},
+	f2: () => {
+		console.log( this )
+	}
+}
+util.f1()// { f1: [Function: f1], f2: [Function: f2] }
+util.f2()// { i: "am exports" }
+
+const square = a +. a*a;
+
+let difference = ( num1, num2 ) => num1 - num2;
+
+difference( 5, 10 );
+
+let mult = ( num1, num2 ) => {
+	return num1 * num2;
+}
+
+let values_array = [ 1, 2, 3, 4,5 ];
+let sum_of_values = values_array.reduce( (a, b ) => a + b );//15
+
+let evens = values_array.filter( v => v % 2 == 0 );//2,4
+
+//array.map( function( currentValue, index, arr ){}, thisValue )
+let doubles = values_array.map( v => v * 2 );//2,4,6,8,10
+
+/* IMMUTABILITY
+objects are not immutable if objb = obja, they both point to the same object by reference.
+In order to create a new object use .assign() */
+let obj = { person: 'Thor Odinson' };
+let clone = Object.assign( {}, obj );
+console.log( clone ); // { person: 'Thor Odinson' }
+
+//OBJECTS
+
+function createAnimal( name, owner ){
+	return {
+		name,
+		owner,
+		getInfo(){
+			return "";
+		},
+		address: {
+			street: "street name",
+			city: "City"
+		}
+	}
+}
+
+var spot = createAnimal( "Spot", "Doug" );
+${spot.getInfo()}
+${spot.address.street}
+
+Object.getOwnPropertyNames( spot ).join( " " );
+
+//DESTRUCTURE
+const PI = 3.141592653589793;
+const sum = ( a, b ) => a + b;
+const square = a => a * a;
+/* this is the same as below 
+const X = {
+	PI: PI,
+	sum: sum,
+	squre: square
+}; */
+const X = { PI, sum, square };
+
+//const square = X.square; is the same as:
+const { square } = X;
+//and for the rest of the properties
+const { PI, sum, square } = X;
+
+console.log( X.PI ) //3.141592653589793
+
+let { name, owner } = spot;
+${name}//Spot
+
+let { address } = spot;
+${ address.street }//street name
+
+//CLASSES
+
+class Mammal {
+	constructor( name ){
+		this._name = name;
+	}
+	get name(){
+		return this._name;
+	}
+	set name( name ){
+		this._name = name;
+	}
+	getInfo(){
+	
+	}
+	static makeMammal( name ){
+		return new Mammal( name );
+	}
+}
+
+let monkey = new Mammal( "Fred" );
+monkey.name = "Mark";
+
+let chipmunk = Mammal.makeMammal( "Chipper" );
+
+//INHERIT
+
+class Marsupial extends Mammal {
+	constructor( name, hasPouch ){
+		super( name );
+		this._hasPouch = hasPouch;
+	}
+	get hasPouch(){
+		return this._hasPouch;
+	}
+	set hasPouch( hasPouch ){
+		this._hasPouch = name;
+	}
+	//override methods
+	getInfo(){
+	
+	}
+}
+
+function getClass( classType ){
+	if( classType == 1 ){
+		return Mammal;
+	}else{
+		return Marsupial;
+	}
+}
+
+class Koala extends getClass( 2 ){
+	constructor( name ){
+		super( name );
+	}
+}
+
+//////////////////////////////////////////////////////
+//SYMBOLS
+//////////////////////////////////////////////////////
+let capital = Symbol( "State capital" );
+${capital.toString()}//State capital
+
+let pennsylvania = {};
+pennsylvania[ capital ] = "Harrisburg";
+${pennsylvania[ capital ]}//Harrisburg 
+
+//////////////////////////////////////////////////////
+// GENERATOR
+//////////////////////////////////////////////////////
+/* Use the yield keyword to pause and resume a generator function.
+<resume_value> = yield <expression>
+<expression> - Defines the value to return from the generator function.
+<resume_value> - Returns the optional value passed to the generator's next()
+	method to resume its execution.
+yield returns and IteratorResult object with value and done property.
+	{ value: number, done: boolean }
+done indicates that the generator function has not fully completed.
+next() - runs the generator code and pauses on the following:
+	yield - causes the generator to pause and return the value.
+		The next time next() is called execution resumes with 
+		the statement right after the yield.
+	throw - throw an exception from the generator which halts execution
+		of the generator entirely.
+	The end of the generator function is reached and an IteratorResult object
+		is returned with { value: undefined, done: true }.
+	return - A return statement is reached, execution of the generator ends 
+		and an IteratorResult object is returned with the value specified by 
+		the return statement and done is true.
+If an optional argument is passed to the next() method, that value becomes
+	the value returned by the generator's current yield operation. */
+function foo() {
+  var index = 0;
+  while (index <= 1)
+    yield index++;
+}
+var iterator = foo();
+console.log(iterator.next()); // { vale: 0, done: false }
+console.log(iterator.next().value); // 1
+console.log(iterator.next()); // { vale: undefined, done: true }

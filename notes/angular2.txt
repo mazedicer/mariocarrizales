@@ -1,0 +1,1138 @@
+//download a bare repository
+git clone --bare <urllink> .git 
+//change to a normal repository
+git config --bool core.bare false 
+//reset the head pointer, convert to normal repository
+git reset --hard
+//isntall dependencies found in package.json will install in node_modules folder
+npm istall
+//start app 
+npm start
+
+/* DIRECTORY STRUCTURE */
+
+/* Angular 2 is built with Components, every app has a root component.
+ES6 classes 
+ES6 templates 
+*/
+
+/*
+TypeScript: .ts extension, types, annotations */
+
+/* tsconfig.json is the TypeScript config  file. */
+
+/* typings.json file allows TypeScript compiler to recognise external type definitions of the existing JavaScript libraries
+*/
+
+/* @Component - function / decorator
+function that takes metadata object
+that tells Angular how to create and 
+use this component.
+Components work with their own views.
+You can define a decorator function 
+to a component class by prefixing it 
+with the @ (at) symbol */
+/* @Component, and this decorator class (like @Directive and @Pipe) is a subtype of @Injectable(). It is in fact @Injectable() decorators that identify a class as a target for instantiation by an injector. */
+
+/* @ViewChild
+Child components in our view can be accessed from our parent component easily with @ViewChild.
+For example, our <user-profile> component can have a method called sendData().*/
+//child component 
+@Component({
+  selector: 'user-profile'
+})
+
+export class UserProfile {
+  constructor() {}
+  sendData() {
+    //send data
+  }
+}
+/*When use the user-profile on our parent component, we can reference the UserProfile component class and then assign it to a local property:*/
+import { Component, ViewChild } from '@angular/core';
+import { UserProfile } from '../user-profile';
+@Component({
+  template: '<user-profile (click)="update()"></user-profile>',
+})
+export class MasterPage {
+  // ViewChild takes a class type or a reference name string.
+  // Here we are using the type
+  @ViewChild(UserProfile) userProfile: UserProfile
+  constructor() { }
+  ngAfterViewInit() {
+    // After the view is initialized, this.userProfile will be available
+    this.update();
+  }
+  update() {
+    this.userProfile.sendData();
+  }
+}
+
+/* @ViewChildren
+Lets you grab multiple components and other tokens such as the native DOM element:*/
+@Component({
+  selector: 'my-app',
+  template: `<alert></alert>
+    <alert type="danger"></alert>
+    <alert type="info"></alert>
+  `,
+})
+export class App {
+	
+  @ViewChildren( AlertComponent ) alerts: QueryList<AlertComponent>
+  //grabing alert components plus the native DOM element 
+  //@ViewChildren(AlertComponent, { read: ElementRef }) alerts: QueryList<AlertComponent>
+  ngAfterViewInit() {
+    this.alerts.forEach( alertInstance => console.log(alertInstance));
+  }
+}
+/* QueryList 
+The return type of ViewChildren is QueryList. QueryList is just a fancy name for an object that stores a list of items. What is special about this object is when the state of the application changes Angular will automatically update the object items for you.
+QueryList implements an iterable interface, therefore, it can be used in Angular templates with the ngFor directive.
+getters: first - get the first item, last - get the last item, length - get the items length.
+methods: map(), filter(), find(), reduce(), forEach(), some(), to Array(), changes()*/
+
+/* @ContentChild / @ContentChildren
+includes elements that exists within a nested component directive.*/
+//child component 
+@Component({
+	selector: 'alert',
+	template: `<h1 (click)="alert()" #h1>{{type}}</h1>
+		<ng-content></ng-content>`,
+})
+export class AlertComponent{
+	@ViewChild("h1") h1;
+	@ContentChild( "insideNgContent" ) insideNgContent;
+	ngAfterViewInit(){
+		console.log( this.h1 );
+	}
+	ngAfterContentInit(){
+		console.log( this.insideNgContent );
+	}
+}
+//parent component 
+@Component({
+	selector: 'my-app',
+	template: `<alert>
+		<p #insideNgContent">Inside ng-content</p>
+		</alert>`,
+})
+export class App{}
+
+/* Dependency injection is a way to supply a new instance of a class with the fully-formed dependencies it requires. Most dependencies are services. Angular uses dependency injection to provide new components with the services they need. */
+/* Angular can tell which services a component needs by looking at the types of its constructor parameters. For example, the constructor of your HeroListComponent needs a HeroService */
+constructor(private service: HeroService) { }
+/* When Angular creates a component, it first asks an injector for the services that the component requires.
+
+An injector maintains a container of service instances that it has previously created. If a requested service instance is not in the container, the injector makes one and adds it to the container before returning the service to Angular. When all requested services have been resolved and returned, Angular can call the component's constructor with those services as arguments.*/
+
+/* you must have previously registered a provider of the HeroService with the injector.
+You can register providers in modules or in components.
+In general, add providers to the root module so that the same instance of a service is available everywhere.*/
+
+////////////////////////////////////////////////////////////////////////////////////
+//Lifecycle Hooks
+////////////////////////////////////////////////////////////////////////////////////
+/* A component has a lifecycle managed by Angular.
+Angular creates it, renders it, does the same for its children, checks it when its data-bound
+properties change, and destroys it before removing it from the DOM.
+After creating a component/directive by calling its constructor, Angular calls the lifecycle hook methods in the following sequence at specific moments: */
+	constructor()
+	/* Respond when angular (re)sets data-bound input properties.
+		It receives a SimpleChanges object of current and previous property values */
+	ngOnChanges()
+	/* Initialize the component/directive */
+	ngOnInit()
+	/* Detects and acts upon changes that angular cannot or wont detect on its own.*/
+	ngDoCheck()
+		/* Respond after Angular projects external content into the component's view.*/
+		ngAfterContentInit()
+		/* Respond after Angular checks the content projected into the component */
+		ngAfterContentChecked()
+		/* Respond after Angular initializes the component's views and child views. */
+		ngAfterViewInit()
+		/* Respond after Angular checks the component's views and child views.*/
+		ngAfterViewChecked()
+	/* Cleanup just before Angular destroys the directive/component. Unsubscribe Observables and detach event handlers to avoid memory leaks. */
+	ngOnDestroy()
+/* Angular only calls a directive/component hook method if it is defined.*/
+export class PeekABoo implements OnInit {
+	constructor( private logger: LoggerService ) { }
+  // implement OnInit's `ngOnInit` method
+	ngOnInit() { 
+		this.logIt(`OnInit`); 
+	}
+	logIt( msg: string ) {
+		this.logger.log( `#${nextId++} ${msg}` );
+  }
+}
+
+//systemjs.config.js
+var packages = {
+	'app' : { main: 'app.boot.js', defaultExtension: 'js' },
+	'rjxs' : { defaultExtension: 'js' }
+};
+
+/* app/main.ts is where the application starts from.
+Bootstraps the main component AppComponent class. */
+
+/* app.component.ts is the root component. A class with metadata attached to the class via @Component decorator */
+
+/////////////////////////////////////////////////////////////////
+/* DATA & EVENT BINDING 
+/////////////////////////////////////////////////////////////////
+/* Events in angular behave like normal DOM events. 
+To capture the event object, pass $event as a parameter in the event callback from the template:*/
+<button (click)="clicked( $event )"></button>
+/* The properties of an $event object vary depending on the type of DOM event. For example, a mouse event includes different information than a input box editing event.*/
+<input (keyup)="onKey( $event )">
+//when the Enter key is pressed 
+(keyup.enter)
+//#(hash), (click), (mouseover), etc.
+onClick( value ) is a function inside the component class 
+*/ 
+<input type="text" #demoInput>
+<button (click)="onClick( demoInput.value )">Click</button>
+/* $event to capture the event */
+<button (click)="onClick( $event )">Click</button>
+
+/* two-way binding */
+<input type="text" [(ngModule)]="fname">
+
+/////////////////////////////////////////////////////////////////
+/* DIRECTIVES 
+/////////////////////////////////////////////////////////////////
+Component directives are configured with selector:*/
+	@Decorator({
+		selector: 'mwFavorite'
+	})
+/*apply the selector in different ways:
+	by attribute - */
+	<div mwFavorite></div>
+	//template syntax 
+	<div [mwFavorite]="true"></div>
+	
+
+Structural : ngIf, ngSwitch, ngFor
+Attribute
+*/
+//ngIf this will be hidden 
+public showHide = false;
+<p *ngIf="showHide">Show</p>
+//this is the same as above 
+<template [ngIf]="showHide">
+	<p>Show</p>
+</template>
+
+//ngFor to iterate over items 
+//this will repeat <child-component1> depending on the number of appComponentItems
+<section>
+	<child-component1
+		*ngFor="let appComponentItem of appComponentItems" 
+		[appComponentItem]="appComponentItem" 
+		(delete)="onEventDelete( $event )">
+	</child-component1>
+</section>
+
+//based on a color this will show/hide
+public color="red";
+
+<div [ngSwitch]="color">
+	<p *ngSwitchWhen="red">red</p>
+	<p *ngSwitchWhen="blue">blue</p>
+	<p *ngSwitchDefault>No color</p>
+</div>
+
+//class attribute directive 
+styles: [
+	`.classOne{color:white}
+	.classTwo{color:red}`
+]
+public cone = true;
+public ctwo = true;
+
+<p [ngClass]="{classOne:cone,classTwo:ctwo}">classes</p>
+
+//style attribute directive 
+public style='italic';
+public size='30px';
+
+<p [ngStyle]="{'font-style':style, 'font-size':size}">ngStyles</p>
+
+/////////////////////////////////////////////////////////////////
+// ROUTES
+///////////////////////////////////////////////////////////////// 
+/* the router module can:
+	- configure routes to components 
+	- route params (variables in the URL)
+	- directive for working with links that do routing 
+	- directive for specifying where in a template the routed component will display 
+	- create child routes 
+	- routing lifecycle hooks/routing events */ 
+
+/////////////////////////////////////////////////////////////////
+// ANGULAR TEMPLATE SYNTAX
+/////////////////////////////////////////////////////////////////
+// Interpolation
+/* variables and methods created in the component class 
+	are available inside the component template using interpolation */
+/* Invalid interpolations:
+	-Assignments
+	-Newing up variables 
+	-Chaining expressions 
+	-Incrementing/decrementing */
+//variable from component class 
+<h2>{{ name }}</h2> 
+
+// Binding 
+//interpolation with element property bindings 
+<h2 [textContent]="name">var name will appear here</h2>
+
+// Expression
+//this is the same
+<h2 textContent="{{name}}">var name will appear here</h2>
+//method from the component 
+<h2>{{ wasWatched() }}</h2> 
+
+// Conditional Templating
+// Template variables 
+// Template expression operators 
+
+/////////////////////////////////////////////////////////////////
+// CUSTOM PROPERTIES Input module, @Input() decorator 
+///////////////////////////////////////////////////////////////// 
+/* You can define properties for components and make them available 
+to be set via the property binding syntax with angular decorator @input()*/
+//the AppComponent 
+//create the custom property in the component class 
+export class AppComponent{
+	//this property to be used by child components 
+	property_from_app_component = {
+		name: "name prop",
+		is_favorite: false,
+		category: "custom props"
+	};
+}
+//the AppComponent template 
+//set a binding target to appComponentItem
+//set binding source to property_from_app_component
+<child-component1 [appComponentItem]="property_from_app_component" ></child-component1>
+
+//the ChildComponent1
+import { Component, Input } from '@angular/core';
+@Component({
+	selector: 'child-component1',
+})
+export class ChildComponent1 {
+	//making the property available 
+	//assign an alias by passing it to the @Input( alias ) as an argument 
+	@Input() appComponentItem;
+}
+//the ChildComponent1 template 
+<p>{{ appComponentItem.name }}</p>
+<p>{{ appComponentItem.isFavorite }}</p>
+<p>{{ appComponentItem.category }}</p>
+
+/////////////////////////////////////////////////////////////////
+// EVENT BINDING to Components Output module, EventEmitter module 
+///////////////////////////////////////////////////////////////// 
+/* when a user clicks a button, say to delete an item and we need to 
+pass this event to the parent component using an event emitter.
+Use the [squareBrackets] to pass inputs and the (parenthesis) to handle outputs. */
+//the ChildComponent1 
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+@Component({
+	selector: 'child-component1',
+})
+export class ChildComponent1 {
+	//making the property available 
+	//assign an alias by passing it to the @Input( alias ) as an argument 
+	@Input() appComponentItem;
+	//event emitter porperty. 
+	//you can assign an alias by passing it to the @Output( alias ) as argument 
+	//the delete keyword can be any keyword, as long as you add it to the template 
+	//component tag with parenthesis (delete)="function( $event )"
+	@Output() delete = new EventEmitter();
+	//method where we put the emitter that was activated by the user
+	onDelete(){
+		this.delete.emit( this.appComponentItem );
+	}
+}
+//the AppComponent template 
+//add the delete event binding $event 
+<child-component1 [appComponentItem]="property_from_app_component"
+	(delete)="onEventDelete( $event )"></child-component1>
+//the AppComponent class 
+//add the onEventDelete() method 
+export class AppComponent{
+	//this property to be used by child components 
+	property_from_app_component = {
+		name: "name prop",
+		is_favorite: false,
+		category: "custom props"
+	};
+	onEventDelete( appComponentItem ){
+		
+	}
+}
+
+/////////////////////////////////////////////////////////////////
+// SERVICES 
+/////////////////////////////////////////////////////////////////
+//create a new ts file child-component1-service.ts
+export class ItemComponentService{
+	//create some functions for getting, adding, and deleting service items 
+	get(){
+		return.this.serviceItems;
+	}
+	add( serviceItem ){
+		this.serviceItems.push( serviceItem );
+	}
+	delete( serviceItem ){
+		let index = this.serviceItems.indexOf( serviceItem );
+		if( index >= 0 ){
+			this.serviceItems.splice( index, 1 );
+		}
+	}
+	//service items in an array
+	serviceItems = [
+		{
+			id: 1,
+			name: "Fire",
+			category: "Natural Desaster",
+			year: 2005,
+			deaths: true
+		},
+		{}
+	]
+}
+//in order to make it available, you must add it to the main module.ts file
+// defined by the @NgModule decorator in the providers property 
+@NgModue({
+	// bring in other angular modules that your module will need
+	imports: [ BrowserModule ],
+	// make components, custom directives, and custom pipes available to your modules
+	// that don't come from another module
+	declarations: [ AppComponent, ChildComponent1 ],
+	// things that come from your module that you want to add to the root injector 
+	providers: [ ItemComponentService ],
+	// for root module which lets angular know which component(s) will be the starting point
+	// for the bootstrap process
+	bootstrap: [ AppComponent ]
+})
+//in order to use the service, you need to import it like any child component 
+import { Component } from '@angular/core';
+import { ItemComponentService } from './child-components/child-component1-service';
+@Component({
+	selector: 'mcbrg-item-list',
+	templateURL: 'app/child-components/child-component1-item-list.html',
+	styleURLs: [ 'app/child-components/child-component1-item-list.css' ]
+})
+export class McbrgItemListComponent{
+	serviceItems;
+	//inject the service into the constructor 
+	constructor( private itemComponentService: ItemComponentService ){}
+	//auto load the data 
+	ngOnInit(){
+		this.serviceItems = this.itemComponentService.get();
+	}
+	//you can add, delete, functions to modify serviceItems
+	onServiceItemDelete( serviceItem ){
+		this.itemComponentService.delete( serviceItem );
+	}
+} 
+
+
+/////////////////////////////////////////////////////////////////
+// TEMPLATE DRIVEN FORMS FormsModule, ngForm, FormGroup, FormControl, @angular/forms 
+///////////////////////////////////////////////////////////////// 
+import { FormsModule } from '@angular/forms';
+
+public myName = "Mario";
+/* novalidate keeps the browser from validating the form 
+userForm becomes a reference to the ngForm directive that governs the form as a whole.
+It creates a top-level FormGroup instance and binds it to a form to track aggregate form values
+and validation status, as well as user interaction properties like dirty and touched. */
+/*Internally, Angular creates FormControl instances and registers them with an NgForm directive that Angular attached to the <form> tag. Each FormControl is registered under the name you assigned to the name attribute*/
+<form #userForm="ngForm" (ngSubmit)="onSubmit( userForm.value )" novalidate>
+	<input type="text" name="name" 
+	[ngModel]="myName">
+	<div ngModelGroup="address">
+		<input type="text" name="street" ngModel>
+		<input type="text" name="city" ngModel>
+		<input type="text" name="state" ngModel>
+	</div>
+	<button [disabled]="!userForm.form.valid" type="submit" class="btn btn-primary">Submit</button>
+/* onSubmit will return an object with all the values */
+
+/* TDF Validation
+will apply the following class styles:
+ng-untouched - control not visited 
+ng-touched - control visited	
+ng-dirty - control value changed 
+ng-pristine - value not changed 
+ng-valid - control value is valid 
+ng-invalid - value not valid */
+<input type="text" #namedRef="ngModel" minlength="4" required name="name" ngModel>
+<div *ngIf="namedRef.error && ( namedRef.dirty || namedRef.touched )" class="alert alert-danger">
+	<div [hidden]="namedRef.errors.required">
+		Please enter a name
+	</div>
+	<div [hidden]="namedRef.errors.minlength">
+		Please enter at least 4 characters 
+	</div>
+</div>
+<input type="text" #refPostcode="ngModel" minlength="5" pattern="^[1-9][0-9]{4}$" name="postalcode" ngModel>
+<div *ngIf="refPostcode.error && ( refPostcode.dirty || refPostcode.touched )" class="alert alert-danger">
+	<div [hidden]="refPostcode.errors.pattern">
+		Please enter a name
+	</div>
+	<div [hidden]="refPostcode.errors.minlength">
+		Please enter at least 4 characters 
+	</div>
+</div>
+/* will show the different TDF validations and a style can be applied
+input.ng-valid { color: green }
+
+/* MODEL DRIVEN FORMS */
+//at app.module.ts 
+import { ReactiveFormsModule } from '@angular/forms';
+//at app.component.ts 
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+export class AppComponent {
+	userForm = new FormGroup({
+		name: new FormControl( 'Mario', [ Validators.required, Validators.minLength(4) ] ),//default values 
+		address: new FormGroup({
+			street: new FormControl(),
+			city: new FormControl(),
+			zipcode: new FormControl( null, Validators.pattern( '^[1-9][0-9]{4}$' ) )
+		});
+	})
+	onsubmit(){
+		console.log( this.userForm.value );
+	}
+}
+
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+	<input type="text" name="name" formControlName="name">
+	<div *nfIf="userForm.controls['name'].hasError( 'required' )">
+		Please Enter a name 
+	</div>
+	<div *nfIf="userForm.controls['name'].hasError( 'minLength' )">
+		Please Enter at least four characters  
+	</div>
+	<div formGroupName="address">
+		<input type="text" name="street" formControlName="street">
+		<input type="text" name="city" formControlName="city">
+		<input type="text" name="zipcode" formControlName="zipcode">
+		<div *nfIf="userForm.controls['address'].controls['zipcode'].hasError( 'pattern' )">
+			Please enter five digits
+		</div>
+	</div>
+
+
+/* FORMBUILDER */
+//at app.component.ts 
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+
+export class AppComponent implements OnInit {
+	userForm: FormGroup;
+	constructor( private _formBuilder: FormBuilder ){}
+	ngOnInit(){
+		this.userForm = this._formBuilder.group({
+			name: [ 'Mario', [ Validators.required, Validators.minLength(4) ] ],
+			address: this._formBuilder.group({
+				street: [],
+				city: [],
+				zipcode: [ null, [ Validators.pattern( '^[1-9][0-9]{4}$' ) ] ]
+			})
+		})
+	}
+
+	onsubmit(){
+		console.log( this.userForm.value );
+	}
+}
+
+/* ROUTING */
+//at index.html
+<html>
+<head> 
+	<base href="/"> //add this base tag 
+
+//at app.module.ts 
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { routingComponents } from './app-routing.module';
+
+@NgModule({
+	imports: [
+		BrowserModule,
+		AppRoutingModule
+	],
+	declarations: [ 
+		AppComponent, 
+		routingComponents
+		],
+	bootstrap: [ AppComponent ]
+})	
+export class AppModule {}
+
+//app.component.ts 
+/* routerLink - target the configured route 
+routerLinkActive - style class active will be applied
+<router-outlet></router-outlet> where component is loaded */
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'my-app',
+	template: `
+		<h1>Routing App</h1>
+		<nav>
+			<a routerLink="/departments" routerLinkActive="active">Department</a>
+			<a routerLink="/employees" routerLinkActive="active">Employees</a>
+		</nav>
+		<router-outlet></router-outlet>
+	`
+})
+export class AppComponent {}
+
+//A better approach is to put routing in another file 
+//app-routing.module.ts 
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { EmployeeListComponent } from './employee-list.component';
+import { DepartmentListComponent } from './department-list.component';
+import { DepartmentDetailComponent } from './department-detail.component';
+
+const routes: Routes = [
+	{ path: '', component: DepartmentListComponent },
+	{ path: 'departments', component: DepartmentListComponent },
+	{ path: 'employees', component: EmployeeListComponent }
+	{ path: 'departments/:id', component: DepartmentDetailComponent },
+	{ path: '**', component: PageNotFoundComponent }
+];
+
+@NgModule({
+	imports: [
+		RouterModule.forRoot( routes )
+	],
+	exports: [
+		RouterModule
+	]
+})
+export class AppRoutingModule{}
+export const routingComponents = [
+	DepartmentListComponent,
+	EmployeeListComponent,
+	DepartmentDetailComponent
+]
+
+//department-list.component.ts 
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+@Component({
+	selector: 'department-list',
+	template: `
+		<h3>Department List</h3>
+		<li (click)="onSelect(department) [class.selected]="isSelected(department)" *ngFor="let department of departments">
+			<span>{{department.id}}</span> {{department.name}}
+	`
+})
+export class DepartmentListComponent implements OnInit {
+	public selectedId;
+	constructor( private router: Router, private route: ActivatedRoute ){}
+	departments = [
+		{ id: 1, name: 'a' },
+		{ id: 2, name: 'b' },
+		{ id: 3, name: 'c' }
+	]
+	ngOnInit(){
+		this.route.params.subscribe( ( params: Params  ) => {
+			this.selectedId = parseInt( params[ 'id' ] );
+		} )
+	}
+	onSelect( department ){
+		this.router.navigate( [ '/departments', department.id ] );
+	}
+	isSelected( department ){
+		return department.id === this.selectedId;
+	}
+}
+
+//department-detail.component.ts 
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, Params } from '@angular/router';
+@Component({
+	template: `
+		<h3>You selected department id {{departmentId }}</h3>
+		<a (click)="goPrevious()">Previous</a>
+		<a (click)="goNext()">Next</a>
+		<a (click)="goBack()">Back</a>
+	`
+})
+export class DepartmentDetailComponent implements OnInit {
+	pubic departmentId;
+	constructor( private route: ActivatedRoute, private router: Router ){}
+	/* ngOnInit(){
+		this.departmentId = this.route.snapshot.params[ 'id' ];
+	} */
+	ngOnInit(){
+		this.route.params.subscribe( ( params: Params ) => {
+			this.departmentId = parseInt( params[ 'id' ] );
+		} )
+	}
+	goPrevious(){
+		let previousId = this.departmentId - 1;
+		this.router.navigate( [ '/departments', previousId ] );
+	}
+	goNext(){
+		let nextId = this.departmentId + 1;
+		this.router.navigate( [ '/departments', nextId ] );
+	}
+	goBack(){
+		let selectedId = this.departmentId ? this.departmentId : null;
+		//send selected id back to departments list 
+		this.router.navigate( [ '/departments', { id: selectedId } ] );
+	}
+}
+
+//ANGULAR CLI 
+cmd> npm install -g @angular/cli 
+//create a new angular project 
+cmd>ng new democli 
+//build, run this project 
+cmd>ng serve --open 
+//create a new component> ng g(generate) component <component name> 
+cmd>ng g component test 
+//create service 
+cmd>ng g service test
+
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+
+/* There are multiple ways to tell 
+Angular to load our root component 
+1. import bootstrap, import AppComponent ( our root component )
+2. bootstrap( AppComponent )*/
+
+//app/app.boot.ts 
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+//to hold modules 
+import { AppModule } from './app.modules';
+platformBrowserDynamic().bootstrapModule( AppModule );
+
+//app/app.modules.ts 
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { AppComponent } from './component.app';
+//setup for your component 
+/* imports: bring in other angular modules, features.
+declarations: make components, directives, and pipes available from within our application.
+bootstrap: root module for your entry point of your app code */
+@NgModule({
+	imports: [ 
+		BrowserModule,
+		FormsModule
+	],
+	declarations: [ 
+		AppComponent 
+	],
+	bootstrap: [
+		AppComponent
+	]
+})
+
+export class AppModule {}
+
+//app/component.app.ts 
+import { Component } from '@angular/core';
+
+export class Artists {
+	name: string;
+	shortname: string;
+	recknown: string;
+	bio: string;
+}
+
+@Component({
+	selector: 'app', //<app></app>
+	template: './templates/app.html',
+	styleUrls: [
+		"./css/filename.css"
+	]
+})
+
+export class AppComponent {
+	artist = ARTISTS;
+	currentArtist: Artist;
+	//or 
+	name: string;
+	artists: string[];
+	info: any;
+	constructor(){
+		this.name = "Mario";
+		this.artists = [
+			'Mike',
+			'Jason',
+			'Hipster'
+		]
+		this.info = {
+			school: 'xxx',
+			class : 'xxx'
+		}
+	}
+	onClick( e, my_item, my_elem ){
+		console.log( e.target.innerHTML );
+		this.name = my_item.name;
+		my_elem.style.backgroundColor="#FECE4E";
+	}
+	addArtist( new_artist ){
+		if( new_artist !==" ){
+			this.artists.push( new_artist );
+		}
+	}
+}
+
+var ARTISTS: Artist[] = [
+	{},
+	{},
+	{}
+]
+
+/* index.html is the main web page.
+you need to load polyfills to enable
+ES6 on IE, Angular2: ES2015 shim,
+zone.js, and others. 
+SystemJS: loads applications and
+library modules, and Reactive Extensions RxJS library used by Angular's core for reactive programming.
+Then Angular 2 is loaded. */
+
+//templates/app.html 
+<input #newArtist
+//using FormsModule for 2-way binding 
+[(ngModel)]="name"
+//or 
+[value]="name" //will show name variable
+(input)="name=$event.target.value" //tracks the value 
+
+(keyup.enter)="addArtist( newArtist.value ); newArtist.value=''"	
+>
+	<button (click)="addArtist( newArtist.value); newArtist.value=''">Add</button>
+<li #artistContainer
+(click)="onClick( event, item, artistContainer )"
+*ngFor="let item of artists">
+	{{ item }} {{ info.school }}
+	<span *ngIf="name">
+		{{ name }}
+	</span>
+	//or
+	<span *ngIf="name"
+	[innerHTML]="name"
+	>
+	</span>
+</li>
+
+//SUBCOMPONENT
+//component.artist.item.ts 
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'artist-item',
+	templateUrl: 'templates/artist-item.html',
+	styleUrls: [
+		'css/artist-item.css'
+	],
+	inputs: [ 'artist' ] //when feeding this component info, we can add a property to this component in this case artist
+})
+
+export class ArtistItemComponent {}
+
+//add to app.modules.ts 
+import { ArtistItemComponent } from './component.artist-item';
+
+@NgModue({
+	imports: [
+		BrowserModule,
+		FormsModule
+	]
+	declarations: [
+		AppComponent,
+		ArtistItemComponent
+	],
+	bootstrap: [
+		AppComponent
+	]
+})
+//add to component.app.ts 
+import { ArtistItemComponent } from './component.artist-item';
+//add to template app.html 
+<li *ngFor="let item of artist">
+<artist-item [artist]=item >
+</artist-item>
+</li>
+//create artist-item.html template and change all item.xxx into artist.xxx 
+
+//PIPES
+//pipe.search.ts 
+import ( Pipe, PipeTransform ) from '@angular/core';
+@Pipe({
+	name: 'search'
+})
+
+export class SearchPipe implements PipeTransform {
+	transform( pipeData, pipeModifier ){
+		return pipeData.filter(
+			( eachItem ) => {
+				return eachItem[ 'name' ].toLowerCase().includes( pipeModifier.toLowerCase() );
+			}
+		)
+	}
+}
+//add to app.modules.ts 
+import { SearchPipe } from './pipe.search';
+//add to declarations 
+
+//////////////////////////////////
+//////////////////////////////////
+
+//INPUT OUTPUT between modules 
+//parent module 
+import { Component } from 'angular2/core';
+import { ChildComponent } from './child.component';
+
+@Component({
+	selector: 'app',
+	template: `
+		<div class="parent">
+		<h1>Parent</h1>
+		<p>Value entered in child component: {{childValue}}</p>
+		<input 
+		type="text" 
+		#parentInput 
+		<!-- trigger event / ui update -->
+		(keyup)="0"  
+		><br>
+		<div class="child">
+			<!-- child component -->
+			<child [passedValue]="parentInput.value" (childChanged)="childValue=$event"></child>
+		</div>
+		</div>
+	`,
+	directives: [
+		ChildComponent
+	]
+})
+
+export class AppComponent {
+	childValue: string;
+}
+
+//child module 
+import { Component, EventEmitter } from 'angular2/core';
+
+@Component({
+	selector: 'child',
+	template: `
+		<h2>Child component</h2>
+		<p>Value entered in parent component: {{parentValue}}</p>
+		<input type="text" #childInput (keyup)="onChange(childInput.value)">
+	`,
+	inputs: [ 
+		'parentValue:passedValue' //passedValue is an alias
+	],
+	outputs: [ 'childChanged' ]
+})
+
+export class ChildComponent {
+	parentValue: string;
+	childChanged = new EventEmitter<string>();
+	onchange( value: string ){
+		this.childChanged.emit( value );
+	}
+}
+
+//SERVICES & HTTP OBSERVABLES
+//service class employee.services.ts 
+import { Injectable } from '@angular/core';
+import { Http, Response } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/throw';
+
+//injectable You need it because Angular requires constructor parameter metadata in order to inject Http
+/* @Injectable() marks a class as available to an injector for instantiation. Generally speaking, an injector reports an error when trying to instantiate a class that is not marked as @Injectable().*/
+@Injectable()
+export class EmployeeService {
+	private _url: string = "employee-data.json";
+	constructor( private _http: Http ){}
+	getEmployees(){
+		return this._http.get( this._url )
+		.map( ( response:Response ) => response.json() )
+		.catch( _errorHandling );
+	}
+	_errorHandling( error: Response ){
+		console.error( error );
+		return Observable.throw( error || "Server Error" );
+	}
+}
+
+//app.component.ts 
+/* the service is registered at root component so it is available to all its childer */
+import { Component } from '@angular/core';
+import { EmployeeService } from './employee.service';
+@Component({
+	selector: 'my-app',
+	template: `
+		<h1>Company</h1>
+		<employee-list></employee-list>
+	`,
+	providers: [
+		EmployeeService
+	]
+})
+export class AppComponent {}
+
+//employee-list.component.ts 
+import { Component, OnInit } from '@angular/core';
+import { EmployeeService } from './employee.service';
+
+@Component({
+	selector: 'employee-list',
+	template: `
+		<h2>Employee List</h2>
+		<h3>{{erroMsg}}</h3>
+		<ul *ngFor="let employee of employees">
+			<li>{{ employee.name }}</li>
+		</ul>
+	`
+})
+
+export class EmployeeListComponent implements OnInit {
+	employees = [];
+	errorMsg: string;
+	constructor( private _employeeService: employeeService ){}
+	ngOnInit(){
+		//subscribe to the service and assign employees variable 
+		this._employeeService.getEmployees()
+		.subscribe( resEmployeeData => this.employees = resEmployeeData, resEmployeeError => this.errorMsg = resEmployeeError );
+	}
+}
+
+//////////////////////////////////////
+//////////////////////////////////////
+/*
+import {Component} from 'angular2/core';
+the above import is TypeScript 
+
+@Component(
+	{
+		selector: 'media-tracker-app',
+		templateUrl: 'app/app.component.html',
+		styleUrls: [ 'app/app.component.css' ]
+	}
+)
+@Component is TypeScript
+
+export class MyClass{
+	constructor( formBuilder: FormBuilder ){}
+} 
+export turns the class into a module
+:FormBuilder is TypeScript
+*/
+
+//DIRECTIVES
+/* Structural - modify layout by altering elements in the DOM
+Attribute - change behavior or appearance
+
+a directive gets configured with a selector:*/
+	
+@Decorator({
+	selector: 'mwFavorite'
+})
+	
+<div mwFavorite></div>
+	
+	//or 
+	
+<div [mwFavorite]="true">
+
+/* Angular directives: ngIf, ngFor, routerLink */
+
+//PIPE
+//is like a filter, they change data for display purposes
+
+//DATA BINDING
+/* binding data to views {{ movie.title}}
+use # hashes as reference to elements:*/
+Billing: <input #billing>
+Shipping: <input #shipping>
+<button (click)="shipping.value = billing.value">
+	Use Billing
+</button>
+/* form module - data binding, change tracking, validation, error handling */
+
+//DEPENDENCY INJECTION
+/* provide modules to use on other modules*/
+Constuctor( formBuilder: FormBuilder ){}
+bootstrap( App, [ DataService, FormulaService ] );
+
+//SERVICES
+/* a javascript class as broker and data to and from the view and adding functionality to the view.*/
+
+//DATA PERSISTENCE
+/* XHR, JSONP to Angular HTTP function */
+
+//ROUTING
+/* handles navigation, history state, load different components */
+
+//NgModule - ROOT MODULE
+// app/app.module.ts 
+import { NgModule, .., } from '@angular/core';
+//for working with the DOM 
+import { BrowserModule } from '@angular/platform-browser';
+//app component for bootstrapping
+import { AppComponent } from './app.component';
+/* imports: bring in other angular modules
+declarations: make components, directives, and pipes available
+bootstrap: root module for your entry point of your app code */
+@NgModule({
+	imports: [
+		BrowserModule
+	],
+	declarations: [
+		AppComponent
+	],
+	bootstrap: [
+		AppComponent
+	]
+})
+//export is the module loading syntax
+export class AppModue {}
+
+//app/app.component.ts 
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'app',
+	template: '<h1>My App</h1>'
+})
+/*will target 
+	<app></app>
+directive */
+export class AppComponent {}
+
+//app/main.ts for bootstrap logic 
+//target browser platform 
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AppModule } from 'app.module';
+
+platformBrowserDynamic().bootstrapModule( AppModule );
+

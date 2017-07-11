@@ -1,0 +1,453 @@
+1995 release, 
+1996 JDK, 
+1997 JDK 1.1, 
+1998 J2SE 1.2, 
+2000 J2SE 1.3, 
+2002 J2SE 1.4, 
+2004 J2SE 5,
+2006 J2SE 6,
+2010 Oracle buys Java,
+2011 J2SE 7,
+2013 J2SE 8
+
+Interpretedlanguage
+Compiles to bytecode
+
+Layers
+|__ OS>JVM>Core runtime and libraries>Compiled bytecode
+
+Java Native Interface (JNI)
+
+Single Inheritance from Super Classes
+
+javac - command line compiler
+
+jar - the packager
+
+javadoc - documentation builder
+
+HelloWorld.java
+package - location of source code
+	com.lynda.javatraining;
+	equal to subfolder structure: C:\JavaProjects\HelloWorld\com\lynda\javatraining
+
+Class HelloWorld
+
+main method (to create application)
+	public static void main(String[] args){
+		System.out.println("Hello World!");
+	}
+
+To compile
+	C:\JavaProjects\HelloWorld>javac com\lynda\javatraining\HelloWorld.java
+	this creates a HelloWorld.class
+
+To run
+	using java and calling "com.lynda.javatraining.HelloWorld"
+
+	
+Swing and AWT - java applets
+
+J2EE - JavaServer Pages (JSP)
+
+IDE - integrated development environment
+
+	Xcode - for Macs, small scale, future support?
+	JCreator - Lightweight, similar to TextPad
+	TextPad - small scale
+	Mac, Windows, Linux
+		NetBeans
+		Eclipse - android developer tools
+		IntelliJ Idea - advance needs license
+		JBuilder - enterprice-leve
+
+copy bin folder path to the windows variables will allow you to use java on terminal cmd
+
+Tools
+	/System/Library/Framworks/
+	ls Ja*
+	cd JavaVM.framwork/
+	ls
+	cd Commands
+	all java commands
+	
+System - is a java class
+	out - object that prints
+	println - function of out
+
+-verbose - option to show what happens while java compiles a .java file
+
+public - can be called from anywhere
+static - cannot create an instance of the class
+private - can be read only from the class
+
+args - array
+
+java 6 api docs - search for classes
+
+Garbage Collection
+	To make fields in objects expire, assign a null value
+		ex, expireMe = null;
+	runs in its own thread
+	System.gc(), Runtime.gc() can request garbage collection but no guarantees
+	
+Managing Memory
+	minimize objects
+	Runtime.maxMemory();
+	Runtime.totalMemory();
+	Runtime.freeMemory();
+	command line
+		java -Xms256s HelloWorld Initial heap size
+		java -Xmx256m //  //  // Maximum heap size
+		java -Xmn256n // //  //  heap size for young generation objects
+		
+Everything is an object in Java
+
+UML - Diagram Unified Modeling Language
+
+Class variables (declared outside a function), instance variables = fields
+	
+String welcome = "Hell"; = String welcome = new String("Hello");
+
+String can take an array of char[] object
+
+Camel-case - syntax to make code readable by using capital letters in the middle of variable names, etc.
+
+Dereferenced - variable no longer used in a function
+
+Types of variables
+	primitive - stored in fast memory
+		numeric - ints and floats
+		single characters, 
+		booleans
+	complex - instance of a java class
+		strings
+		dates
+		everything else
+		
+Primitives
+	Data type declaration
+	Variable name
+	Initial value (optional)
+	ex, int newVar = 10;
+	if no value
+		int default =0
+		bool default = false
+
+Complex
+	Data type
+	Variable name
+	Initial value
+	ex, Date newDate = new Date();
+	Date() = constructor method
+	if no value
+		default = null
+		
+Local variables in functions
+	No scope variables are only read by the function
+
+Numerics are primitives
+	single value
+	fast memory
+	written in lowercase 
+		byte 8bits -128 to 127
+		short 16bit -32768 to 32767
+		int 32bit -2147483648 to 2147483647
+		long 64bit -9.22337E+18 to 9.22337E+18 ex, 100L
+		float 32bit ex, 150.5f
+		double 64bit ex, 150.5d
+
+	Helper classes
+		Byte
+		Short
+		Integer
+		Long
+		Float
+		Double
+		ex, double dValue = 156.5d
+			Double dObject = new Double(dValue);
+			now dObject can use methods of the Double class
+			ex, byte myByte = dObject.byteValue(); //converts to double to byte
+
+BigDecimal class
+	for currency
+	Create BigDecimal from a String to guarantee precission on all systems
+	ex,	double d = 1115.737;
+		String ds = Double.toString(d);
+		BigDecimal bd = new BigDecimal(ds);
+		System.out.println("The value is " + bd.toString());
+
+Converting primitives upward
+	ex, going from int to double
+
+Converting primitives downward
+	ex, going from double to int
+	cannot compile, data types not the same
+	cast the values (prefered over helper classes ex, dObject.byteValue())
+		ex, double dValue = 3.99;
+			int intResult = (int)dValue;
+	
+	wraparound when converting downward
+		ex, int 128 to byte will be -128
+
+Operators
+	Postfix
+		evaluate variable and then do math. ex, int intVal = 10; intVal++; //results 10
+	Prefix (Unary operation)
+		math, then evaluate. ex, int intVal = 10; ++intVal; //result is 12
+	
+	instanceof - check if a variable is of a particular class
+		ex, String s = "Hello";
+			if(s instanceof java.lang.String){
+				//s is a string
+			}
+
+Comparing Strings
+	Strings are complex objects so the == checks if two variables are of the same object
+	use equals() to compare string values match.ex, 
+		String s1 = "Hello";
+		String s2 = "Hello";
+		if(s1.equals(s2)){
+			//they match
+		}
+
+Bang character = ! exclamation reverses the boolean value !this
+
+Characters
+	value wrapped in single quotes
+	ex, char c1 = '1';
+	unicode.org ex, char dollar = '\u0024';
+	
+Booleans
+	to translate a numeric value to a boolean value
+	ex, int i = 0;
+	boolean b = (i !=0); //will print true for b
+	Boolean.parseBoolean(s); // return false when string does not match "true" or "false"
+
+System.out
+	evaluates values to string
+
+String s1 = getInput("Enter a number: ");
+double d1 = Double.parseDouble(s1);
+Integer.parseInt(s1);
+
+ENUMS
+	Enumerations- set of values
+	Limiting the posibilities of values
+	Type of Class
+	ex, 
+	public enum Month {
+		JANUARY, FEBRUARY, MARCH;
+	}
+	
+	Month month = Month.FEBRUARY;
+	
+	switch(month){
+	case JANUARY:
+		//this code will not run
+		break;
+	case FEBRUARY:
+		//this code will run
+	}
+	
+LOOPS
+
+	static private String[] months = {"JAN","FEB","MARCH"};
+	
+	for (String month : months){
+		System.out.println(month);
+	}
+	
+	int counter = 0;
+	while(counter < months.length){
+		System.out.println(months[counter]);
+		counter++;
+	}
+	
+METHODS
+	all methods must be defined within a class.
+	method signature - combination of characteristics of a methods such as access modifiers, return type, and name
+	access modifier
+		private - only available to the current class
+		protected - inheritance, sub classes have access
+		static - class method, direct from the class definition and not from instantiated objects of a class
+		static methods can call static methods
+		methods start with lowercase letter follwed by camel case
+		return types
+			void - does not return anything
+	
+	arguments (double ... values) = dots mean treat value as array
+	Factory method returns an instance of a class
+	
+OVERLOADING
+		methods with the same name with different data type argument or number of arguments But return type must be the same. In the case below is int.
+		ex, private static int addValue(int int1, int int2)
+			private static int addValue(int int1, int int2, int int3)
+			private static int addValue(String val1, String val2)
+			
+PASSING VARIABLES
+	by copy - a copy is made
+	by reference - variables are the same in function and original variable
+	In java, variables are always passed by copy
+
+Strings are arrays of char objects and are immutable(cannot change)
+
+	
+STRINGS
+	wrap with double quotes "string";
+	String s1 = "Welcome";
+	String s2 = new String("Welcome");
+	
+	char[] chars = s1.toCharArray();
+	StringBuilder - members of java.lang, single threaded environment
+		ex, StringBuilder sb = new StringBuilder(s1)
+			sb.append(" to california")
+		saves memory space
+	s1.length() = length of string
+	s1.indexOf("Welcome") = finds position of string //in this case 0
+	s1.substring(11); gets everything after the 11th position
+	s1.trim(); removes the starting and ending blank spaces of a string
+	
+DATES
+	member of java.util.Date ex, Date d = new Date();
+	no arguments constructor default is current date and time
+	GregorianCalendar gc = new GregorianCalendar(2009, 11, 28); // needs import
+	java.util.GregorianCalendar;
+		you can do math with it ex, gc.add(GregorianCalendar.DATE, 1);
+		doesn't have formatting capabilities so create a new Date class
+			Date d2 = gc.getTime(); //get ready for formatting
+			getTime() - returns an instance of the DATE class
+			DateFormat df = DateFormat.getDateInstance(DateFormat.FULL); //needs import java.text.DateFormat; returs instance of that class
+			String sd = df.format(d2);// 
+
+ERRORS
+	compile time error = syntax or error in structure ex, no semicolon to complete block statements, not initializing variables
+	
+	runtime error = breaking rules that cannot be found by compiler
+	
+EXCEPTIONS
+	handles runtime errors
+	When exception occurs, an exception object is created depending on the type of error
+	catch the error, handle it, and let the rest of the application run
+	
+	try{
+		//code
+	} catch (Exception e) {
+		e.printStackTrace(); // application error
+		//handle with a message code
+		System.out.println("There was an error!");
+	}
+	
+	u can catch a different type of exception ex, ArrayIndexOutOfBoundsException
+
+THROWS
+	tells the rest of the application what might happen ex,
+		private static double addVal(String s1, String s2)
+			throws NumberFormatException {
+		double d1 = Double.parseDouble(s1);
+	}
+	if code can cause errors, create it in a function and wrap it with a throws exception block
+	
+DEBUGGER
+	some class methods are known for throwing exceptions
+	URI = Uniform Resource Identifier; java.net.URI for network communications
+	ex, URI uri = new URI("http://mcbrg.com");
+	throws URISyntaxException so it must be handled with a try-catch block
+	use break points, freeze and suspend, run in debug mode
+	System.out.println(e.getMessage()); //method available on all exception objects
+	
+ARRAYS
+	simple arrays contain one value type, fixed size that cannot be changed at runtime
+		ex, int[] a1 = new int[3];
+		ex2, int a2[] = new int[3];
+		ex3, int[] a3 = {2,3,5};
+		default values are zeroes
+	
+MULTIDIMENSIONAL ARRAY
+	cannot be changed at runtime
+	ex, String[][] states = new String[3][2];
+	states[0][0] = "california";
+	states[0][1] = "Sacramento";
+	states[1][0] = "Oregon";
+	states[1][1] = "Salem";
+	states[2][0] = "Washington";
+	states[2][1] = "Olympia";
+	
+	for (int i = 0; i < states.length; i++){
+		StringBuilder sb = new StringBuilder();
+		for (int j = 0; j < states[i].length; j++){
+			
+			sb.append(states[i][j];
+		}
+		System.out.println(sb);
+	}
+	stored in memory and then accesses at runtime
+	
+ARRAYLIST
+	resizable array, ordered collections of data
+	import java.util.ArrayList
+	<> diamond operator - declare a generic data type
+	ex, ArrayList<String> list = new ArrayList<String>();
+		list.add("CA", "OR", "WA");
+		System.out.println(list);
+	list.remove(0);//removes the first item
+	list.get(0); // gets the first item to pass to a variable
+	list.indexOf("CA"); //finds the position of the string
+	
+HASHMAP
+	unordered collection of data, get to one item at a time
+	store data of the same type
+	import java.util.HashMap;
+	<> key and value, use any object type for the key
+	ex, HashMap<String,String> map = new HashMap<String, String>();
+	map.put("CA", "Sacramento");
+	map.put("OR", "Salem");
+	System.out.println(map);
+	map.get("OR"); //returns Salem
+	map.remove("CA"); //removes CA
+
+ITERATORS
+	for ArrayList and HashMap
+	loops without keeping an internal number to know the position of the loop
+	
+	ListIterator - for ArrayList
+		ex, ListIterator<String> listIterator = list.listIterator();
+			while (listIterator.hasNext()){
+				String val = listIterator.next();
+				System.out.println(val);
+			}
+
+	HashMap first get the collection of strings to loop through, second is to get the iterator
+	Set<> get values or set of values of keys. need import.util.Set
+		ex, Set<String> keys = map.keySet();
+			Iterator<String> iterator = keys.iterator();
+			while (iterator.hasNext()){
+				String val = iterator.next();
+				System.out.println(val + " " + map.get(val)); //getting keys and values
+			}
+			
+ENCAPSULATION
+	packaging of complex functionality
+	Hide complexity
+	Non-encapsulated code can be complex and difficult to manage
+	Use custom classes
+	Breaking functionality into small, maintainable units
+	Support testing at a granular level
+	
+CLASSES
+	Main Class, Supporting Classes
+	Create re-usable classes into working groups of methods such as input from user, mathematical operations, etc.
+
+PACKAGES
+	project subfolders of groups of classes
+	Helps organize code
+	reverse domain notation
+		ex, mcbrg.com > com.mcbrg
+
+METHODS
+	class methods - called from the definition of the class, utility functions
+	instance methods - called from an instance of the class, for persistent data
+	Static method is a class method, called from the class definition, without it is an instance method
+	Java creates a constructor method for classes that are created without one
+	
+	

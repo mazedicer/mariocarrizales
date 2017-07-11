@@ -1,0 +1,125 @@
+//index.js in node is the default entry 
+/* organizing a project into services style
+config/
+api/
+	todos/
+		todoModel.js 
+		todoController.js
+		todoRoutes.js 
+utils/
+index.js 
+*/
+//set process.env.NODE_ENV as testing | development | production
+var config = {
+	env: process.env.NODE_ENV || 'development',
+	logging: false,
+	secrets: {
+		githubToken: process.env.GITHUB_TOKEN,
+		jwtSecret: process.env.JWT_SECRET
+	}
+};
+/* load up development.js ||
+	testing.js || 
+	production.js.
+	All which have their own configs that may change and add value */
+var envConfig = require( './' + config.env ); // config.env = testing.js or development.js...
+//merge the two objects and export it so our app can use it 
+module.exports = _.merge( config, envConfig || {} ); //extend the object 
+
+//index.js 
+var config = require( '/server/config/config' );
+var app = require( './server/server' );
+/* logger is a wrapper aroudn cosole.log that adds color, logs ibjects as json and can be conditionally turned off so you don't have to erase all calls to it*/
+var logger = require( './server/util/logger' );
+app.listen( config.port );
+logger.log( 'listening on http://localhost:' + config.port );
+
+//server.js 
+var express = require( 'express' );
+var app = express();
+var api = require( './api/api' );
+/* setup the app middleware appMiddleWare.js 
+	var morgan = require( 'morgan' );
+	var bodyParser = require( 'body-parser' );
+	//setup global middleware here 
+	
+	module.exports = function( app ){
+		app.use( morgan( 'dev' ) );
+		app.use( bodyParser.urlencoded( { extended: true } ) );
+		app.use( bodyParser.json() );
+	};
+*/
+//sending the app to appMiddleWare.js to inject the middleware
+require( './middleware/appMiddleWare' )( app ); 
+//setup the api 
+app.use( '/api', api ); //these is the api router
+//setup global error handling 
+
+//export the app for testing 
+module.exports = app;
+
+//about exports 
+//mod.js example 
+exports.mod1 = "";
+exports.mod2 = function(){}
+exports.mod3 = {};
+//in another file app.js 
+var mod = require( './mod' ); // = { mod1, mod2, mod3 } = exports object / mod = exports  
+//then make calls 
+mod.mod1 
+mod.mod2 
+mod.mod3 
+//or mod.js 
+module.exports = function( nums ){};
+//in another file app.js 
+var func = require( './mod' );
+func( [1,2,3] );
+
+
+//How to use middleware 
+var express = require( 'express' );
+var app = express();
+
+//3rd party iddleware
+var morgan = require( 'morgan' );
+
+//custom middleware 
+var checkAuth = require( './util/checkauth' );
+
+/* whenever a request comes in, it will run through this stack of middleware in 
+order. We register them using the 
+.use() method */
+app.use( morgan() );
+
+/* middleware can be use on a route passing in functions seperated by commas or an 
+array of functions. It is the middleware's job to call next() or stop the request-response cycle */
+app.get( '/todo', checkAuth(), function( req, res ){
+	//auth is good if this runs 
+});
+
+/* home made middleware */
+app.use( ( req, res, next )=>{
+	//do as necessary with req and res 
+	if( req.data.secretWord === 'catnip' ){
+		next();
+	}else{
+		res.status( 401 ).send( { message: 'Nope' } );
+	}
+	/* if you have an error, you can pass it to next() and have 
+	another middleware catch the error.
+	*/
+});
+
+/* Routers */
+var express = require( 'express' );
+//this is the entire app which can do routing too 
+var app = express();
+var todosRouter = express.Router();
+/* register a GET on '/' which is the root of the route.
+Which is '/todo' because the app registered the todosRouter on 
+any request for '/todos' */
+todosRouter.get( '/', ( req, res )=>{
+	res.json( todos )
+});
+app.use( '/todos', todosRouter );
+

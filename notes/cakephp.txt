@@ -1,0 +1,607 @@
+<?php 
+//github friendsofcake and muffin create CakePHP plugins 
+//install composer
+cmd> composer create-project --prefer-dist cakephp/app bookmarks
+//bookmarks is the name of the project  
+//run server http://localhost:8765/
+cmd> bookmarks> bin\cake server 
+
+//CONFIGURATION 
+//bookmarks/config/app.php 
+
+//STRUCTURE
+/*
+PSR-4 PHP standard recommendations.
+Autoloading - php knows the path to a file and when that file needs to be loaded.
+Predetermined directories:
+	src/ - src code
+		src/Console/ - code to use on command line 
+		src/Controller/ - controller code 
+		src/Model/
+		src/Shell/
+		src/Template/ - templates for view layer
+		src/View/ - view specific code 
+	config/ - configuration setup
+	logs/ - log files 
+	plugins/ - any CakePHP plugins 
+	test/ - tests 
+	temp/ - temporary data 
+	vendor/ - composer managed dependencies, including CakePHP core
+	bin/ - shell scripts for command line functions 
+	webroot/ - public resources css, js, images 
+*/
+
+//NAMING CONVENTIONS
+/*
+follow PSR-4 file names match the name of the classes contained therein.
+Controller 
+tagsController
+familiesController
+Model 
+table class 
+entitiy class
+*/
+
+//CakePHP SHELL
+cmd><project_name>\bin\cake 
+/* shells 
+Bake - plugin base 
+DebugKit - benchmark, whitespace
+Migrations - 
+CORE - i18n, orm_cache, plugin, routes, server
+app - console
+*/
+
+//Bake a CakePHP project 
+<project_name>/bin/cake bake //shows options
+<project_name>/bin/cake bake all users //bakes all skeleton files needed for users
+
+//Controllers 
+//loading the AppController class 
+//example how a controller works 
+// source/Controller/BookmarksController.php  
+namespace App\Controller;
+use App\Controller\AppController;
+class BookmarksController extends AppController{
+	//corresponds to http://localhost:8765/index.php 
+	public function index(){}
+	//corresponds to http://localhost:8765/bookmarks/add
+	public function add(){
+		//create new record in bookmarks table
+		$bookmark = $this->Bookmarks->newEntity();  
+		if( $this->request->is( 'post' ) ){
+			//merge $bookmark and form data to be able to save it to database
+			$bookmark = $this->Bookmarks->patchEntity( $bookmark, $this->request->data );
+			//save bookmark record 
+			if( $this->Bookmarks->save( $bookmark ) ){
+				//send message 
+				$this->Flash->success( __( 'Bookmark Saved!' ) );
+				//redirect 
+				return $this->redirect( [ 'action' => 'index' ] );
+			}else{
+				//send message 
+				$this->Flash->error( __( 'Bookmark Not Saved!' ) );
+			}
+		}
+		//getting a list of users and related bookmarks from the database 
+		$users = $this->Bookmarks->Users->find( 'list', [ 'limit' => 200 ] );
+		$tags = $this->Bookmarks->Tags->find( 'list', [ 'limit' => 200 ] );
+		//setting variables for the view: bookmark, list of users, and list of tags 
+		$this->set( compact( 'bookmark', 'users', 'tags' ) );
+		//serialize in case of api calls 
+		$this->set( '_serialize', [ 'bookmark' ] );
+	}
+} 
+
+//Bootstrap of CakePHP starts in order
+/* 
+
+bookmarks/webroot/index.php sets up request,response, and dispatcher controllers.
+
+bookmarks/src/Controller/AppController.php is the main controller from which other
+CakePHP controllers extend from.
+*/
+
+//AppController::initialize() for loading helper component classes
+	public function initialize(){
+		parent::initialize();
+		$this->loadComponent( 'RequestHandler' );
+		$this->loadComponent( 'Flash' );
+	}
+//AppController::beforeRender( Event $event ) fires before view is rendered
+
+//adding a way to export bookmarks:
+//bookmarks/src/Controller/BookmarksController.php
+	class BookmarksController extends AppController{
+		//...index()
+		//corresponds to http://localhost:8765/bookmarks/export
+		public function export(){
+			//finds all bookmark records from the bookmarks table 
+			$bookmarks = $this->Bookmarks->find( 'all' );
+			//sending $bookmarks to the view 
+			$this->set( 'bookmarks', $bookmarks );
+		}
+		//..view()
+	}
+//adding the view template 
+// bookmarks/src/Template/Bookmarks/export.ctp  
+foreach( $bookmarks as $bookmark ){
+	//display debug info 
+	debug( $bookmark );
+	
+}
+//add a way for the user to view x amount of bookmarks
+//set BookmarksController::export() function to take a limit argument default to 100
+//and where user_id = 1 
+	//...index()
+	//will now corresponds to 
+	//http://localhost:8765/bookmarks/export/<limit> e.g. 1-100
+	public function export( $limit = 100 ){
+		//custom component Validate. See Custom components section below 
+		$limit = $this->Validate->validLimit( $limit, 100 );
+		//finds all bookmark records from the bookmarks table
+		//find function can have chained functions: sort, limit, where, etc..
+		$bookmarks = $this->Bookmarks->find( 'all' )
+		//custom find see bake a custmo behavior section below 
+		->find( 'forUser', [ 'user_id' => 1 ] )
+		->limit( $limit );
+		//using a custom plugin created below plugin section 
+		//export to csv file 
+		$this->set( '_serialize', 'bookmarks' );
+		$this->set( '_header', [ 'Title', 'URL' ] );
+		$this->set( '_extract', [ 'title', 'url' ] );
+		$this->viewBuilder()->className( 'CsvView.Csv' );
+		//->where( ['user_id' => 1] ) replaced with custom find see bake a custom behavior
+		//return tags associated with the bookmarks that contain the letter t 
+		//->contain( [ 'Tags' => function( $q ){
+		//	return $q->where( [ 'Tags.name Like' => '%t%' ] );
+		//} ] );
+		//send $bookmarks to the view 
+		//..view()
+	}
+		
+
+//PAGINATION of records, back-forward, sort, etc..
+// bookmarks/src/Controller/TagsController.php 
+class TagsController extends AppController {
+	public function index(){
+		//takes the table class and paginates it 
+		$tags = $this->paginate( $this->Tags );
+		//set response as tags variable for the view 
+		$this->set( compact( 'tags' ) );
+		$this->set( '_serialize', [ 'tags' ] );
+	}
+}
+// bookmarks/src/Template/Tags/index.ctp 
+foreach( $tags as $tag )
+
+//MODELS 
+/*
+ORM object-relational mapper - maps database tables and the columns to objects the
+programmer, language, and framework can more easily work with.
+CakePHP ORM - Table= the database table. Entities= records.
+*/
+//Tables class
+/* association, behaviors, validation, and database.
+Interaction with the database is the Table class.
+Single record say from a form is the Entity class.
+HasOne Association: 1-1 relationship between two tables.
+BelongsTo - table that has the foreignKey 
+HasMane 1-many relationship
+BelongsToMany - many-many  
+src/Model/Table/UsersTable.php 
+*/
+class UsersTable extends Table {
+	public function initialize( array $config ){
+		//association to the users table 
+		$this->table( 'users' );
+		$this->displayField( 'id' );
+		$this->primaryKey( 'id' );
+		//association to the bookmarks table since user has many bookmarks 
+		$this->hasMany( 'Bookmarks', [
+			'foreignKey' => 'user_id'
+		]);
+		$this->hasOne( 'LastBookmarks', [
+			'className' => 'Bookmarks',
+			'foreignKey' => 'user_id',
+			//if user is deleted, this record will also be deleted since dependent is set 
+			//to true 
+			'dependent' => true
+		]);
+	}
+}
+// src/Model/Table/BookmarksTable.php 
+class BookmarksTable extends Table {
+	public function initialize( array $config ){
+		$this->table( 'bookmarks' );
+		$this->displayField( 'title' );
+		$this->primaryKey( 'id' );
+		
+		$this->addBehavior( 'Timestamp' );
+		//bookmarks belongs to users table 
+		$this->belongsTo( 'Users', [
+			'foreignKey' => 'user_id'
+		]);
+		//bookmarks to many tags 
+		$this->belongsToMany( 'Tags', [
+			'foreignKey' => 'bookmark_id',
+			'targetForeignKey' => 'tag_id',
+			'joinTable' => 'bookmarks_tags'
+		]);
+	}
+}
+
+//Saving Data 
+/*
+Table->newEntity( array|null $data null, array $options [] )
+Table->patchEntity( Cake\Datasource\EntityInterface $entity, array $data, array $options [] )
+Table->save( Cake\Datasource\EntityInterface $entity, array|ArrayAccess $options [] )
+*/
+
+//Forms
+/*
+create new form 
+$this->Form->create( $bookmark )
+form input fields 
+$this->Form->input( 'input_title', $options array [])
+$this->Form->button( __( 'Submit' ) )
+$this->Form->end()
+*/
+
+//DELETE
+//restrict to post and delete
+$this->request->allowMethod( [ 'post', 'delete' ] );
+$user = $this->Users->get( $id );
+if( $this->Users->delete( $user ) ){
+	$this->Flash->success( __( 'The user has been deleted.' ) );
+}else{
+	$this->Flash->error( __( 'The user could not be deleted.' ) );
+}
+return $this->redirect( [ 'action' => 'index' ] );
+
+//Validation 
+//in Model 
+//Validator class 
+// src/Model/Table/UsersTable.php 
+//rules to validate fields entered data 
+public function validationDefault( Validator $validator ){
+	$validator->integer( 'id' )->allowEmpty( 'id', 'create' );
+	//requirePresence = has to be set.
+	$validator->email( 'email' )->requirePresence( 'email', 'create' )->notEmpty( 'email' );
+	$validator->requirePresence( 'password', 'create' )->notEmpty( 'password' );
+	$validator->requirePresence( 'firstname', 'create' )->notEmpty( 'firstname' )
+	//length validation minimum to 3
+	->add( 'firstname', 'minLength', [ 'rule' => [ 'minLength', 3 ] ] );
+	$validator->requirePresence( 'lastname', 'create' )->notEmpty( 'lastname' );
+	return $validator;
+}
+//rules when you attempt to save to database 
+public function buildRules( RulesChecker $rules ){
+	//rule that email has to be unique in database 
+	$rules->add( $rules->isUnique( [ 'email' ] ) );
+	return $rules;
+}
+//custom rule notUrl 
+->add( 'title', 'notUrl', [ 'rule' => 'notUrl' ]  );
+//in the same ...Table.php file add the following function 
+public function notUrl( $value, array $context ){
+	return !( \Cake\Validation\Validation::url( $value ) );
+}
+
+//Entity methods 
+// src/Model/Entity/Bookmark.php 
+public function numberOfTags(){
+	return count( $this->tags );
+}
+//add tags association to BookmarksController.php index()
+$this->paginate = [ 'contain' => [ 'Users', 'Tags' ] ];
+//edit the template 
+// src/Template/Bookmarks/index.php 
+//inside short echo tags '<?= ...
+$bookmark->numberOfTags()
+
+//Manipulating Entities with getters and setters _set<property_name>(), _get<property_name>()
+// src/Model/Entity/Tag.php
+class Tag extends Entity {
+	//the property to manipulate is $name 
+	protected function _setName( $name ){
+		return mb_strtolower( $name ); //multi-byte string safe 
+	}
+}
+//virtual field getter and setter do not pass property 
+// src/Model/Entity/User.php 
+protected function _getName(){
+	return $this->firstname . ' ' . $this->lastname;
+}
+
+//View class and templates 
+/*
+handles json, html, files, etc.
+Controller->render( string $view null, string $layout null )
+default template src/Template/Layout
+*/
+//view elements 
+//create a url element to re-use 
+// src/Template/Element/Bookmarks/url.php 
+<a href="<?= h( $bookmark->url ) ?>"><?= h( $bookmark->url ) ?></a>
+//use in the template index file 
+$this->element( 'Bookmarks/url', [ 'bookmark', $bookmark ] );
+//view block 
+$this->assign( 'title', $bookmark->title );
+//prepend the word View 
+$this->prepend( 'title', 'View' );
+//append the word Bookmark 
+$this->append( 'title', 'Bookmark' );
+//use with fetch()
+$this->fetch( 'title' )
+
+//View layouts 
+//Controller::viewBuilder() returns the class that builds the view class 
+//you can change the layout in view  
+$this->viewBuilder()->layout( 'layout_x' );
+
+//Components
+//
+/* Default components:
+Cookie
+Authentication
+CSRF - cross site request forgery
+Security
+Request Handler - everything that has to do with get,post,etc..
+Flash - display notifications
+
+load components at:
+Controller::initialize(){
+	$this->loadComponent( string $name, array $config [] )
+}
+*/
+
+//the Flash component has template elements default.ctp, error.ctp, and success.ctp 
+// src/Template/Element/Flash/
+//at BookmarksController::index() try displaying the Flash messages 
+$this->Flash->default( 'default' );
+$this->Flash->error( 'error' );
+
+//components have access to the controllers they are called from:
+CustomComponent::method(){
+	$component = $this->_registry->getController();
+}
+//custom component 
+CustomComponent {
+	$components = [ 'Other' ];
+	function method() {
+		$this->OtherComponent->method();
+	}
+}
+
+//to create a custom component:
+//bake a component validate 
+bin/cake bake component Validate 
+//it will appear in src/Controller/Component/ValidateComponent.php 
+class ValidateComponent extends Component{
+	protected $_defaultConfig = [];
+	//create a function that checks an argument if it's numeric
+	public function validLimit( $limit, $default ){
+		if( is_numeric( $limit ) ){
+			return $limit;
+		}
+		return $default;
+	}
+}
+//at BookmarksController::initialize()
+$this->loadComponent( 'Validate' ); //refer back to BookmarksController::export() line 140
+
+//BEHAVIORS
+/*
+CounterCache - 
+Timestamp - create, modify values 
+Translate - data for different languages 
+Tree - store data in a tree struckture such as nested categories
+in the model
+can be attached to CakePHP events
+*/
+//add 
+SomeTable::initialize(){
+	$this->addBehavior( string $name, array $config [] );
+}
+//use 
+SomeTable::method(){
+	$this->Behavior->method();
+}
+//Attaching to before save event 
+Behavior::beforeSave( Cake\Event\Event $event, 
+	Cake\Datasource\EntityInterface $entity,
+	ArrayObject $options ){
+		
+	}
+
+//bake a custom behaviors
+bin/cake behavior UsersFind 
+// src/Model/Behavior/UsersFindBehavior.php 
+class UserFindBehavior extends Behavior {
+	protected $_defaultConfig = [];
+	//create behavior function 
+	public function findForUser( \Cake\ORM\Query $query, array $options ){
+		return $query->where( [ 'user_id' => $options[ 'user_id' ] );
+	}
+}
+//at BookmarksTable::initialize()
+$this->addBehavior( 'UsersFind' );
+
+//View helpers 
+/*
+Flash - renders the flash messages 
+Form - renders forms tied to entities
+HTML - renders html 
+Number - renders numbers
+Paginator - 
+RSS - creates rss feeds 
+Text - common text manipulation 
+Time - formatting timestamps 
+URL - 
+core php class 
+*/
+View::initialize(){
+	$this->loadHelper( string $name, array $config [] );
+}
+//example 
+View::initialize(){
+	$this->loadHelper( 'CustomHtml', [ 'className' => 'Html' ] );
+}
+//use 
+$this->html->method();
+//attach at event 
+Helper::afterRenderFile( Cake\Event\Event $event, string $viewFile, string $content ){
+}
+
+//adding a time helper 
+// src/View/AppView.php 
+public function initialize(){
+	$this->loadHelper( 'Time' );
+}
+//use at src/Template/Bookmarks/index.ctp 
+$this->Time->timeAgoInWords( $bookmark->created );
+
+//bake a custom helper 
+bin/cake bake helper Bookmark 
+//restart server 
+bin/cake server 
+//find in src/View/Helper/BookmarkHelper.php 
+class BookmarkHelper extends Helper {
+	public $helpers = [ 'Html'];
+	public function url( \App\Model\Entity\Bookmark $bookmark ){
+		return $this->Html->link( $bokmark->url, $bookmark->url, [ 'title' => $bookmark->title ] );
+	}
+}
+//at src/View/AppView.php initialize()
+$this->loadHelper( 'Bookmark' );
+//to use, replace url.ctp created above with 
+$this->Bookmark->url( $bookmark );
+
+//Hash part of utilities of CakePHP 
+/*
+manage and manipulate arrays
+*/
+use Cake\Utility\Hash;
+Controller::method(){
+	//returns a single value from an array or a default value 
+	Hash::get( array $data, string $path, $default = null );
+	//returns an array of items 
+	Hash::extract( array $data, string $path );
+	//turns array into formatted string 
+	Hash::format( array $data, array $paths, string $format );
+	//checks if a path exists in the array 
+	Hash::check( array $data, string $path = null );
+	//reduce type operation 
+	Hash::reduce( array $data, string $path, $function );
+}
+//create a list of tags 
+use Cake\Utility\Hash;
+use Cake\Utility\Text; 
+Text::toList( Hash::extract( $bookmark, 'tags.{n}.name') );
+
+//Collection Iterators 
+
+//Logging 
+use \Log\LogTrait;
+class User extends Entity {
+	use LogTrait;
+	protected function _setPassword( $password ){
+		//this log will be entered into the debug.log 
+		$this->log( 'user changing password', 'debug');
+		return $password;
+	}
+}
+// check logs/debug.log and you'll see the log when changing a password 
+
+//Modeless forms 
+//bake a contacts controller without default crud actions 
+bin/cake bake controller Contacts --no-actions 
+//bake a form object 
+bin/cake bake form Contact 
+// src/Form/ContactForm.php 
+class ContactForm extends Form {
+	//there are three functions _buildSchema, _buildValidator, _execute
+	protected function _buildSchema( Schema $schema ){
+		$schema->addField( 'name', [ 'type' => 'string' )
+			->addField( 'email', [ 'type' => 'string' );
+		return $schema;
+	}
+	protected function _buildValidator( Validator $validator ){
+		$validator->notEmpty( 'name' )
+			->add( 'email', 'valid', [ 'rule' => 'email' ] )
+			->notEmpty( 'email' );
+		return $validator;
+	}
+	protected function _execute( array $data ){
+		return true;
+	}
+}
+// src/Controller/ContactsController.php
+namespace App\Controller;
+use App\Controller\AppController;
+use App\Form\ContactForm; 
+class ContactsController extends AppController{
+	public function index(){
+		$form = new ContactForm();
+		if( $this->request->is( 'post' ){
+			if( $form->execute( $this->request->data ) ){
+				$this->Flash->success( 'We have received your contact request' );
+			}else{
+				$this->Flash->error( 'check the form' );
+			}
+		}
+		//view variable form 
+		$this->set( 'form', $form );
+	}
+}
+//setup the template
+// src/Template/Contacts/index.tcp each line in short echo tags <?= 
+$this->Form->create( $form );
+	$this->Form->input( 'name' );
+	$this->Form->input( 'email' );
+$this->Form->button( 'Submit' );
+$this->Form->end();
+
+//Emails 
+//config config/App.php EmailTransport
+use Cake\Mailer\Email;
+class ContactForm extends Form {
+	protected function _execute( array $data ){
+		$email = new Email();
+		$email->from( 'app@domain.com', 'Bookmarks')
+			->to( 'me@domain.com', 'Me' )
+			->template( 'default', 'default' )
+			->viewVars( [ 'data' => $data ] )
+			->send();
+	}
+}
+// src/Template/Email/html/default.tcp, text/default.tcp 
+
+//Mailers 
+bin/cake bake mailer ContactForm 
+//created in src/Mailer/ContactFormMailer.php 
+class ContactFormMailer extends Mailer{
+	static public $name = 'ContactForm';
+	public function submission( array $data ){
+		$this->from( 'app@domain.com', 'Bookmarks')
+			->to( 'me@domain.com', 'Me' )
+			->template( 'default', 'default' )
+			->set( [ 'data' => $data ] )
+	}
+}
+//modify src/Form/ContactForm.php to use the mailer created above
+use Cake\Mailer\MailerAwareTriat;
+class ContactForm extends Form {
+	use MailerAwareTriat;
+	protected function _execute( array $data ){
+		$this-getMailer( 'ContactForm' )->send( 'submission', [ $data ] );
+	}
+}
+
+//Plugins intall 
+composer require friendsofcake/cakephp-csvview:~2.0
+//restart 
+bin/cake server 
+// config/bootstrap.php loads plugins 
+Plugin::load( 'CsvView' );

@@ -1,0 +1,280 @@
+//mongodb lowercase and pluralizes the name of the schema 
+'use strict';
+var mongoose = require( mongoose );
+var Schema = mongoose.Schema;
+//1 create schema model 
+var BookSchema = new Schema( {
+	title: String,
+	title: {
+		type: String,
+		require: true //required field
+		unique: true //key
+		default: Date.now //
+		keywords: Array,
+		published: Boolean,
+		author: {
+			type: Schema.ObjectId,
+			ref: 'User' //another schema
+			type: Schema.type.ObjectId
+		},
+		//embedded sub-document
+		detail: {
+			modelNumber: Number,
+			hardcover: Boolean,
+			reviews: Number,
+			rank: Number
+		}
+	}
+} )
+
+module.exports = mongoose.model( 'Book', BookSchema );
+
+//project
+
+touch app.js //create file
+
+touch Book.model.js
+
+npm init //package.json 
+
+npm install -S express mongoose body-parser //install and to package.json dependencies
+
+app.js
+//expressjs
+var express = require( 'express' );
+var app = express();
+
+//body-parser
+var bodyParser = require( 'body-parser' );
+
+//mongoose 
+var mongoose = require( 'mongoose' );
+//imported book schema 
+var Book = require( './Book.model' );
+var port = 8080;
+var db = 'mongodb://localhost/example'; //name of database is example 
+mongoose.connect( db );
+
+//Update Delete 
+app.use( bodyParser.json() );
+app.use( bodyParser.urlencoded( {
+	extended: true 
+	
+} ) );
+
+app.get( '/', function) req, res ){
+	res.send( 'my page' );
+} );
+
+app.get( '/books', function( req, res ){
+	Book.find( {
+		//empty returns everything
+	} )
+	.exec( function( err, books ){
+		if( err ){
+			res.send( 'error' );
+		}else {
+			res.json( books );
+		}
+	} );
+} );
+
+//with body-parser using id as parameter
+app.get( '/books:id', function( req, res ){
+	Book.findOne( {
+		_id: req.params.id 
+	} )
+	.exec( function( err, books ){
+		if( err ){
+			res.send( 'error' );
+		}else {
+			res.json( books );
+		}
+	} );
+} );
+
+app.post( '/book', function( req, res ){
+	var newBook = new Book();
+	newBook.title = req.body.title;
+	newBook.author = req.body.author;
+	newBook.category = req.body.category;
+		
+	newBook.save( function( err, book ) {
+		if( err ){
+			res.send( 'error' );
+		}else {
+			res.send( book );
+		}
+	} );
+} );
+
+app.listen( port, function(){
+	console.log( port );
+} )
+//////////////////////////////////
+//////////////////////////////////
+Book.model.js 
+
+var mongoose = require( mongoose );
+var Schema = mongoose.Schema;
+var BookSchema = new Schema( {
+	title: String,
+	author: String,
+	category: String 
+} )
+
+module.exports = mongoose.model( 'Book', BookSchema );
+
+CMD> use example //switch to db 
+CMD> show collections
+
+//Example 
+var TodoSchema = new mongoose.Schema({
+	name: String,
+	completed: Boolean 
+});
+var Todo = mongoose.model( 'todos', TodoSchema );
+Todo.create({
+	name: "clean",
+	completed: false
+}).then( (err, todo )=>{
+	console.log( err, todo );
+});
+
+//mongodb lowercase and pluralizes the name of the schema 
+
+//Examples 
+var DogSchema = new mongoose.Schema({
+	owner: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'person'  //ref: it knows what collection to go match the ids with
+	},
+	name: String
+});
+
+var PersonSchema = new mongoose.Schema({
+	name: String 
+});
+
+var Dog = mongoose.model( 'dog', DogSchema );
+var Person = mongoose.model( 'person', PersonSchema );
+
+/* find all dogs and populate their owners
+	this will grab the ids on the owner's field 
+	and go to the ref, which is the person model 
+	and grab the person doc with the matching id 
+	and place the object on the owner's field */
+
+var promise = Dog.find({}) //always returns array, in this case empty 
+	.populate( 'owner' ) //populate with owner object 
+	//.populate( 'field2 field3 field4' ) //multiple fields or do .populate again 
+	//.populate( 'field5' )
+	.exec(); //pass function callback or pass to var promise 
+promise.then( function( dogs ){
+	
+}, function( err ){
+	
+});
+
+//promises.js 
+/* object with methods that help track itself. 
+works the same way as functions set in the future 
+	can hadle callbacks better
+var action = function( callback ){
+	setTimeout( function(){
+		callback( 'key' );
+	}, 5000 );
+};
+action( function( arg ){
+	console.log( arg );
+}); */
+var action = function() {
+	//return a Promise object 
+	return new Promise( ( resolve, reject ) => {
+			setTimeout( () => {
+				resolve( 'hey' ); //accessible from .then( arg ) arg=hey 
+			}, 5000 );
+	})
+}
+action() //returning a Promise 
+	.then( (word) => {
+		console.log( word ); // hey 
+	})
+	.catch( (err) => { //error handling
+		console.log( err );
+	} );
+//to use later 
+var promise = action()
+//then use it later 
+promise.then( word )
+
+//consuming a Promise and Nested Promises by using .then chain 
+var fs = require( 'fs' );
+
+var readFile = ()=>{
+	return new Promise( (resolve, reject)=>{
+		fs.readFile( './package.json', (err, file)=>{
+			return err ? reject( err ) : resolve( file.toString() );
+		});
+	});
+}
+
+readFile()
+	.then( (file)=>{
+		console.log( file );
+	})
+	//.then( logFile, callback(err) ) 
+	//.then( sendEMail )
+	//.then( callHome )
+	.catch( (err)=>{
+		
+	})
+
+//Promise.all( [array of promises] ) will run after all promises ran 
+var readAllFiles = ()=>{
+	var promises = [ readFile(), readFile(), readFile() ];
+	return Promise.all( promises );
+}
+readAllFiles()
+	//.spread( files )... will spread files into sepparate arguments 
+	.then( (files)=>{
+		console.log( files.lenth );
+	});
+
+/*JSON web tokens  http://jwt.io
+No session, No cookies.
+The JWT is sent on every request because REST is stateless and every request is unique. 
+The token has to be stored on the client that is requesting resources.
+It is stored in the Local Storage localStorage */
+var user = { _id: '2345456524234256' };
+//send token back to client on signup/signin
+var token = jwt.sign( user, "this is a secret key" );
+/* later on an incoming request we will decode the token to see who the user is. The toekn is probably on the authorization header. This thriw an error if the token isnt a valid JWT and instead is a random string. */
+var user = jwt.verify( req.headers.authorization, "this is a secret key" );
+//proceed to look user up to see if they exist in our system 
+User.findById( user._id, ()=>{
+	
+});
+
+//methods as prototypes. Any methods defined will be available to the instances not the constructor or class 
+DogSchema.methods.bark = ()=>{
+	//this === the dog document
+};
+/* statics as static methods on a class/constructor and they will beling to the Dog itself and not an instance of Dog. Like how Array.isArray() is a static method of the Array class */
+DogSchema.statics.findByOwner = ()=>{
+	
+};
+/*Mongoose has support with middleware
+Middleware is perfect for validating, changing, notifying, etc. Middleware will attach to life cycle events around our documents like before save, before validations, after save, etc. */
+/* Middleware is just a function, next() will go to the next
+middleware function */
+DogSchema.post( 'save', (next)=>{
+	var doggy = this;
+	//socket some websocket lib in this case 
+	socket.emit( 'new:doggy', doggy );
+	next();
+});
+//runs before a document is validated
+DogSchema.pre( 'validate', (next)=>{
+	
+});

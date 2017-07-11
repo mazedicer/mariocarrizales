@@ -1,6 +1,6 @@
 ( function(){
 //animations
-/*
+
 	setTimeout( function(){
 		anime( {
 			targets: '.anime_title',
@@ -81,7 +81,7 @@
 			}
 		} );
 	}, 5000 );
-*/
+
 //section show/hide
 	var section_elements = document.getElementsByClassName( 'h2_button' );
 	var section_contents = document.getElementsByClassName( 'content_div' );

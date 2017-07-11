@@ -1,0 +1,277 @@
+<?php 
+/* SETTING UP
+Develop in a WordPress install.
+Turn WP_DEBUG on in wp-config.php file.
+Download Debug bar, Query Monitor plugins tools while designing plugins.
+Prevent direct access to files: 
+	if( !defined( 'ABSPATH' ) ) exit;
+*/
+
+//use of bloginfo('description'); = tagline
+<head>
+	
+	<link rel="alternate" 
+		type="application/rss+xml" 
+		title="<?php bloginfo('name'); ?>" 	//bloginfo('name'); = name of template
+		href="<?php bloginfo('rss2_url'); ?>" />
+	
+	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
+	
+	//style.css in mytemplate
+	<link rel="stylesheet" href="<?php bloginfo('stylesheet_url'); ?>" 
+	type="text/css" />
+	
+	//wordpress injects
+	<?php wp_head(); ?>
+		
+</head>
+
+//to reference another css stylesheet for a child theme
+@import url("../sometheme/style.css");
+
+/*
+wordpress
+	|__ |/_/ wp-content
+		|		|__ |/_/ themes
+		|		|		|__ |/_/ mytemplate 
+		|		|				|__ style.css
+		|		|				|__ index.php
+		|		|				|__ functions.php
+		|		|				|__ header.php
+		|		|				|__ page.php //page template
+		|		|
+		|		|__ |/_/ plugins				
+		|
+		|__ |/_/ upgrade
+				|__ |/_/ 
+*/
+	
+/* style.css
+
+		Theme Name: My Template
+		Theme URI: http://
+		Description: Simple wordpress
+		Version: 1.0
+		Author: Mario
+	
+	
+
+index.php
+
+functions.php
+	
+page.php
+	page templates unlimited
+*/
+	
+/* PLUGINS
+Give every plugin its own folder.
+Should have the same file name and folder name.
+Name files, functions, and variables logically.
+Prefix functions and variable names.
+Comment your code.
+Group similar functions.
+Documentation
+	inline documentation (comments and DocBlocks).
+	user documentation.
+Security
+	Confirm user credentials
+	Data validation.
+	Securing input.
+	Escaping output.
+	
+add_action( <wordpress action to hook>, <custom function>, <priority=10>, <arguments limit=1> )
+*/
+function mfwp_load_scripts(){ //my first wordpress plugin (mfwp)
+	wp_enqueue_style('mfwp-style', plugin_dir_url( __FILE__ ) . 'css/plugin_styles.css');
+}
+//action hook - when wordpress is loading
+add_action('wp_enqueue_scripts', 'mfwp_load_scripts');
+
+//options pages on the admin menu 
+function mfwp_add_options_link(){
+	add_options_page('My First WordPress Plugin Options','My First Plugin','manage_options','mfwp-options','mfwp_options_page');
+}
+add_action('admin_menu', 'mfwp_add_options_link');
+/*	
+wp-content/plugins/
+	>make folder /addimage/
+	> make php file in addimage folder
+	/addimage.php
+*/
+
+/* ACTION HOOKS 
+action hooks execute when event occurs 
+admin_head - head for dashboard
+admin_init - when dashboard has loaded
+comment_post - when new comment is created
+create_category - whe category is created
+init - when wordpress has loaded the website
+publish_post - when a new post is published
+switch_theme - when the theme is changed
+user_register - when a new user is registered
+wp_footer - occurs in the footer
+wp_head - occurs in the head
+*/
+//1 Define the action hook 
+function my_custom_action(){
+	do_action( 'my_custom_action', 1 );
+}
+//2 Attach a function to the action hook 
+add_action( 'my_custom_action', 'my_custom_function' );
+function my_custom_function(){
+	echo "This is a custom action.";
+}
+//3 Call the action hook 
+my_custom_action();
+
+/* REGISTER ACTIVATION HOOKS 
+register_activation_hook( __FILE__, 'custom_plugin_prefix_custom_function' );
+__FILE__ point to the right location
+register_deactivation_hook( __FILE__, 'custom_plugin_prefix_custom_function' );
+
+To uninstall:
+register_uninstall_hook( string $file, callable $callback )
+*/
+
+/* FILTERS
+Filters modify data 
+filter hooks change content before displaying and saving to database
+comment_text changes comments before display
+get_categories - changes category list
+the_content - changes the content of a post or page
+the_content_rss - changes content of posts in RSS feeds
+the_permalink - changes the permalink
+the_title - the title of posts and pages
+wp_title - text in the title tag
+add_filter( <action to hook>, <custom function>, <priority=10>, <argument limit=1> )
+*/
+//example filter1
+add_filter( 'add_more_shrimp', 'moreShrimpHere' );
+function moreShrimpHere( $shrimps ){
+	$shrimps[] = 'bbq shrimp';
+	return $shrimps;
+}
+/*using filter1 
+has_filter( <filter> ) checks if the filter exists
+apply_filters( <filters> ) applies the passed filters */
+function listAllShrimp(){
+	$list = "";
+	$shrimps = array( 'pineapple shrimp', 'lemon shrimp', 'coconut shrimp', 'pepper shrimp' );
+	if( has_filter( 'add_more_shrimp' ) ){
+		$shrimps = apply_filters( 'add_more_shrimp', $shrimps )
+	}
+	foreach( $shrimps as $shrimp ){
+		$list .= $shrimp;
+	}
+	return $list;
+}
+
+/* CUSTOM POST TYPES
+register_post_type( string $name_of_post_type, array of arguments ) */
+function myCustomPostType(){
+	register_post_type( 'recipes', $args );
+}
+add_action( 'init', 'myCustomPostType' );
+
+/* TAXONAMIES
+classify and organize data such as Category and Tag 
+register_taxonamy( $name_of_taxonamy, $name_of_post_type_to_use_this_taxonamy_on, array of arguments )
+*/
+function register_recipe_taxonomy(){
+	register_taxonomy( 'recipe-type', 'recipe', $args );
+}
+add_action( 'init', 'register_recipe_taxonomy' ); //hooking to init action 
+
+/* ROLES Administrator, Editor, Author, Contributor, Subscriber
+add_role() - allows you to create custom roles
+add_cap(), remove_cap() - allows you to set|remove capabilities
+current_user_can() - check user capabilites 
+user_can() - check a particular user capabilites */
+
+/* SHORTCODES
+[caption] - wrap caption around content 
+[gallery] - show image galleries
+[audio] - embed and play audo files 
+[video] - embed and play video files 
+[playlist] - display collection of audio or video files 
+[embed] - wrap embedded items
+
+add_shortcode( $name_of_shortcode, $function ) */
+//basic
+function make_a_button(){
+	return '<a href="http://someurl.com/" class="button">Click me</a>';
+}
+add_shortcode( 'my_button', 'make_my_button' ); // [my_button] 
+//customized by user 
+function make_a_button( $atts, $content = null ){
+	return '<a href="http://someurl.com/" class="button">' . $content . '</a>';
+}
+add_shortcode( 'my_button', 'make_my_button' ); // [my_button] $content [/my_button]
+
+
+
+/* PLUGIN HEADER
+Plugin Name: Add Image
+Plugin URL: http://yourwebsite.com
+Version: 1.0
+Author: Mario
+Author URL: http://yourwebsite.com
+Description: This plugin adds an image at the beginning of every post
+*/
+//Exit if accessed directly.
+if( !defined( 'ABSPATH' ) ) exit;
+/*******************
+* GLOBAL VARS
+********************/
+$mfwp_prefix = "mfwp_";
+$mfwp_plugin_name = "My First Wordpress Plugin";
+/*******************
+* INCLUDES
+********************/
+include("includes/scripts.php"); // this controls all JS/CSS
+include("includes/data-processing.php"); //this controls all saving of data
+include("includes/display-functions.php"); //custom made file by user
+function addImage($post){
+	$img_w_text = "<img src=\"url\" alt=\"my image\" />";
+	$img_w_text .= $post;
+	return 	$img_w_text;
+}
+//data from server passes through the addImage function after the_content function
+add_filter("the_content","addImage");
+
+//Another example
+class my_widget extends WP_Widget{
+	function my_widget(){ //constructor
+		$widget_options = array(
+								'classname' => 'my_widget',
+								'description' => __('Display Links to Facebook, Twitter, and RSS')
+								);
+		parent::WP_Widget('my_widget', 'Social Network Links', $widget_options );
+	}
+	function widget($args, $instance){//instance is the widget itself
+		extract( $args, EXTR_SKIP );
+		$title = ( $instance['title'] ) ? $instance['title'] : 'Follow Me';
+		$facebook = ( $instance['facebook'] ) ? $instance['facebook'] : 'Follow Me';
+		$twitter = ( $instance['twitter'] ) ? $instance['twitter'] : 'Follow Me';
+	}
+	function update($new_instance, $old_instance){}
+	function form($instance){}
+}
+function my_widget_init(){
+	register_widget('my_widget');
+}
+add_action('widgets_init', 'my_widget_init');
+
+
+
+
+
+
+
+
+
+
+
+	
+	

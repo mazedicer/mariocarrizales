@@ -1,0 +1,70 @@
+/* Kotlin file extension is .kt
+; semicolon are optional in Kotlin 
+Java files are still created
+Intellij can convert java code to kotlin code 
+javadecompilers.com to decompile java classes
+Kotlin works together with Java */
+//FUNCTIONS
+fun strLength( name: String? ) : Int{
+	return name?.length ? : -1
+}
+
+//override a function 
+override fun funcName(){}
+
+fun main( args : Array<String> ){
+	var telusko = Alien();
+	telusko.name = "Navin"
+	println( "Name is " + telusko.name ) //Navin
+}
+
+//Lambda ( arg -> return arg + 1 )
+var fab = findViewById( Rlid.fab ) as FloatingActionButton
+fab.setOnClickListener( view -> 
+	Snackbar.make( view, "Replace with your own action", Snackbar.LENGTH_LONG )
+		.setAction( "Action", null() )
+		.show() )
+
+//CLASSES 
+
+class Alien {
+	var name:String = "";
+	/* val = constant variable
+		and cannot be reassigned
+	*/
+	//constructor
+	init{}
+}
+
+//STRINGS
+
+var num1: Int = 4
+var num2: Int = 7
+println( "Addition of $num1 + $num2" )
+
+"my name is ${talusko.name}"
+
+//CONDITIONS
+
+fun main( args: Array<String> ){
+	if( num1 > num2 )
+		result = num1 
+	else
+		result = num2 
+
+	println( result )
+}
+
+result = if( num1 > num2 )
+
+//NULL HANDLING
+/*? question mark allows null value assignment. You cannot assign null values
+by default*/
+
+var name: String? = null 
+
+/*to access properties and methods use question mark everywhere*/
+
+var titu: Alien? = Alien()
+titu.name?.length
+	

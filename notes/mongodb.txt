@@ -1,0 +1,966 @@
+mongodb.org
+	64bit
+//create directories to store information 
+//by default it should be data\db 
+CMD>c:\ mkdir data\db 
+//change the default location using mongod.exe 
+//cd to directory where mongod.exe is 
+D:\Program Files\mongodb\bin mongod.exe --dbpath "d:\mongodb\data"
+
+//executables
+Program Files\MongoDB\Server\3.0\bin
+//CMD 1
+mongod.exe 
+//CMD 2
+mongo.exe 
+
+//put into System variables
+//PATH enter directory above
+//starts server runs in the background
+mongod 
+//shell
+mongo 
+//datatypes:
+null, 
+boolean, 
+number, 
+string, 
+arrays, 
+regex, 
+objects {}, 
+uniqueIDs
+//shows commands
+help 
+//exit shell
+exit 
+//shuts down monogdb server
+CTRL-C 
+//show stats 
+db.stats()
+
+//can type javascript inside shell
+
+////////////////////////////////////////////////////////////////////////
+//BACKUP
+// https://docs.mongodb.com/manual/reference/program/mongodump/
+////////////////////////////////////////////////////////////////////////
+mongodump
+//backup all databases of specific mongod instance 
+//mongodump --host HOST_NAME --port PORT 
+mongodump --host myserver.com --port 27017
+//backup specific database from specific path 
+//mongodump --dbpath DB_PATH --out BACKUP_DIRECTORY
+mongodump --dbpath /data/db/ --out /data/backup/
+//backup a collection 
+//mongodump --collection COLLECTION --db DB_NAME
+mongodump --collection my_anus_coll --db testdb 
+
+////////////////////////////////////////////////////////////////////////
+//RESTORE
+// https://docs.mongodb.com/manual/reference/program/mongorestore/
+////////////////////////////////////////////////////////////////////////
+//restore a collection into dump/ subdirectory
+mongorestore --collection people --db accounts dump/
+
+//show all databases
+show dbs 
+show dbs show dbs show dbs show dbs show dbs show dbs show dbs show dbs show dbs show dbs 
+
+//show current databases
+db 
+db db db db db db db db db db db 
+
+//create database 
+use <dbname> 
+
+//drop existing database
+db.dropDatabase()
+db.dropDatabase() db.dropDatabase() db.dropDatabase() db.dropDatabase() db.dropDatabase() db.dropDatabase() db.dropDatabase() db.dropDatabase() db.dropDatabase() db.dropDatabase()
+
+////////////////////////////////////////////////////////////////////////
+//COLLECTION
+// https://docs.mongodb.com/manual/reference/method/js-collection/
+////////////////////////////////////////////////////////////////////////
+/* methods:
+	db.coll1.aggregate()
+	db.coll2.bulkWrite() - for bulk operations on the collection:
+		insertOne
+			{ "document": {document} }
+		updateOne
+			{ "filter": { key: value },
+				"update": { $set: { key: value } }
+			} 
+		updateMany 
+		deleteOne
+			{ "filter": { key: value } }
+		deleteMany 
+		replaceOne 
+			{ "filter": { key: value },
+				"replacement": {document}
+			}
+	db.coll3.count()
+	db.coll4.copyTo()
+	db.coll5.createIndex()
+	db.coll6.dataSize()
+	db.coll7.deleteOne(), db.coll8.deleteMany()
+	db.coll9.distinct()
+	db.coll10.drop()
+	db.coll11.dropIndex(), db.coll12.dropIndexes()
+	db.coll114.explain()
+	db.coll15.find(), db.coll16.findAndModify(), db.coll17.findOne(), db.coll18.findOneAndDelete(), db.coll19.findOneAndReplace(), db.coll20.findOneAndUpdate()
+	db.coll21.getIndexes()
+	db.coll22.getShardDistribution()
+	db.coll23.getShardVersion()
+	db.coll24.group()
+	db.coll25.insert(), db.coll26.insertOne(), db.coll27.insertMany()
+	db.coll28.isCapped()
+	db.coll29.latencyStats()
+	db.coll30.mapReduce()
+	db.coll31.reIndex()
+	db.coll32.replaceOne()
+	db.coll33.remove()
+	db.coll34.renameCollection( "new_name" )
+	db.coll35.save()
+	db.coll36.stats()
+	db.coll37.storageSize()
+	db.coll38.totalSize()
+	db.coll39.totalIndexSize()
+	db.coll40.update(), db.coll41.updateOne(), db.coll42.updateMany()
+	db.coll43.validate()
+*/
+
+
+//creates a collection which is like a table in SQL
+db.createCollection( 'table1' ) 
+db.createCollection( 'table2' ) db.createCollection( 'table3' ) db.createCollection( 'table4' ) db.createCollection( 'table5' ) db.createCollection( 'table6' ) db.createCollection( 'table7' ) db.createCollection( 'table8' ) db.createCollection( 'table9' ) db.createCollection( 'table10' )
+//removes the collection
+db.my_collection.drop() 
+
+//shows all collections 
+show collections 
+show collections show collections show collections show collections show collections show collections show collections show collections show collections show collections show collections show collections 
+
+//insert into collection 
+doc = {"name":"Mario"} 
+db.<collection>.insert(doc) 
+db.my_collection.insert( doc1 ) db.my_collection.insert( doc2 ) db.my_coll.insert( doc3 ) db.my_coll4.insert( doc4 ) db.my_coll5.insert( doc5 ) db.my_coll6.insert( doc6 ) db.my_coll7.insert( doc7 ) db.my_coll8.insert( doc8 ) db.my_coll9.insert( doc9 ) db.my_coll10.insert( doc10 )
+//insert multiple docs 
+db.my_collection.insert([
+	{ key: value },
+	{ key: value },
+	{ key: value }
+])
+//shows collection 
+db.<collection>.find() 
+
+//show one document 
+db.my_coll.findOne()
+
+//shows it nicer
+.find().pretty() 
+
+////////////////////////////////////////////////////////////////////////
+//FIND/QUERY and PROJECTION OPERATORS
+////////////////////////////////////////////////////////////////////////
+//COMPARISON
+// $eq = equality { key: value }
+db.my_coll.find({
+	"key": "value"
+})
+// $lt < less than { key: { &lt: value } }
+db.my_coll.find({
+	"likes": { $lt: 50 }
+})
+// $lte <= less than equals { key: { $lte: value } }
+db.my_coll.find({
+	"likes": { $lte: 50 }
+})
+// $gt > greater than { key: { $gte: value } }
+db.my_coll.find({
+	"likes": { $gte: 50 }
+})
+// $ne <> not equals { key: { $ne: value } }
+db.my_coll.find({
+	"likes": { $ne: 50 }
+})
+
+//LOGICAL
+// AND | OR condition { $and | $or: [ { key: value }, { key: value } ] }
+// pass key-value objects as items in $and | $or array 
+db.my_coll.find({
+	$and | $or: [
+		{ "key": "value" },
+		{ "key": "value" }
+	]
+})
+//AND and OR together { key: { $operation: value }, $or: [ { key: value }, { key: value } ] }
+db.my_coll.find({
+	"likes": { $gt: 10 },
+	$or: [ 
+		{ "key": "value" },
+		{ "key": "value" }
+	]
+})
+// $not - returns docs that do not match the find expression.
+// $nor - returns all docs that fail to match both clauses.
+
+//ELEMENT
+// $exist - match docs that have the specified field.
+// $type - selects docs if a field is of a specified type.
+
+//EVALUATION
+/*
+$mod - performs modulo operation on a field and selects records with a specified result.
+$regex - selects records where values match a specified regular expression.
+$text - performs text search.
+$where - matches records that satisfy a javascript expression.
+*/
+
+//GEOSPATIAL
+/*
+$geoWithin
+$geoIntersects
+$near 
+$nearSphere
+*/
+
+//ARRAY
+/*
+$all 
+$elemMatch
+$size 
+*/
+
+//BITWISE
+/*
+$bitsAllSet
+$bitsAnySet
+$bitsAllClear
+$bitsAnyClear
+*/
+
+//COMMENTS
+// $comment - adds a comment to a find predicate.
+
+//PROJECTION OPERATORS 
+/*
+$ - project the first element in an array that matches the find condition.
+$elemMatch - similar to $ but with $elemMatch 
+$meta - project record score assigned during $text operation.
+$slice - limits the # of elements projected from an array.
+*/
+
+//find with filtered results find( {}, { key: 1 | 0 } )
+//1 shows the field, 0 hides the field
+db.my_coll.find( {}, { "title": 1, _id: 0 } )
+
+////////////////////////////////////////////////////////////////////////
+//FIELD UPDATE OPERATORS
+////////////////////////////////////////////////////////////////////////
+/*
+{
+   <operator1>: { <field1/key1>: <value1>, ... },
+   <operator2>: { <field2/key2>: <value2>, ... },
+   ...
+}
+*/
+/*
+	$set - update( { key: value }, { $set: { key: new_value } } )
+	by default UPDATE SET changes one item matching the find criteria 
+	to change multiple items matching the find criteria 
+	add update( { key: value }, { $set: {key: new_value} }, {multi: true} )
+*/
+	db.my_coll.update( 
+	{ "key": "value" },
+	{ $set: { "key": "new value" } },
+	{ multi: true }
+)
+//updates <collection> that has name Mario 
+db.<collection>.update({"name":"Mario"}), doc ) 
+/*
+$inc - increments the value if the field by specified amount.
+$mul - multiplies the value ...
+$rename - renames the field 
+$setOnInsert - sets the value of a field if an update results in an insert of a doc.
+$unset - removes the specified field from a doc.
+$min - only updates the field if the specified value > than the existing value.
+$max - only updates the field if the specified value < than the existing value.
+$currentDate - sets the value of a field to current date, either as Date or Timestamp.
+*/
+
+////////////////////////////////////////////////////////////////////////
+//ARRAY UPDATE OPERATORS
+////////////////////////////////////////////////////////////////////////
+/*
+$ - placeholder to update element that matches a condition.
+	{ "<array>.$" : value }
+	helps in updating an element or field whos position is unknown.
+*/
+//sample data 
+{
+  _id: 4,
+  grades: [
+     { grade: 80, mean: 75, std: 8 },
+     { grade: 85, mean: 90, std: 5 },
+     { grade: 90, mean: 85, std: 3 }
+  ]
+}
+// UPDATE students 
+// SET "grades.std" = 6
+// WHERE _id = 4 
+// AND "grades.grade" = 85
+db.students.update(
+	{ _id: 4, "grades.grade": 85 },
+	{ $set: { "grades.$.std": 6 } }
+)
+/*
+$addToSet - adds elements to an array if they do not alredy exist in the set.
+$pop - removes the first or last item.
+$pullAll - removes all matching values.
+$pull - removes all array elements that match a specified query.
+$push - adds an item to an array.
+UPDATE OPERATOR MODIFIERS
+$each - modifies the $push and $addToSet to append multiple items for array updates.
+$slice - modifies the $push to limit the size of updated arrays.
+$sort - modifies the $push to reorder docs stored in an array.
+$position - modifies the $push to specify the position in the array to add elements.
+*/
+
+////////////////////////////////////////////////////////////////////////
+//DELETE remove( <delete criteria>, <limit to 1: true, 1> )
+////////////////////////////////////////////////////////////////////////
+//if 1 or true not specified, it will delete all documents matching delete criteria 
+db.my_coll.remove( { "key": "value" }, 1 )
+//delete all documents in the collection 
+db.my_coll.remove()
+
+//LIMIT # of results .find().limit( n )
+.find( {match}, {return} ).limit( n ) 
+
+//SKIP n# of documents .find().skip( n )
+.find( {match}, {return} ).limit( n ).skip( n ) //skip n results
+
+//SORT db.collection.find().sort( { key: 1|0 } )
+// 1 ascending, -1 descending order
+db.my_coll.find( {}, { "title": 1, _id: 0 } ).sort( { "title": -1 } )
+
+////////////////////////////////////////////////////////////////////////
+//INDEX db.collection.ensureIndex( { key: 1|-1 } )
+////////////////////////////////////////////////////////////////////////
+//1 ascending, -1 descending order.
+//indexes support efficient resolution of queries.
+//without indexes, monogdb must scan all documents of a collection
+//which is highly inefficient.
+/* options:
+background: build index in the background. Default false.
+unique: makes the collection reject duplicate values. Default false.
+name: name of index. Default generated by MongoDB.
+dropDups: creates a unique field and removes all documents that contain
+subsequent ocurrences of that value.
+sparce: documents without the index specified field are ignored.
+expireAfterSeconds: how long to retain documents in this collection.
+weight: 1 - 99,999 denotes significance of the field relative to
+other indexed fields.
+*/
+db.my_coll1.createIndex( { "title": 1 } )
+//index with multiple fields 
+db.my_coll2.createIndex( { "title": 1, "description": -1 } )
+//apply unique id 
+db.my_collection.createIndex({"id":1},{"unique":true})
+db.retards_coll.createIndex( { "id": 1 }, { "unique": true } )
+db.other_retarded_coll.createIndex( { "id": 1 }, { "unique": true } )
+db.the_third_coll.createIndex( { "title": 1 }, { "unique": true } )
+db.some_dumbass_coll.createIndex( { "user_id": 1 }, { "unique": true } )
+db.my_anus_coll.createIndex( { "book_id": 1 }, { "unique": true, "dropdups": true } )
+db.you_sis_dildo_coll.createIndex( { "dildo": 1 }, { "unique": true, "dropdups": true } )
+db.need_three_more_coll.createIndex( { "has_butt": 1 }, { "unique": true, "dropdups": true } )
+db.my_ass_coll.createIndex( { "ass_size": 1 }, { "unique": true } )
+db.last_coll.createIndex( { "visitor_id": 1 }, { "unique": true } )
+//drop duplicates to make unique id
+db.my_collection.createIndex({"id":1},{"unique":true, "dropdups":true})
+//ignore null values 
+db.my_collection.createIndex({"id":1},{"unique":true, "sparce":true})
+//get indexes
+db.my_collection.getIndexes()
+db.somecollection.getIndexes() db.my_coll.getIndexes() db.crazy_coll.getIndexes() db.you_mamma_col.getIndexes() db.lesbo_coll.getIndexes() db.im_going_nuts_with_coll.getIndexes() db.this_coll1.getIndexes() db.annoying_neighbor_coll.getIndexes() db.last_coll.getIndexes()
+//drop index 
+db.my_collection.dropIndex("index_name")
+
+////////////////////////////////////////////////////////////////////////
+//AGGREGATION
+////////////////////////////////////////////////////////////////////////
+//used for computed results from multiple documents.
+//In SQL count(*) is an equvalent of mongodb aggregation.
+//db.collection.aggregate( <operation> )
+/*
+start by passing an array for different aggregate operations
+ to pipeline one after the other.
+*/
+//example document 
+{
+   _id: ObjectId(7df78ad8902e)
+   title: 'Neo4j Overview', 
+   description: 'Neo4j is no sql database',
+   by_user: 'Neo4j',
+   url: 'http://www.neo4j.com',
+   tags: ['neo4j', 'database', 'NoSQL'],
+   likes: 750
+}
+
+////////////////////////////////////////////////////////////////////////
+//GROUP ACCUMULATOR OPERATORS
+////////////////////////////////////////////////////////////////////////
+// $sum group accumulator operator
+db.mycoll.aggregate( [ { $group: { 
+	_id: "$by_user",
+	number_of_tutorials: { $sum: "$likes" } 
+} } ] )
+// $avg group accumulator operator
+db.mycoll1.aggregate( [ { $group: {
+	_id: "$by_user",
+	number_of_tutorials: { $avg: "$likes" }
+} } ] )
+// $min group accumulator operator
+db.mycoll2.aggregate( [ { $group: {
+	_id: "$by_user",
+	number_of_tutorials: { $min: "$likes" }
+} } ] )
+// $max group accumulator operator
+db.mycoll3.aggregate( [ { $group: {
+	_id: "$by_user",
+	number_of_tutorials: { $max: "$likes" }
+} } ] )
+// $push group accumulator operator
+//inserts the values to an array in the result 
+db.mycoll4.aggregate( [ { $group: {
+	_id: "$by_user",
+	url: { $push: "$url" }
+} } ] )
+// $addToSet group accumulator operator
+// inserts the values to an array in the result without duplicates
+db.mycoll5.aggregate( [ { $group: {
+	_id: "$by_user",
+	url: { $addToSet: "$url" }
+} } ] )
+// $first group accumulator operator
+// gets the first document from the soruce documents according to the grouping.
+db.mycoll6.aggregate( [ { $group: {
+	_id: "$by_user",
+	first_url: { $first: "$url" }
+} } ] )
+// $last group accumulator operator
+// gets the last document from the source documents according to the grouping.
+db.mycoll7.aggregate( [ { $group: {
+	_id: "$by_user",
+	last_url: { $last: "$url" }
+} } ] )
+
+////////////////////////////////////////////////////////////////////////
+//BOOLEAN AGGREGATION OPERATORS
+////////////////////////////////////////////////////////////////////////
+/*
+$and - true when all its expressions eval to true.
+$or - true when any of its expressions eval to true.
+$not - returns boolean that is the opposite of its argument expression.
+	Takes only one argument expression.
+*/
+
+////////////////////////////////////////////////////////////////////////
+//SET OPERATORS
+////////////////////////////////////////////////////////////////////////
+/*
+perform set operation on arrays, treating arrays as sets.
+ignore duplicate entries in each input array and the order of the elements.
+output contains only unique entries in unspecified order.
+does not descend into nested arrays but evalueates at top-level.
+$setEquals - true if injputs have the same distinct elements.
+$setIntersection - returns a set with elements that appear in all of the input sets.
+$setUnion - returns a set with elements that appear in any of the input sets.
+$setDifference - returns a set with elements that appear in the first set but not in the 
+	second set. Only accepts two argument expressions.
+$setIsSubset - true if all elements of the first set appear in the second set.
+	Only accepts two argument expressions.
+$anyElementTrue - true if any elements of a set evaluate to true; otherwise, return false.
+$allElementsTrue - true if no element of a set evaluates to false, otherwise, return false.
+*/
+
+////////////////////////////////////////////////////////////////////////
+//COMPARISON AGGREGATION OPERATORS
+////////////////////////////////////////////////////////////////////////
+/*
+$cmp - 0 if two values are equivalent, 1 if first > second, -1 if first < second.
+$eq - true if values are equivalent.
+$gt - true if first > second. 
+$gte - true if first >= second. 
+$lt - true if first < second. 
+$lte - true if first <= second.
+$ne - true if values are not equivalent.
+*/
+
+////////////////////////////////////////////////////////////////////////
+//ARITHMETIC AGGREGATION OPERATORS
+////////////////////////////////////////////////////////////////////////
+/*
+$abs 
+$add 
+$ceil 
+$divide 
+$exp 
+$floor 
+$ln 
+$log 
+$log10
+$mod 
+$multiply 
+$pow 
+$sqrt 
+$subtract
+$trunc
+*/
+
+////////////////////////////////////////////////////////////////////////
+//STRING AGGREGATION OPERATORS
+////////////////////////////////////////////////////////////////////////
+/*
+$concat - concat any number of strings.
+$indexOfBytes - search a string for an occurence of a substring and returns the UTF-8
+	byte index of the first occurence. -1 if not found.
+$indexOfCP - similar to $indexOfBytes but returns the UTF-8 code point index.
+$split - splits a string into substrings using a delimeter and returns an array of substrings.
+	if not found, returns an array with original string.
+$strLenBytes - returns the number of UTF-8 encoded bytes in a string.
+$strLenCP - same as $strLenBytes but returns UTF-8 code points in a string.
+$strcasecmp - case-insensitive string comparison and returns 0 if two strings are equivalent,
+	1 if the first string is greater than the second, and -1 if the first string is less than
+	the second.
+$substrBytes - returns substring of a string using UTF-8 byte index.
+$substrCP - similar to $substrBytes using UTF-8 code point.
+$toLower - string to lowercase.
+$toUpper - string to uppercase.
+*/
+
+////////////////////////////////////////////////////////////////////////
+//TEXT SEARCH AGGREGATION OPERATORS
+////////////////////////////////////////////////////////////////////////
+// $meta - returns metadata from a document in a pipeline operation 
+// that includes a $match stage with a $text 
+//sample data 
+{ "_id" : 1, "title" : "cakes and ale" }
+{ "_id" : 2, "title" : "more cakes" }
+{ "_id" : 3, "title" : "bread" }
+{ "_id" : 4, "title" : "some cakes" }
+
+db.articles.aggregate( [ 
+	{ $match: { $text: { $search: "cake" } } },
+	{ $group: { 
+		_id: { $meta: "textScore" }, 
+		count: { $sum: 1 } } 
+	}
+] )
+/* 	result 
+{ "_id" : 0.75, "count" : 1 }
+{ "_id" : 1, "count" : 2 }
+*/
+////////////////////////////////////////////////////////////////////////
+//ARRAY AGGREGATION OPERATORS
+////////////////////////////////////////////////////////////////////////
+/*
+$arrayElemAt - returns the element at the specified index.
+$concatArrays - returns an array from two arrays.
+$filter - returns an array from target array with only items that match a condition.
+$indexOfArray - returns index of specific value and -1 if not found.
+$isArray - check if operand is an array. Returns boolean.
+$range - outputs an array with a sequence based on user-defined inputs.
+$reverseArray - returns array in reverse order.
+$reduce - applies an expression to each element and combines them into a single value.
+$size - returns array size. returns # of elements in the array.
+$slice - returns a subset of an array.
+$zip - merge two lists together.
+$in - returns a boolean indicating whether a value is in an array.
+*/
+
+////////////////////////////////////////////////////////////////////////
+//AGGREGATION VARIABLE OPERATORS
+////////////////////////////////////////////////////////////////////////
+/*
+	$map - applies a subexpression to each element of an array and returns the array of 
+		resulting values in order. Accepts named parameters.
+*/
+// { $map: { input: <expression>, as: <string>, in: <expression> } }
+// sample data 
+{ _id: 1, quizzes: [ 5,6,7 ] },
+{ _id: 2, quizzes: [ ] },
+{ _id: 3, quizzes: [ 3,8,9 ] }
+
+db.grades.aggregate( [ { $project: {
+	adjustedGrades: { $map: { 
+		input: "$quizzes",
+		as: "grade",
+		in: { $add: [ "$$grade", 2 ] }
+	} }
+} } ] )
+/* result 
+{ "_id": 1, "adjustedGrades": [ 7,8,9 ] }
+{ "_id": 2, "adjustedGrades": [ ] }
+{ "_id": 3, "adjustedGrades": [ 5,10,11 ] }
+*/
+
+/*
+	$let - defines variable for use withing the scope of a subexpression and returns the 
+		results of the subexpression. Accepts named parameters.
+*/
+//example data 
+{ _id: 1, price: 10, tax: 0.50, applyDiscount: true },
+{ _id: 2, price: 10, tax; 0.25, applyDiscount: false }
+
+db.sales.aggregate( [ { $project: { 
+	finalTotal: { 
+		$let: { 
+			vars: { 
+				total: { $add: [ '$price', '$tax' ] },
+				discounted: { $cond: { 
+					if: '$applyDiscount',
+					then: 0.9,
+					else: 1 }
+				}
+			},
+			in: { $multiply: [ "$$total", "$$discounted" ] }
+		}
+	}
+ } } ] )
+/* result 
+{ "_id": 1, "finalTotal": 9.450000000000001 },
+{ "_id": 2, "finalTotal": 10.25 }
+*/
+
+////////////////////////////////////////////////////////////////////////
+//AGGREGATION LITERAL OPERATOR
+////////////////////////////////////////////////////////////////////////
+// $literal - treats $ literally and not as field path / aggregator operator 
+{ $literal: { $add: [ 2,3 ] } } // { "$add": [ 2,3 ] }
+
+////////////////////////////////////////////////////////////////////////
+//DATE AGGREGATION OPERATORS
+////////////////////////////////////////////////////////////////////////
+/*
+$dayOfYear 
+$dayOfMonth 
+$dayOfWeek 
+$year 
+$month 
+$week 
+$hour 
+$minute 
+$second 
+$millisecond 
+$dateToString
+$isoDayOfWeek
+$isoWeek
+$isoWeekYear
+*/
+//sample data 
+{ "_id" : 1, 
+"item" : "abc", 
+"price" : 10, 
+"quantity" : 2, 
+"date" : ISODate("2014-01-01T08:15:39.736Z") }
+//date aggregation uses 
+db.sales.aggregate(
+   [
+     {
+       $project:
+         {
+           year: { $year: "$date" },
+           month: { $month: "$date" },
+           day: { $dayOfMonth: "$date" },
+           hour: { $hour: "$date" },
+           minutes: { $minute: "$date" },
+           seconds: { $second: "$date" },
+           milliseconds: { $millisecond: "$date" },
+           dayOfYear: { $dayOfYear: "$date" },
+           dayOfWeek: { $dayOfWeek: "$date" },
+           week: { $week: "$date" },
+		   yearMonthDay: { $dateToString: { format: "%Y-%m-%d", date: "$date" } }
+         }
+     }
+   ]
+)
+/*result
+{
+  "_id" : 1,
+  "year" : 2014,
+  "month" : 1,
+  "day" : 1,
+  "hour" : 8,
+  "minutes" : 15,
+  "seconds" : 39,
+  "milliseconds" : 736,
+  "dayOfYear" : 1,
+  "dayOfWeek" : 4,
+  "week" : 0,
+  "YearMonthDay": 2014-01-01
+}
+*/ 
+
+////////////////////////////////////////////////////////////////////////
+//CONDITIONAL AGGREGATION OPERATORS
+////////////////////////////////////////////////////////////////////////
+/* 
+$cond - ternary operator that evaluates one expresion, returns the value of one of the other
+	two expressions. 
+$ifNull - returns either the non-null result of the first expression or the result of the 
+		second expression if the first expression results in a null result.
+$switch - evaluates a series of case expressions. It breaks out one an expression evaluates to true.
+*/
+
+////////////////////////////////////////////////////////////////////////
+//DATA TYPE AGGREGATION OPERATORS
+////////////////////////////////////////////////////////////////////////
+// $type - returns a string specifying the data type of the field.
+{ $type: "a" } //string 
+{ $type: /a/ } //regex 
+{ $type: 1 } //double 
+{ $type: { x:1 } } //object 
+{ $type: [ [ 1,2,3 ] ] } //array 
+
+//////////////////////////////////////////////////////////////////
+//PIPELINE
+//////////////////////////////////////////////////////////////////
+/* 
+$collStats - returns statistics regarding a colleciton or view.
+	{ $collStats: { 
+		latencyStats: { histogram: <boolean> }, 
+		storageStats: {} 
+	} }
+$redact - reshapes each document in the stream by restricting the content for each document.
+$sample - randomly selects the specified number of documents from its input.
+$geoNear - returns an ordered stream of document sbased on the proximity to a geospatial point.
+	The output includes an additional distance field and can include a location identifier field.
+$lookup - Performs a left outer join to filter in docs from the joined collection for processing.
+$out - writes the resulting docs of the pipeline to a collection. It must be the last stage.
+$indexStats - returns statistics regarding the use of each index for the collection.
+$facet - processes multiple pipelines within a single stage. Enables multi-faceted aggregations.
+$bucket - categorizes docs into groups (buckets) based on an expression and bucket boundaries.
+$bucketAuto - categorizes docs into specified # of groups (buckets) based on an expression.
+	Bucket boundaries are automatically determined to evenly distribute the docs into specified #
+	of buckets.
+$sortByCount - groups docs based on the value of an expression, then computes the count of docs in
+	each distinct group.
+$addFields - add new fileds to docs and outputs old and new fields.
+$replaceRoot - replaces a doc with the specified embedded doc.
+$count - returns a count of the # of docs at this stage of the pipeline.
+$graphLookup - performs a recursive search on the collection and adds a new array field 
+	that contains the traversal results of the recursive search for each document.
+$group - groups docs based on expression. Outputs one document per each distinct group.
+$project - select some specific fields from a collection.
+$match - fiter operation for the next stagfe in the pipeline.
+$sort - sorts the documents.
+$skip - skip forward in the list of documetns for a given amount.
+$limit - limits the # of documents to look at by given #.
+$unwind - used with documents that are using arrays. Turns items into documents for the next stage.
+*/
+//sample data  customers collection 
+{ cust_id: "A123", amount: 500, status: "A" },
+{ cust_id: "A123", amount: 250, status: "A" },
+{ cust_id: "B212", amount: 200, status: "A" },
+{ cust_id: "A123", amount: 300, status: "D" }
+
+// $project 
+db.orders.aggregate( [ { $project: { amount: 1, status: 1 } } ] )
+/* 
+ $project results  
+{ amount: 500, status: "A" },
+{ amount: 250, status: "A" },
+{ amount: 200, status: "A" },
+{ amount: 300, status: "D" }
+*/
+//$match with $group 
+db.orders.aggregate( [ 
+	{ $match: { status: "A" } },
+	{ $group: { _id: "$cust_id", total: { $sum: "$amount" } } }
+] )
+/*
+$match result status: "A"
+{ cust_id: "A123", amount: 500, status: "A" },
+{ cust_id: "A123", amount: 250, status: "A" },
+{ cust_id: "B212", amount: 200, status: "A" }
+$group result 
+{ _id: "A123", total: 750 }
+{ _id: "B212", total: 200 }
+*/
+
+//distinct( KEY ) returns distinct values for a field
+db.orders.distinc( "status" ) // [ "A", "D" ]
+
+//////////////////////////////////////////////////////////////////
+//REPLICATION
+//////////////////////////////////////////////////////////////////
+/* 
+A replica set is a group of mongod insstances that host the same data  set.
+One one is the primary, all other instances apply opertions from the primary.
+There can only be one primary node and all others are secondary nodes. 
+Single replica set has a limit of 12 nodes.
+May require large disk and memory resources as vertical scaling which is very expensive.
+*/
+// start the mongodb server with --replSet 
+// mongod --port "PORT" --dbpath "DB_PATH" --replSet "REPLICA_SET_INSTANCE_NAME"
+mongod --port 2717 --dbpath "D:\setup\mongodb\data" --replSet rs0
+// rs0 is the mongod instance 
+// rs.initiate() in mongo client to start a new replica set 
+// rs.conf() check replica set configuration
+// rs.status() check the status of the replica set 
+// rs.add() add member to replica set from another machine
+// rs.add( HOST_NAME: PORT )
+rs.add( "mongod1.net:2717" )
+/* must be connectoed to primary node.
+db.isMaster() - to check if connected to primary or not in mongo client.
+*/
+
+//////////////////////////////////////////////////////////////////
+//from Derek Bananas
+//////////////////////////////////////////////////////////////////
+doc.references = []
+
+//connection.js 
+var selectDB = function( port, dbName ){
+	if( !port ){
+		port = 27017;
+	}
+	if( !dbName ){
+		dbName = "test_1";
+	}
+	db = connect( "localhost:" + port + "/" + dbName );
+	return db;
+}
+
+//CMD 
+mongo 
+load( 'connection.js' ) //loads and get true
+
+selectDB() //connects to database
+
+C:\Users\Mario\.mongorc.js //file to execute everytime you run shell
+//to protect database and create a custom prompt  
+
+var protectDB = function(){
+	db.dropDatabase = DB.prototype.dropDatabase = no;
+	DBCollection.prototype.drop = no;
+	DBCollection.prototype.dropIndex = no;
+	print( "Database Protected");
+};
+
+operationCount = 1;
+prompt = function(){
+	if( typeof db == 'undefined' ){
+		return 'nodb > ';
+	}
+	return db + " " + ( operationCount++ ) + " > ";
+};
+
+EDITOR="C:\\PROGRA~1\\SUBLIM~1\\sublime_text.exe"
+
+restart mongodb 
+
+mongo
+
+sysysmith = { "name": "susy"}
+
+edit sysysmith //will open editor
+
+use testdb //create db 
+//insert one doc
+db.my_collection.insert( { "name" : "Barry Bonds"} )
+//put inside array will insert multiple docs
+db.my_collection.insert( [ { }, { } ] )
+
+//ObjectId 
+	unique key 24 hexadecimal #s 
+	1st 8(4 bytes) = timestamp
+	next 6(3 bytes) = computer id
+	next 4(2 bytes) = process id
+	last 6(3 bytes) = auto-increment id
+
+//deleting docs that match key-value 
+db.my_collection.remove( { "name": "Barry Bonds" } )
+
+//updating docs that match key-value with $set:
+db.my_collection.update( { "name": "Hank Aron" }, { $set: { "name": "Hank Louis", "Home Runs": 755 } } )
+
+//update multiple docs that match key-value with $set: by adding
+//{ multi: true } at the end of update function e.g.
+db.my_collection.update( { }, {$set:{}}, {multi: true} )
+	
+//increment decrement values that match key-value with $inc 
+db.my_collection.update( {key:value}, {"$inc": {"Home Runs" : 1/-1 } } )
+
+//mutiply value with $mul
+
+//update with array by using {"$push": {key:{key-values}}}
+
+//add value if it doesn't already exist by using "$addToSet"
+
+//remove last item by using $pop 
+db.my_collection.update( {key:value}, {"$pop": {"Home Runs" : 1 } } )
+//remove first item by using $pop
+{"$pop": {"Home Runs" : -1 } } )
+//remove specic item with $pull
+{"$pull": {"Home Runs" : 73 } } )
+
+//Querying the database 
+
+//return name and dob only add object with key-value where value 1 is true 
+find( {match}, {"name":1, "dob":1} )
+
+//functions greater than, less than
+
+{"$gte": 3.0, "$lte": 3.5}
+
+//not equal to {"$ne": value} 
+
+//search in array {"$in": [array values]}
+
+//search except/not in for {"$nin": [array values]}
+
+//either or {"$or": [{match1}, {match2}]
+
+//not greater than {"gpa":{"$not": {"$gt":value}}}
+
+//regular expressions 
+find( {"name": /^D.*$/} )
+
+//search all inside array that contain specific values 
+db.my_collection.find( { "test": {$all: [0,10] } } )
+
+//search specif index in an array
+e.g. first test with value of 10 
+db.my_collection.find( {"test.0": 10})
+
+//$size
+
+//$slice 
+
+//INDEXING
+
+//returns information on the query
+db.my_collection.find({match}).explain("executionStats")
+//improve execution by using low match cardinality
+db.my_collection.createIndex({match})
+
+
+AGGREGATION
+//group 
+db.my_collection.agrregate([{$group:{},])
+//sort 
+db.my_collection.agrregate([{$sort:{},])
+//average 
+$avg
+//minumum 
+$min 
+//maximum 
+$max 
+//match condition 
+$match instead of $group 
+//project 
+$project 
+//math 
+

@@ -1,0 +1,1211 @@
+#!/usr/bin/python3
+	-shebang line tells interpreter to use python3
+	
+#EXPONENTIATION 
+#use two asterisks
+	2**5
+	#32
+	9**(1/2)
+	#3.0
+
+#QUOTIENT
+#use two forward slashes
+	20//6
+#3, 6 goes into 20 three times
+
+#NEWLINES IN STRINGS
+#use three sets of quotes
+	"""Line 1
+		Line 2
+		Line 3"""
+
+#STRING OPERATIONS
+#strings can be multiplied by integers
+	"spam" * 3
+	#spamspamspam
+	4 * '2'
+	#2222
+
+#IN-PLACE OPERATORS
+	x += 2
+	#same for -, *, /, %
+
+#TERNARY OPERATORS
+a = 7
+b = 1 if a >= 5 else 42
+print( b ) # 1
+
+status = 1
+msg = "Logout" if status == 1 else "Login"
+
+#CONDITIONAL
+
+	a, b = 0, 1
+	if a < b:
+		print()
+	elif a == b:
+		print()
+	else:
+		print()
+		
+	print("foo" if a < b else "bar")
+
+#BOOLEAN LOGIC
+#and, or, and not.
+	1 == 1 and 2 == 2
+#True 
+	
+#LOOPS
+#use break, and continue 
+	a, b = 0, 1
+	while b < 50:
+		print(b)
+		a, b = b, a + b
+		
+	#read the lines from the file
+	fh = open('lines.txt')
+	for line in fh.readlines():
+		print(line, end='') <-- end='' gets rid of extra line
+
+#LISTS
+#like arrays, accessed like arrays 
+	words = [ "Hello", "world" ]
+	print( words[0] )
+#Lists can be added and multiplied in the same way as strings
+	numbs = [ 1, 2, 3 ]
+	numbs + [ 4, 5, 6 ] #[1,2,3,4,5,6]
+	numbs * 3 #[1,2,3,1,2,3]
+#check if item is in list
+	words = ["spam", "egg", "spam", "sausage"]
+	print( "spam" in words ) #True 
+#opposite
+	nums = [1, 2, 3]
+	print( not 4 in nums ) #True 
+	4 not in nums #True
+#list functions
+	nums = [ 1,2,3 ]
+	nums.append(4) #[1,2,3,4]
+	len( nums ) #4, like count in php
+	index = 1
+	nums.insert( index, 0 ) #[1,0,2,3,4], insert at index given 
+	nums.index( 2 ) #2, given the item, returns the index 
+
+#RANGE
+#creates a sequential list of numbers
+#range( start, end, increment/decrement )
+	numbers = list( range(10) )
+	#returns a list from 0-9, last number is ommited
+
+#FOR LOOPS
+	words = ["hello", "world", "spam", "eggs"]
+	for word in words:
+		print(word + "!")
+	
+	for i in range(5):
+		print("hello!")
+
+#for-else 
+for i in range( 10 ):
+	if i == 999:
+		break
+else:
+	print( "unbroken" )
+# unbroken because i will not reach 999
+
+for i in range( 10 ):
+	if i == 5:
+		break
+else:
+	print( "unbroken" )
+#will not print anything because it breaks
+		
+#FUNCTIONS
+
+	def isprime(n):
+		if n == 1:
+			print("1 is special")
+			return False
+		for x in range(2, n):
+			if n % x == 0:
+				print("{} equals {} x {}".format(n, x, n // x))
+				return False
+		else:
+			print(n, "is a prime number")
+			return True
+	
+	for n in range(1, 20):
+		isprime(n)
+
+#function arguments 
+"""
+*args enables you to pass an arbitrary number
+of arguments to that function. Accessible as 
+the tuple args in the body of the function.
+*args must come after named parameters.
+args is just a convention, another word can
+be used.
+"""
+def function( named_arg, *args ):
+	print( named_arg )
+	print( args )
+
+function( 1,2,3,4 )
+# 1
+# (2,3,4,5)
+
+#default values 
+"""
+named parameters can be made optional by 
+giving them a default value. Must come after 
+named parameters without default values.
+"""
+def function( x, y, food="spam" ):
+	print( food )
+	
+function( 1, 2 ) # spam 
+function( 3, 4, "egg" ) #egg 
+
+#keyword arguments 
+"""
+**kwargs allow you to handle named arguments
+that you have not defined in advance.
+Return a dictionary in which the keys are the 
+argument names, and the values are the 
+argument values.
+"""
+def my_func( x, y=7, *args, **kwargs ):
+	print( kwargs )
+	
+my_func( 2, 3, 4, 5, 6, a=7, b=8 )
+# { 'a': 7, 'b': 8 }
+
+#MODULES
+#import <module_name>
+#access module methods and values with dot notation module_name.var, module_name.funct()
+
+import random
+for i in range( 5 )
+	value = random.randint( 1, 6 )
+	print( value )
+
+#to import certain functions from a module	
+from math import pi
+print( pi )
+
+#import as to use a different name
+from math import sqrt as square_root
+square_root( 100 ) #10.0
+
+#some of the standard libraries include string, re, datetime, math, random, os, multiprocessing, subprocess, socket, email, json, doctest, unittest, pdb, argparse, and sys.
+
+#using pip to install libraries such as django
+pip install library_name
+
+#__main__
+"""
+make a file that can be both imported as a 
+module and run as a script.
+Place script code inside if statement:
+if __name__ == "__main__"
+it will not run if the file is imported because
+__name__ will be equal to the file being 
+imported.
+"""
+def function():
+	print( "Module function" )
+
+if __name__ == "__main__":
+	print( "Script" )
+
+# Script because it is being ran directly
+# but if this file was imported __name__ will be the name of the file this code is in 
+#sololearn.py 
+def function():
+	print( "from imported sololearn.py" )
+
+if __name__ == "__main__":
+	print( "from direct" )
+
+#other.py 
+import sololearn
+sololearn.function()
+# from imported sololearn.py 
+
+#EXCEPTIONS
+"""
+ImportError: an import failed
+IndexError: list is indexed with out-of-range number
+NameError: unknown variable used 
+SyntaxError: code can't be parsed 
+TypeError: function called on value of inappropriate type 
+ValueError: function called on value with wrong value 
+ZeroDivisionError: dividing by zero
+OSError: 
+"""
+#EXCEPTIONS HANDLING
+try:
+	num1, num2 = 7, 0
+	print( num1 / num2 )
+except ZeroDivisionError:
+	print( "Cannot divide by zero" )
+finally:
+	print( "this runs everytime" )
+
+#multiple exceptions can be put into a single except block
+except( ValueError, TypeError )
+#finally block always runs no matter what
+
+#RAISE EXCEPTIONS
+#you can raise exceptions manually
+raise ValueError
+#and with arguments
+raise NameError( "Invalid name!" )
+#In except blocks, the raise statement can be used without arguments to re-raise whatever exception occurred
+try:
+	num = 5 / 0
+except:
+	print( "Error" )
+	raise 
+
+#try-except-else 
+"""
+the code within else is executed if no error occurs in the try statement
+"""
+try:
+	print( 1 )
+except ZeroDivisionError:
+	print( 2 )
+else:
+	print( 3 )
+#1
+#3
+
+try:
+	print( 1/0 )
+except ZeroDivisionError:
+	print( 4 )
+else:
+	print( 5 )
+#4
+	
+#ASSERTIONS
+#for testing purposes at start of function to test valid input and after function call to test valid output
+assert 1 + 1 == 3 #creates an AssertionError
+
+#FILES
+myfile = open( "filename.txt" )
+#write mode creates file if it doesn't exist and calling will delete file's content immediately
+open( "filename.txt", "w")
+#read mode 
+open( "filename.txt", "r")
+open( "filename.txt" )
+#binary write mode
+open( "filename.txt", "wb")
+
+#close the file 
+file = open( "filename.txt", "w")
+#do stuff 
+file.close()
+
+#reading files 
+file = open( "file.txt" )
+content = file.read()
+print( content )
+file.close()
+
+#return each line in a file and return a list of each line 
+file = open( "file.txt", "r")
+file.readlines() #returns a list [ 'line1 \n', 'line2 \n', 'line3' ]
+
+#use a for loop to read lines 
+for line in file:
+	print( line )
+file.close()
+
+#writing files
+file = open( "filename.txt", "w")
+file.write( "text to be written" )
+
+#write mode returns the number of bytes (characters) written to the file 
+msg = "hello world!"
+file = open( "newfile.txt", "w" )
+amount_written = file.write( msg )
+amount_written == len( msg ) #True 
+
+#automatically close open files use with 
+with open( "file.txt" ) as f:
+	print( f.read() )
+
+#None 
+#The None object is used to represent the absence of a value. It is similar to null in other programming languages. 
+#a function that does not explicitly return anything always returns None 
+
+#DICTIONARIES
+ages = { "Dave": 24, "Mary": 42, "John": 58 }
+print( ages["Dave"] ) #24
+
+#check if key exist with in and not in  
+nums = { 1: "one", 2: "two", 3: "three" }
+1 in nums #True 
+"three" in nums #False
+4 not in nums #True 
+
+#get same as indexing but returns a specified value in second argument or None if not specified
+
+nums.get( 1 ) #one
+nums.get( 7, "not in dictionary" ) #not in dictionary 
+
+#TUPLES
+#similar to lists but immutable and with parenthesis not square brakets
+
+words = ( "spam", "eggs", "sausage", )
+print( words[0] ) #spam 
+
+#tuple unpacking
+"""
+assign each item in an iterable to a variable
+"""
+numbers = ( 1, 2, 3 )
+a, b, c = numbers 
+#a = 1, b = 2, c = 3 
+
+"""
+*variable takes all the values from the
+iterable that are left over from the other 
+variables.
+"""
+a, b, *c, d = [ 1,2,3,4,5,6,7,8 ]
+# a = 1, b = 2, c = [ 3,4,5,6,7 ], d = 8
+
+#variable swaping 
+a, b = b, a 
+"""
+b, a = ( b, a ) which is then unpacked
+"""
+
+#SLICES
+#[ <start>, <end>(ommited), <step> ]
+squares = [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+squares[ 2: 6 ] #[ 2, 3, 4, 5 ]
+squares[ :3 ] #[ 0, 1, 2 ]
+squares[ 7: ] #[ 7, 8 ]
+square[ : :2 ] #[ 0, 2, 4, 6, 8 ]
+square[ 2: 8: 3 ] #[ 2, 5 ]
+
+#Negative values can be used in list slicing (and normal list indexing). When negative values are used for the first and second values in a slice (or a normal index), they count from the end of the list.
+squares = [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+print( squares[ 1:-1 ] )
+
+#If a negative value is used for the step, the slice is done backwards.
+Using [::-1] as a slice is a common and idiomatic way to reverse a list.
+
+#LIST COMPREHENSION
+#quickly creating lists whose contents obey a simple rule
+cubes = [ i**3 for i in range(5) ]
+#for each i in range, raise to the 3rd power
+#[ 0, 1, 8, 27, 64 ]
+
+#combined with if statement 
+evens=[ i**2 for i in range(10) if i**2 % 2 == 0 ]
+print( evens )
+
+#STRING FORMATTING
+nums = [ 4, 5, 6 ]
+msg = "Numbers: {0} {1} {2}".format( nums[0], nums[1], nums[2] )
+print( msg ) #Numbers: 4 5 6
+
+#USEFUL FUNCTIONS 
+print( ", ".join( [ "spam", "eggs", "ham" ] ) )
+#"spam, eggs, ham"
+
+print( "Hello ME".replace( "ME", "world" ) )
+#"Hello world"
+
+print( "This is a sentence.".startswith("This") )
+#"True"
+
+print( "This is a sentence.".endswith("sentence.") )
+#"True"
+
+print( "This is a sentence.".upper() )
+#"THIS IS A SENTENCE."
+
+print( "AN ALL CAPS SENTENCE".lower() )
+#"an all caps sentence"
+
+print( "spam, eggs, ham".split( ", " ) )
+#"['spam', 'eggs', 'ham']"
+
+print( min( 1, 2, 3, 4, 0, 2, 1 ) ) #0
+
+print( max( [1, 4, 9, 2, 5, 6, 8] ) ) #9
+
+print( abs(-99) ) #99
+
+print( abs(42) ) #42
+
+print( sum( [ 1, 2, 3, 4, 5 ] ) ) #15
+
+#all, any, enumerate 
+nums = [ 55, 44, 33, 22, 11 ]
+
+if all( [i > 5 for i in nums ] ):
+   print( "All larger than 5" )
+
+if any( [ i % 2 == 0 for i in nums ] ):
+   print( "At least one is even" )
+
+for v in enumerate( nums ):
+   print( v )
+#(0, 55)
+#(1, 44)
+#(2, 33)
+#(3, 22)
+#(4, 11)
+
+#count_char( <text>, <character> ) returns the number of times <character> appears in the text
+
+#LAMBDAS
+#passed as an argument 
+def func( f, arg ):
+	return f( arg )
+
+func( lambda x: 2*x, 5 ) #10
+
+#single expression
+( lambda x: x*4 )( -4 ) #-16
+
+#assigned to variable 
+double = lambda x: x*4
+print( double(7) ) #28
+
+#MAP
+#applies a function to every element of an iterable
+#map( <function>, <iterable> ) 
+def add_five( x ):
+	return x + 5
+	
+nums = [ 11, 22, 33, 44, 55 ]
+result = list( map( add_five, nums ) )
+print( result ) #[ 16, 27, 38, 49, 60 ]
+#with lambda syntax
+result = list( map( lambda x: x+5, nums ) )
+
+#FILTER
+#removes items that don't match a predicate(function that returns a Boolean)
+#filter( <predicate function>, <iterable> )
+nums = [ 11, 22, 33, 44, 55 ]
+list( filter( lambda x: x % 2 == 0, nums ) )
+
+#GENERATORS
+#created using functions and the yield statement 
+def countdown():
+	i = 5
+	while i > 0:
+		yield i 
+		i -= 1
+
+for i in countdown():
+	print( i )
+"""
+5
+4
+3
+2
+1
+"""
+
+def infinate_sevens():
+	while True:
+		yield 7
+
+for i in infinate_sevens():
+	print( i )
+
+""" will print 7s infinitely
+7
+7
+7
+7
+7...
+"""
+#converted to list 
+def numbers( x ):
+	for i in range( x )
+		if i % 2 == 0:
+			yield i 
+
+print( list( numbers( 11 ) ) )
+#[ 0, 2, 4, 6, 8, 10 ]
+
+#DECORATORS
+#modify functions using other functions. Extends functionality of functions 
+def function1( func ):
+	def function1_1():
+		print( "===" )
+		func()
+		print( "===" )
+	return function1_1
+
+def function2():
+	print( "Text in the middle" )
+
+function2 = function1( function2 )
+function2()
+"""
+===
+Text in the middle
+===
+"""
+#function2 got upgraded although is not necessary
+#this is the same as 
+function3 = function1( function2 )
+function3()
+#this is the same as  
+@function1
+def function2():
+	print( "Text in the middle" )
+
+#RECURSION
+#function calling itself
+def factorial( x ):
+	if x == 1:
+		return 1
+	else:
+		return x * factorial( x - 1 )
+
+print( factorial(5) ) #120
+"""
+5*4 = 20, 
+20*3 = 60, 
+60*2 = 120
+"""
+
+#SETS 
+#similar to list or dictionary, cannot contain duplicates
+num_set = { 1, 2, 3, 4, 5 }
+word_set = set( [ "spam", "eggs", "sausage" ] )
+3 in num_set #True 
+"spam" not in word_set #False 
+#empty set
+set()
+#add 
+num_set.add( -7 )
+#remove 
+num_set.remove( 3 )
+#union | (pipe)
+#combines two sets, forms new set with items in both sets 
+num_set | word_set 
+#intersection & (ampersand)
+#combines items found in both 
+num_set & word_set
+#difference - (minus/dash)
+#gets items in the first set but not in second
+num_set - word_set
+#symmetric_difference ^ (caret)
+#gets items in either but not both 
+num_set ^ word_set
+
+"""
+When to use a dictionary:
+- When you need a logical association between a key:value pair.
+- When you need fast lookup for your data, based on a custom key.
+- When your data is being constantly modified. Remember, dictionaries are mutable.
+
+When to use the other types:
+- Use lists if you have a collection of data that does not need random access. Try to choose lists when you need a simple, iterable collection that is modified frequently.
+- Use a set if you need uniqueness for the elements. 
+- Use tuples when your data cannot change. 
+Many times, a tuple is used in combination with a dictionary, for example, a tuple might represent a key, because it's immutable.
+"""
+
+#ITERTOOLS
+#standard library module 
+#count counts up infinitely from a value 
+#cycle infinitely iterates through iterable 
+#repeat repeats an object, either infinitely or a specific number of times 
+from itertools import count
+for i in count( 3 ):
+	print( i )
+	if i >= 11:
+		break 
+		
+#takewhile takes items from an iterable while a predicate function remains true 
+#chain combines several iterable into one
+#accumulate returns a running total of values in an iterable 
+from itertools import accumulate, takewhile
+nums = list( accumulate( range(8) ) )
+print( nums ) #[ 0, 1, 3, 6, 10, 15, 21, 28 ]
+
+print( list( takewhile( lambda x: x<=6, nums ) ) )
+
+#product and permutation used when you want to accomplish a task with all possible combinations of some items
+from itertools import product, permutations
+letters = ( "A", "B" )
+print( list( product( letters, range(2) ) ) )
+"""
+[('A', 0), ('A', 1), ('B', 0), ('B', 1)]
+"""
+print( list( permutations( letters ) ) )
+"""
+[('A', 'B'), ('B', 'A')]
+"""
+
+#SEQUENCES / ITERATOR
+
+	def isprime(n): <-- utility function
+		if n == 1:
+			return False
+		for x in range(2, n):
+			if n % x == 0:
+				return False
+		else:
+			return True
+
+	def primes(n = 1): <-- generator
+		while(True):
+			if isprime(n): yield n <-- yield = returns a value
+			n += 1
+			
+	for n in primes():
+		if n > 100: break
+		print(n)
+
+#CLASSES
+"""
+We have previously looked at two paradigms of programming - imperative (using statements, loops, and functions as subroutines), and functional (using pure functions, higher-order functions, and recursion).
+"""
+
+#....SAMPLE 1
+	
+	class Duck:
+		#constructor
+		def __init__(self, value):
+			self._v = value
+		
+		def quack(self):
+			print(self._v)
+		
+	def main():
+		donald = Duck(52)
+		donald.quack() #prints 52	
+		
+	if __name__ == "__main__": main()
+	
+#....SAMPLE 2
+	
+	class Duck:
+		def __init__(self, **kwargs):
+			self.variables = kwargs
+		
+		def quack(self):
+			print('Quaaack!')
+		
+		def walk(self):
+			print('Walks like a duck!')
+		
+		def set_variable(self, k, v):
+			self.variable[k] = v
+		
+		def get_variable(self, k):
+			return self.variable.get(k, none)
+	
+	def main():
+		donald = Duck(feet = 2)
+		donald.set_variable('color', 'blue')
+		print(donald.get_variable('feet')) #prints 2
+		print(donald.get_variable('color')) #prints blue
+		
+#....SAMPLR 3		
+			
+	class Fibonacci:
+		def __init__(self, a, b): <-- __init__ = constructor (optional)
+			self.a = a
+			self.b = b
+			
+		def series(self):
+			while(True):
+				yield(self.b)
+				self.a, self.b = self.b, self.a + self.b
+				
+	f = Fibonacci(0, 1)
+	for r in f.series():
+		if r > 100: break
+		print(r, end=' ')
+		
+#INHERITANCE
+#Animal is the superclass, Cat and Dog are the subclasses
+class Animal:
+	def __init__( self, name, color ):
+		self.name = name 
+		self.color = color 
+		
+class Cat( Animal ):
+	def purr( self ):
+		print( "purr..." )
+
+class Dog( Animal ):
+	def bark( self ):
+		print( "woof!")
+
+fido = Dog( "Fido", "brown" )
+print( fido.color ) #brown 
+fido.bark() # woof!
+
+#multiple inheritance
+class A:
+	def method( self ):
+		print( "A method" )
+
+class B( A ):
+	def second_method( self ):
+		print( "B method" )
+
+class C( B ):
+	def third_method( self ):
+		print( "C method" )
+	
+c = C()
+c.method() #A method
+c.second_method() #B method 
+c.third_method() #C method 
+
+#super refers to the parent class 
+class A:
+	def spam( self ):
+		print( 1 )
+		
+class B:
+	def spam( self ):
+		print( 2 )
+		super().spam()
+
+B().spam() #2, 1
+
+#MAGIC METHODS
+"""
+__sub__ for -
+__mul__ for *
+__truediv__ for /
+__floordiv__ for //
+__mod__ for %
+__pow__ for **
+__and__ for &
+__xor__ for ^
+__or__ for |
+Python also provides magic methods for comparisons.
+__lt__ for <
+__le__ for <=
+__eq__ for ==
+__ne__ for !=
+__gt__ for >
+__ge__ for >=
+If __ne__ is not implemented, it returns the opposite of __eq__. 
+There are no other relationships between the other operators.
+"""
+
+class SpecialString:
+  def __init__(self, cont):
+    self.cont = cont
+
+  def __truediv__(self, other):
+    line = "=" * len( other.cont )
+    return "\n".join([self.cont, line, other.cont])
+
+spam = SpecialString("spam")
+hello = SpecialString("Hello world!")
+print(spam / hello)
+"""
+spam
+============
+Hello world!
+"""
+
+class SpecialString:
+  def __init__( self, cont ):
+    self.cont = cont
+
+  def __gt__( self, other ):
+    for index in range( len( other.cont )+ 1 ):
+      result = other.cont[ :index ] + ">" + self.cont
+      result += ">" + other.cont[ index: ]
+      print( result )
+
+spam = SpecialString( "spam" )
+eggs = SpecialString( "eggs" )
+spam > eggs	
+	
+"""
+There are several magic methods for making classes act like containers.
+__len__ for len()
+__getitem__ for indexing
+__setitem__ for assigning to indexed values
+__delitem__ for deleting indexed values
+__iter__ for iteration over objects (e.g., in for loops)
+__contains__ for in
+
+There are many other magic methods that we won't cover here, such as __call__ for calling objects as functions, and __int__, __str__, and the like, for converting objects to built-in types.
+"""
+import random
+
+class VagueList:
+  def __init__(self, cont):
+    self.cont = cont
+
+  def __getitem__(self, index):
+    return self.cont[ index + random.randint(-1, 1) ]
+
+  def __len__(self):
+    return random.randint(0, len(self.cont)*2)
+
+vague_list = VagueList(["A", "B", "C", "D", "E"])
+print(len(vague_list)) #6
+print(len(vague_list)) #7
+print(vague_list[2]) #D
+print(vague_list[2]) #C
+
+"""
+We have overridden the len() function for the class VagueList to return a random number.
+The indexing function also returns a random item in a range from the list, based on the expression.
+"""	
+
+#OBJECT LIFECYCLE
+""" creation, manipulation, and destruction.
+definition, instantiation
+"""
+#reference count 
+""" is the number of variables and other 
+elements that refer to an object
+"""
+#DATA HIDING
+""" encapsulation
+"""
+#weakly private
+"""
+it's only effect is that from module_name import * won't import variables that start with a single _ underscore
+"""
+class Queue:
+	def __init__( self, contents ):
+		self._hiddenlist = list( content )
+		
+	def push( self, value ):
+		self._hiddenlist.insert( 0, value )
+	
+	def pop( self ):
+		return self._hiddenlist.pop( -1 )
+	# __repr__ magic method string
+	# representation of the instance
+	def __repr__( self ):
+		return "Queue({})".format( self._hiddenlist )
+		
+queue = Queue( [1, 2, 3] )
+print( queue ) # Queue([1, 2, 3])
+queue.push( 0 )
+print( queue ) # Queue([0, 1, 2, 3])
+queue.pop()
+print( queue ) # Queue([0, 1, 2])
+print( queue._hiddenlist ) # [0, 1, 2]
+
+#strongly private 
+"""
+methods and attributes have a __ double underscore at the beginning. Not to ensure privacy but to avoid same name conflics with sub classes attributes and methods. The method 
+__privatemethod of class Spam can be accessed with _Spam__privatemethod
+"""
+class Spam:
+	__egg = 7
+	def print_egg( self ):
+		print( self.__egg )
+	
+s = Spam()
+s.print_egg() # 7
+print( s._Spam__egg ) # 7
+print( s.__egg ) # AttributeError: 'Spam' object has no attribute '__egg'
+
+#CLASS METHODS 
+"""
+@classmethod
+A function callable without instantiating the
+class, but its definition follows Sub class,
+not Parent class, via inheritance. That's
+because the first argument for @classmethod
+function must always be cls (class).
+Methods of objects are called by an instance
+of a class, which is passed to the self
+parameter of the method 
+Class methods are called by a class, which is
+passed to the cls parameter of the method 
+Class methods are marked with a classmethod
+decorator
+"""
+class Rectangle:
+	def __init__( self, width, height ):
+		self.width = width
+		self.height = height 
+		
+	def calculate_area( self ):
+		return self.width * self.height 
+	
+	@classmethod
+	def new_square( cls, side_length ):
+		return cls( side_length, side_length )
+		
+square = Rectangle.new_square( 5 )
+print( square.calculate_area() ) # 25 
+
+#STATIC METHODS 
+"""
+@staticmethod 
+A function defined inside a class. Callable 
+without instantiating the class. It's
+definition is immutable via inheritance.
+similar to class methods, except don't receive
+additional arguments
+"""
+class Pizza:
+	def __init__( self, toppings ):
+		self.toppings = toppings
+		
+	@staticmethod
+	def validate_topping( topping ):
+		if topping == "pineapple":
+			raise ValueError( "No pinapples!")
+		else:
+			return True 
+	
+ingredients = [ "cheese", "onions", "spam"]
+if all( Pizza.validate_topping( i ) for i in ingredients ):
+	pizza = Pizza( ingredients )
+	
+#PROPERTIES
+"""
+@property 
+way of customizing access to instance attributes. 
+"""
+class Pizza:
+	def __init__( self, toppings ):
+		self.toppings = toppings
+	
+	@property
+	def pineapple_allowed( self ):
+		return False
+
+pizza = Pizza( ["cheese", "tomato"] )
+print( pizza.pineapple_allowed ) # False 
+pizza.pineapple_allowed = True #AttributeError: can't set attribute
+
+#setters/getters 
+"""
+properties can be set
+"""
+class Pizza:
+	def __init__( self, toppings ):
+		self.toppings = toppings 
+		self._pineapple_allowed = False 
+		
+	@property
+	def pineapple_allowed( self ):
+		return self._pineapple_allowed
+	
+	@pinapple_allowed.setter
+	def pineapple_allowed( self, value ):
+		if value:
+			password = input( "enter password")
+			if password == "12345":
+				self._pineapple_allowed = value
+			else:
+				raise ValueError( "Intruder!")
+				
+my_pizza = Pizza( ["cheese", "tomato"] )
+print( my_pizza.pinapple_allowed ) # False 
+my_pizza.pinapple_allowed = True # enter password (user enters 12345)
+print( my_pizza.pineapple_allowed ) # True 
+
+#REGULAR EXPRESSIONS
+"""
+re module 
+accessed with the re module.
+re.match returns object representing the match
+or None if not.
+r"expression"
+raw strings don't escape anything; thus, make
+it easier to use regular expressions
+"""
+import re
+pattern = r"spam"
+if re.match( pattern, "spamspamspam" ):
+	print( "match" )
+else:
+	print( "no match" )
+	
+#re.search
+"""
+finds a match of a pattern anywhere in the 
+string 
+"""
+#re.findall
+"""
+returns a list of all substrings that match 
+a pattern 
+"""
+print( re.findall( pattern, "eggspamspam") )
+# [ 'spam', 'spam' ]
+
+match = re.search( pattern, "eggspamspam" )
+if match:
+	#returns string matched 
+	print( match.group() ) # spam
+	#return start position of first match
+	print( match.start() ) # 3
+	#returns end position of first match
+	print( match.end() ) # 7
+	#returns start and end position of first match as tuple 
+	print( match.span() ) # ( 4, 7 )
+	
+#search and replace 
+#re.sub( pattern, repl, string, max=0 )
+"""
+replaces all occurrences of the pattern in 
+string with repl, unless max provided.
+returns the modified string.
+"""
+import re 
+str = "My name is David. Hi David"
+pattern = r"David"
+newstr = re.sub( pattern, "Amy" str )
+print( newstr ) # My name is Amy. Hi Amy 
+
+#metacharacters
+"""
+. (dot) matches any single character except new line.
+^ (carat) match start of string.
+$ (dollar) match end of string.
+repetitions of single character, class, or group.
+* (asterisk) match zero or more repetitions
++ (plus) match one or more repetitions
+? (question) match zero or one repetition
+| (pipe) match either/or 
+{x,y} (curly braces) between x and y repetitions 
+if the first number is missing, it is taken to be
+zero. If second number is missing, it is taken to
+be infinite.
+"""
+import re 
+pattern = r"^gr.y$"
+"""
+string should start with gr, then follow with any
+character, except newline, and end with y.
+"""
+#character classes 
+"""
+r"[aeiou]"
+character class is created by putting the characters it matches inside [] square brackets.
+ranges of characters 
+[a-z], [0-9], [A-Za-z]
+multiple ranges can be included in one class.
+invert
+[^A-Z] causes to match any character other than
+the ones included.
+"""
+#groups
+"""
+(group) surround with parenthesis.
+group()/group(0) returns the whole match 
+group(n)
+groups can be accessed where n is greater than 
+zero, returns the nth group from the left.
+groups() returns all groups as tuples
+"""
+import re 
+pattern = r"a(bc)(de)(f(g)h)i"
+match = re.match( pattern, "abcdefghijklmnop")
+if match:
+	print( match.group() ) # abcdefghi
+	print( match.group(0) ) # abcdefghi
+	print( match.group(1) ) # bc
+	print( match.group(2) ) # de
+	print( match.groups() ) # ('bc', 'de', 'fgh', 'g')
+	
+#named groups 
+"""
+(?P<name>...) name is the name of the group
+... is the content. 
+group( name )
+"""
+#non-capturing groups 
+"""
+(?:...) not accessible by group method 
+"""
+import re 
+pattern = r"(?P<first>abc)(?:def)(ghi)"
+match = re.match( pattern, "abcdefghi")
+if match:
+	print( match.group( "first" ) ) #abc 
+	print( match.groups() ) #('abc','ghi')
+#special sequences 
+"""
+\n, e.g. \1 or \12 match the expression of the group of that number.
+r"(.+)\1" matches "word word" or "?! ?!"
+\d digits
+\s whitespace
+\w word characters 
+\D no digits 
+\S no whitespace 
+\W no word characters 
+\A beginning of a string
+\Z end of a string 
+\b boundary between words 
+\B empty string anywhere else 
+"""
+
+#3RD-PARTY LIBRARIES
+"""
+Django : web framework used by instagram
+CherryPy : web framework 
+Flask : web framework 
+BeautifulSoup : scraping data from websites
+matplotlib : create graphs
+NumPy : multidimensional arrays, matrix 
+SciPy : addition to NumPy 
+Panda3D : 3D games 
+pygame : 2D games 
+"""
+
+#PACKAGING
+"""
+setuptool and distutils modules 
+example directory:
+SoloLearn/
+	setup.py 
+	sololearn/
+		__init__.py 
+		sololearn.py 
+
+setup.py example:
+from distutils.core import setup 
+setup(
+	name='SoloLearn',
+	version='0.1dev',
+	packages=['sololearn',],
+	license='MIT',
+	long_description=open('README.txt').read(),
+)
+then upload to PyPl
+
+to build a source for distribution, 
+cd into setup.py directory
+type python setup.py sdist
+binary distribution
+python setup.py bdist 
+for windows:
+python setup.py bdist_wininst
+
+use python setup.py register followed by 
+python setup.py sdist upload to upload a package.
+
+install a package with python setup.py install.
+
+py2exe, Pyinstaller, and cx_Freeze : For windows executables
+
+py2app, Pyinstaller, and cx_Freeze : For Macs
+"""
+	

@@ -1,0 +1,87 @@
+routes
+	web.php
+		routes setup
+			returns a view 
+	
+resources
+	views
+		welcome.blade.php 
+		
+config
+	view.php
+		paths = resources/views 
+
+CONTROLLERS
+
+php artisan
+php artisan makecontroller usercontroller
+
+app/http/controllers/UserController.php
+
+Route::get( 'users', [ 'uses' => 'UsersController@index' ] );
+
+//@index is the function name
+
+views/admin/users/index.blade.php 
+
+@foreach( $users as $user )
+	<li>{!! $user['first_name'] !!}</li>
+@endforeach
+
+UserController.php 
+
+<?php 
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use App\Http\Requests;
+class UserController extends Controller {
+	public function index(){
+		$users = [ 
+			'0' => [ 
+				'first_name' => 'Mario',
+				'last_name' => 'Carrizales'
+			],
+			'1' => [ 
+				'first_name' => 'Mario',
+				'last_name' => 'Carrizales'
+			]
+		];
+		return view( 'admin.users.index', compact( 'users' ) );
+	}
+}
+
+Getting data from database
+
+Route::get( 'users/create', [ 'uses' => 'UsersController@create' ] );
+Route::post( 'users', [ 'uses' => 'UsersController@store' ] );
+
+public function create(){
+	retrun view( 'admin.users.create' );
+}
+
+use App\User;
+
+public function store( Request $request ){
+	User::create( $request->all() );
+	return 'success';
+	return $request->all();
+}
+
+resources/views/admin/users/create.blade.php
+
+<form method="POST" action="/users">
+	{!! csrf_field() !!}
+	<input type="text" name="name">
+	<input type="email" name="email">
+	<input type="password" name="password">
+	<input type="submit" value="Create">
+</form>
+
+php artisan 
+shows commands for right-out-the-box features
+
+Authentication
+
+php artisan make:auth
+//will make login/register/forgot password pages
+

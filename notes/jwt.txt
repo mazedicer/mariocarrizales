@@ -1,0 +1,24 @@
+/*JSON web tokens  http://jwt.io
+No session, No cookies.
+The JWT is sent on every request because REST is stateless and every request is unique. 
+The token has to be stored on the client that is requesting resources.
+It is stored in the Local Storage localStorage */
+var user = { _id: '2345456524234256' };
+//send token back to client on signup/signin
+var token = jwt.sign( user, "this is a secret key" );
+/* later on an incoming request we will decode the token to see who the user is. The toekn is probably on the authorization header. This thriw an error if the token isnt a valid JWT and instead is a random string. */
+var user = jwt.verify( req.headers.authorization, "this is a secret key" );
+//proceed to look user up to see if they exist in our system 
+User.findById( user._id, ()=>{
+	
+});
+
+//methods as prototypes. Any methods defined will be available to the instances not the constructor or class 
+DogSchema.methods.bark = ()=>{
+	//this === the dog document
+};
+/* statics as static methods on a class/constructor and they will beling to the Dog itself and not an instance of Dog. Like how Array.isArray() is a static method of the Array class */
+DogSchema.statics.findByOwner = ()=>{
+	
+};
+//Mongoose has support with middleware

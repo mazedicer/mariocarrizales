@@ -1,0 +1,305 @@
+Webpack / dev server
+
+mkdir react-todos
+cd react-todos
+npm init -y //track dependencies
+//install react dom 
+npm i -S react react-dom
+//install dev dependencies
+npm i -D babel-core babel-loader babel-preset-es2015 babel-preset-react react-hot-loader webpack webpack-dev-server 
+//install globally
+npm i -g webpack webpack-dev-server
+touch webpack.config.js
+//webpack.config.js 
+var webpack = require( "webpack" );
+var path = require( "path" );
+module.exports = {
+	devtool: "inline-source-map",
+	entry: [
+		"webpack-dev-server/client?http://127.0.0.1:8080/",
+		"webpack/hot/only-dev-server",
+		"./src"
+	],
+	output: {
+		path: path.join( __dirname, 'public' ),
+		filename: "bundle.js"
+	},
+	resolve: {
+		modulesDirectories: [ 'node_modules', 'src' ],
+		extensions: [ '', '.js' ]
+	},
+	module: {
+		loaders: [
+			{
+				test: /\.jsx?$,
+				exclude: /node_modules/,
+				loaders: [ 'react-hot', 'babel?presets[]=react,preset[]=es2015' ]
+			}
+		]
+	},
+	plugins: [
+		new webpack.HotModuleReplacementPlugin(),
+		new webpack.NoErrorsPlugin()
+	]
+};
+
+touch index.html
+//index.html 
+<div id="app"></div>
+<script src="bundle.js"></script>
+
+mkdir src
+//create index file 
+touch src/index.js
+//test that js6 is working
+test js6
+//run webpack
+webpack-dev-server 
+
+//app.js
+
+import React from "react";
+import TodosList from "./todos-list";
+const todos = [
+	{
+		task: "make react",
+		isComplete: false
+	},
+	{
+		task: "eat dinner",
+		isComplete: true
+	}
+];
+
+export default class App extends React.Component {
+	constructor( props ){
+		super( props );
+		this.state = {
+			todos
+		};
+	}
+	render(){
+		return (){
+			<div>
+				<h1>React todos App</h1>
+				<TodosList todos={this.state.todos} />
+			</div>
+		};
+	}
+}
+
+//index.js
+
+import React from "react";
+import { render } from "react-dom";
+import App from "components/app";
+render( <App />, document.getElementById( "app" ) );
+
+//todos-list.js
+
+import _ from "lodash";
+import React from "react";
+import TodosListHeader from "./todos-list-header";
+export default class TodosList extends React.Component {
+	renderItems(){
+		return _.map( this.props.todos, ( todo, index ) => <TodoListItem Key={index} {...todo} /> );
+	}
+	render(){
+		return {
+			<table>
+				<TodosListHeader />
+				<tr>
+					{this.renderItems()}
+				</tr>
+			</table>
+		};
+	}
+}
+
+//todos-list-header.js
+
+import React from "react";
+export default class TodosListHeader extends React.Component {
+	render(){
+		return {
+				<thead>
+					<tr>
+						<th>Task</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+		};
+	}
+}
+
+
+
+
+///////////////////////////////////////////
+//client.js
+
+import React from "react";
+import ReactDOM from "react-dom";
+import Layout from "./components/Layout";
+const app = document.getElementById( "app" );
+ReactDOM.render( <layout/>, app );
+
+//Layout.js
+
+import React from "react";
+import Header from "./Header";
+import Header from "./Footer";
+export default class Layout extends React.Component {
+	constructor(){
+		super();
+		this.state = {
+			title: "Welcome"
+		};
+	}
+	changeTitle( title ){
+		this.setState( { title } );
+	}
+	render(){
+		return (
+			<div>
+			<Header changeTitle={this.changeTitle.bind(this)} />
+			<Footer />
+			</div>
+		);
+	}
+}
+
+//Header.js
+
+import React from "react";
+import Title from "./Header/Title";
+export default class Header extends React.Component {
+	handleChange( e ){
+		const title = e.target.value;
+		this.props.changeTitle( title );
+	}
+	render(){
+		return (
+			<Title title={ this.props.title } />
+			<input onChange={ this.handleChange.bind( this ) } />
+		);
+	}
+}
+
+//Title.js
+
+import React from "react";
+export default class Title extends React.Component {
+	render(){
+		return (
+			<h1>{this.props.title}</h1>
+		);
+	}
+}
+
+//Footer.js
+
+import React from "react";
+
+export default class Footer extends React.Component {
+	render(){
+		return (
+			<footer>Footer</footer>
+		);
+	}
+}
+
+/////////////////////////////////////////////////
+
+//PASSING DATA
+
+//STATE
+
+export default class Layout extends React.Component {
+	constructor(){
+		super();
+		this.state = { name: "Mario" };
+	}
+	render(){
+		setTimeout( () => {
+			this.setState( { name: "Bob" } );
+		}, 1000 )
+		return (
+			{this.state.name}
+			<Header />
+			<Footer />
+		);
+	}
+}
+
+//PROPS
+
+export default class Layout extends React.Component {
+	render(){
+		const title = "Welcome Mario!";
+		return (
+			<Header title={title} />
+			<Header title={ "Other title" } />
+			<Footer />
+		);
+	}
+}
+
+//EVENTS
+
+in the render() method, add an input 
+<input />
+
+in the Layout class, add a method
+
+//ROUTER
+
+install react router, and import pages
+
+//Client
+
+import React from "react";
+import ReactDOM from "react-dom";
+import { Router, Route, IndexRoute, hashHistory } from "react-router";
+import Bootstrap from "./vendor/bootstrap-without-jquery";
+import Archives from "./pages/Archives";
+import Featured from "./pages/Featured";
+import Layout from "./pages/Layout";
+import Settings from "./pages/Settings"; 
+const app = document.getElementById( "app" );
+ReactDOM.render( 
+	<Router history={ hashHistory }>
+		<Route path="/" component={ Layout }>
+			<IndexRoute component={ Featured }>
+			</IndexRoute>
+			<Route path="archives" component={Archives}></Route>
+			<Route path="settings" component={Settings}></Route>
+		</Route>
+	</Router>,
+	app );
+	
+//Layout
+
+import React from "react";
+import { Link } from "react-router";
+export default class Layout extends React.Component {
+	navigate(){
+		console.log( this.props );
+		this.props.history.pushState( null, "/" );
+	}
+	Render(){
+		return {
+			<div>
+				<h1>News.net</h1>
+				{this.props.children}
+				<Link to="archives">archives</Link>
+				<Link to="settings">
+					<button class="btn btn-success">Settings</button>
+				</Link>
+				<button onClick={this.navigate.bind(this)}>featured</button>
+			</div>
+		};
+	}
+}
+
+

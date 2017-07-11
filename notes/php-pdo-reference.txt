@@ -1,0 +1,165 @@
+<?php 
+
+//PDO Tutorial 
+//PDO's constructor takes at most 4 parameters, DSN, username, password
+
+$db = new PDO('mysql:host=localhost;dbname=testdb;charset=utf8', 'username', 'password');
+
+/*
+
+PDO has three error handling modes.
+
+    PDO::ERRMODE_SILENT acts like mysql_* where you must check each result and then look at $db->errorInfo(); to get the error details.
+	
+    PDO::ERRMODE_WARNING throws PHP Warnings
+	
+    PDO::ERRMODE_EXCEPTION throws PDOException. In my opinion this is the mode you should use. It acts very much like or die(mysql_error()); when it isn't caught, but unlike or die() the PDOException can be caught and handled gracefully if you choose to do so. 
+
+*/
+
+try {
+    //connect as appropriate as above
+    $db->query('hi'); //invalid query!
+} catch(PDOException $ex) {
+    echo "An Error occured!"; //user friendly message
+    some_logging_function($ex->getMessage());
+}
+
+// or
+
+function getData($db) {
+   $stmt = $db->query("SELECT * FROM table");
+   return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+ 
+//then much later
+try {
+   getData($db);
+} catch(PDOException $ex) {
+   //handle me.
+}
+
+//iterating through results
+
+foreach($db->query('SELECT * FROM table') as $row) {
+    echo $row['field1'].' '.$row['field2']; //etc...
+}
+
+// query() method returns a PDOStatement object. You can also fetch results this way: 
+
+$stmt = $db->query('SELECT * FROM table');
+ 
+while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    echo $row['field1'].' '.$row['field2']; //etc...
+}
+
+//or
+
+$stmt = $db->query('SELECT * FROM table');
+$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//use $results
+
+/*
+Fetch Modes 
+
+PDO::FETCH_ASSOC in the fetch() and fetchAll() code above. This tells PDO to return the rows as an associative array with the field names as keys. Other fetch modes like 
+
+PDO::FETCH_NUM returns the row as a numerical array. 
+
+The default is to fetch with PDO::FETCH_BOTH which duplicates the data with both numerical and associative keys. It's recommended you specify one or the other so you don't have arrays that are double the size! PDO can also fetch objects with 
+
+PDO::FETCH_OBJ, and can take existing classes with 
+
+PDO::FETCH_CLASS. It can also bind into specific variables with 
+
+PDO::FETCH_BOUND and using bindColumn method.
+
+*/
+
+//Row Count for UPDATE, INSERT, DELETE, and even SELECT queries
+
+$stmt = $db->query('SELECT * FROM table');
+$row_count = $stmt->rowCount();
+echo $row_count.' rows selected';
+
+//Getting the Last Insert Id 
+
+$result = $db->exec("INSERT INTO table(firstname, lastname) VAULES('John', 'Doe')");
+$insertId = $db->lastInsertId();
+
+//Running Simple INSERT, UPDATE, or DELETE statements 
+
+$affected_rows = $db->exec("UPDATE table SET field='value'");
+echo $affected_rows.' were affected'
+
+//Running Statements With Parameters 
+
+$stmt = $db->prepare("SELECT * FROM table WHERE id=? AND name=?");
+$stmt->execute(array($id, $name));
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+//Named Placeholders
+
+$stmt = $db->prepare("SELECT * FROM table WHERE id=:id AND name=:name");
+$stmt->bindValue(':id', $id, PDO::PARAM_INT);
+$stmt->bindValue(':name', $name, PDO::PARAM_STR);
+$stmt->execute();
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+//or
+
+$stmt = $db->prepare("SELECT * FROM table WHERE id=:id AND name=:name");
+$stmt->execute(array(':name' => $name, ':id' => $id));
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+//or
+
+$stmt = $db->prepare("INSERT INTO table(field1,field2,field3,field4,field5) VALUES(:field1,:field2,:field3,:field4,:field5)");
+$stmt->execute(array(':field1' => $field1, ':field2' => $field2, ':field3' => $field3, ':field4' => $field4, ':field5' => $field5));
+$affected_rows = $stmt->rowCount();
+
+//and
+
+$stmt = $db->prepare("DELETE FROM table WHERE id=:id");
+$stmt->bindValue(':id', $id, PDO::PARAM_STR);
+$stmt->execute();
+$affected_rows = $stmt->rowCount();
+
+//and
+
+$stmt = $db->prepare("UPDATE table SET name=? WHERE id=?");
+$stmt->execute(array($name, $id));
+$affected_rows = $stmt->rowCount();
+
+//SQL functions need to go in the query as normal
+
+$name = 'BOB';
+$stmt = $db->prepare("INSERT INTO table(`time`, `name`) VALUES(NOW(), ?)");
+$stmt->execute(array($name));
+
+//or 
+
+$name = 'BOB';
+$password = 'badpass';
+$stmt = $db->prepare("INSERT INTO table(`hexvalue`, `password`) VALUES(HEX(?), PASSWORD(?))");
+$stmt->execute(array($name, $password));
+
+//like statements
+
+$stmt = $db->prepare("SELECT field FROM table WHERE field LIKE ?");
+$stmt->bindValue(1, "%$search%", PDO::PARAM_STR);
+$stmt->execute();
+
+//loops
+
+$values = array('bob', 'alice', 'lisa', 'john');
+$name = '';
+$stmt = $db->prepare("INSERT INTO table(`name`) VALUES(:name)");
+$stmt->bindParam(':name', $name, PDO::PARAM_STR);
+foreach($values as $name) {
+   $stmt->execute();
+}
+
+
+
+?>

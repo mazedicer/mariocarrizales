@@ -1,0 +1,286 @@
+<?php 
+/* INTERFACES */
+
+//interfaces/interface.php 
+interface TableInterface {
+	public function save( array $data );
+}
+
+interface LogInterface {
+	public function log( $message );
+}
+
+class Table implements TableInterface, LogInterface {
+	public function save( array $data ){
+		return 'foo';
+	}
+	public function log( $message ){
+		return $message . "\n";
+	}
+}
+echo ( new Table() )->save([]); //short array syntax - same as declaring an array 
+echo ( new Table() )->log( "Interfaces are cool!" );
+
+/* standard interfaces 
+Countable
+	abstract public int count( void ) 
+OuterIterator
+	public Iterator getInnerIterator( void )
+RecursiveIterator
+	public RecursiveIterator getChildren( void )
+	public bool hasChildren( void )
+SeekableIterator
+	abstract public void seek( int $position )
+SplSubject
+	abstract public void update( SplSubject $subject )
+SplObserver
+	abstract public void attach( SplObserver $observer )
+	abstract public void detach( SplObserver $observer )
+	abstract public void notify( void ) */
+class Table implements TableInterface, LogInterface, Countable {
+	public function save( array $data ){
+		return 'foo';
+	}
+	public function log( $message ){
+		return $message . "\n";
+	}
+	public function count(){
+		return 10;
+	}
+}
+echo ( new Table() )->count(); //10
+
+/* TRAITS 
+provide implementation
+horzontal code sharing 
+*/
+//traits/trait.php 
+trait Log {
+	protected function log( $message ){
+		echo "{$msg}";
+	}
+}
+
+class Table {
+	use Log; //use methods provided from the Log trait 
+	public function save(){
+		$this->log( "save start" );
+	}
+}
+(new Table() )->save();
+
+/* MAGIC METHODS 
+__ (double underscore)
+do work for free
+__sleep - when you searilize object serialize( $Object )
+__wakeup - when object is unserialized unserialize( ObjectSerialized )
+__invoke - create invocable classes. A Class with one method that runs automatically when 
+	instantiating the class and passing the arguments
+__debuginfo - runs at var_dump( $object )
+__toString - string representation of the object
+__set - set a property 
+__get - get a property 
+__isset - called when attempt to call empty or isset on property that doesn't exist 
+__unset - called when attempt to call unset on a property that doesn't exist 
+_call - called when attempt to call a method 
+__callStatic - called when attempt to call a method under a static context
+*/
+//__invoke 
+class Compare {
+	public function __invoke( $a, $b ){
+		return $a === $b;
+	}
+}
+$comp = new Compare;
+var_dump( $comp( 1, 2 ) ); //false
+
+/* CONSTRUCTORS 
+initialize state of an object when initialize a new object 
+
+DECONSTRUCTORS
+destroy state such as file and database connections
+*/
+
+/* yield */
+function fizzbuzz( $limit ){
+	$i = 0;
+	while( $i <= $limit ){
+		$yield = null;
+		if( $i % 3 == 0 ){ $yield = 'fizz'; }
+		if( $i % 5 == 0 ){ $yield .= 'buzz' }
+		yield $yield;
+		$i++;
+	}
+	return;
+}
+foreach( fizzbuzz( 25 ) as $key => $value ){
+	echo "{$key} => {$value}";
+}
+
+/* password_hash */
+$password = password_hash( 'testing', PASSWORD_DEFAULT );
+echo( $password );
+/* password_verify */
+$matches = password_verify( 'testing', $password );
+if( password_needs_rehash( $password, PASSWORD_DEFAULT, [ 'cost' => 12 ] ) ){
+	$new_hash = password_hash( 'testing', PASSWORD_DEFAULT, [ 'cost' => 12 ] );
+	echo( $new_hash );
+}
+/* CLOSURES */
+$array = [ 1,2,3,4,5,6,7,8,9 ];
+$filter_func = function( $item ){ //closure function 
+	return( $item % 2 == 1 );
+}
+$out =  array_filter( $array, $filter_func );
+print_r( $out );
+print_r( $array );
+	/* with __invoke */
+	class IsPositiveInt {
+		public function __invoke( $value ){
+			return ( ( int )$save == $value && $value > 0 );
+		}
+	}
+	$invoke - new IsPositiveInt();
+	var_dump( $invoke( 5 ) ); //true 
+	
+/* Exceptions */
+try{
+	//throw new Exception( "Exception thrown" null, $ex ); manually throw the exception
+	//the following code does not execute because of the throw
+	processCC(); 
+	//echo "Hello!";
+}catch( Exception $ex ){
+	//execution transfers to the catch block
+	echo "Error occurred! {$ex}";
+}finally{
+	//do any last things before returning to program flow 
+}
+
+function processCC( $number = null, $zip_code = null ){
+	if( is_null( $number ) ){
+		thow new Exception( 'No CC Number' );
+	}
+}
+
+/* PHP 7 */
+//Scalar type declarations: coercive and strict.
+//coercive
+function sumOfInts( int ...$ints ){
+	return array_sum( $ints );
+}
+var_dump( sumOfInts( 2, '3', 4.1 ) ); // int(9)
+
+//return type declarations 
+function arraySum( array ...$array ): array {
+	return array_map( function( array $array ): int{
+		return array_sum( $array );
+	}, $arrays );
+}
+arraySum( [1,2,3], [4,5,6], [7,8,9] );
+/*
+Array( [0] => 6, [1] => 15, [2] => 24 )
+*/
+
+//Null coalescing operator ?? 
+/* fetches the value of $_GET['user'] and returns 'nobody' if
+it does not exist */
+$username = $_GET['user'] ?? 'nobody';
+//this is equivalent to :
+$username = isset( $GET_['user'] ) ? $GET_['user'] : 'nobody';
+//can be chained. This will return the first defined value:
+$username = $GET_['user'] ?? $_POST['user'] ?? 'nobody';
+
+// <=> spaceship operator 
+/* compares two expressions. It returns -1, 0, or 1 when $a is respectively less
+than, equal to, or greater than $b.*/
+echo 1 <=> 1; //0
+echo 1 <=> 2; // -1
+echo 2.5 <=> 1.5; // 1
+echo "a" <=> "b"; // -1
+echo "b" <=> "a"; // 1
+
+//Array constants with define()
+define( 'ANIMALS', [
+	'dog',
+	'cat',
+	'bird'
+]);
+ANIMALS[1] // cat 
+
+//Closure::call() bind an object scope to a closure and invoke it 
+class A { private $x = 1; }
+$getX = function(){ return $this->x; };
+echo $getX->call( new A );
+
+//filter unserialize()
+/* better security when unserializing objects on untrusted data.
+Allows the developer to whitelist classes that can be unserialized */
+//converts all objects into __PHP_Incomplete_Class object 
+$data = unserialize( $foo, [ "allowed_classes" => false ] );
+//converts all objects into ... except those of MyClass and MyClass2
+$data =  unserialize( $foo, [ "allowed_classes" => [ "MyClass", "MyClass2"] ] );
+
+/*assert() is now a language construct, allows the first parameter to an expressions
+rather than just a string to be evaluated or a boolean value to be tested */
+ini_set( 'assert.exception', 1 );
+class CustomError extends AssertionError{}
+assert( false, new CustomError( 'Some error message' ) );
+
+//Group use declaration 
+/* Classes, functions, and constants being imported from the same namespace can now be 
+grouped together ina single use statement */
+use some\namespace\{ ClassA, ClassB, ClassC as C };
+use function some\namespace\{ fn_a, fn_b, fn_c };
+use const some\namespace\{ ConstA, ConstB, ConstC };
+
+//Generator Return Expression getReturn()
+/* enables for a return statement to be used within a generator to enable for a 
+final expression to be returned (!by reference).
+This return statement value can be fetched using the getReturn() method,
+which may only be used once the generator has finished yielding values */
+$gen = ( function(){
+	yield 1;
+	yield 2;
+	return 3;
+})();
+foreach( $gen as $val ){
+	echo $val, PHP_EOL;
+}
+echo $gen->getReturn(), PHP_EOL;
+/*
+1
+2
+3
+*/
+
+//Generator delegation yield from 
+//delegate to another generator 
+function gen(){
+	yield 1;
+	yield 2;
+	yield from gen2();
+}
+function get2(){
+	yield 3;
+	yield 4;
+}
+foreach( gen() as $val ){
+	echo $val, PHP_EOL
+}
+/*
+1
+2
+3
+4
+*/
+
+// intdiv() integer division 
+var_dump( intdiv( 10, 3 ) ); //int(3)
+
+//Session options 
+/* session_start() now accepts an array of options that override the session configuration
+directives set in php.ini file */
+session_start([
+	'cache_limiter' => 'private',
+	'read_and_close' => true,
+]);

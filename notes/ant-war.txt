@@ -1,0 +1,207 @@
+Resources
+	http://ant.apache.org/manual/index.html
+
+Ant Install
+	Set variables in environment variables
+	New System Variable
+	name: ANT_HOME, variable value: enter download location ex, c:\ant\apache-ant 1.6
+	
+	Java variables
+	name: JAVA_HOME, Variable value: enter download location ex, C:\Program FIles\etc
+
+	System Environment Variables
+	Path > Edit > at end enter ; bin location C:\ant\apache-ant-1.6\bin
+	
+	Test - CMD > enter ant, it will check for build.xml
+	
+Ant - Javabased build tool (Another Neat Tool)
+		not programming language
+		runs anywhere a Java VM runs
+		build targets can do OS-specific tasks
+		can package compiled code and resources ex, jars, vars, ears, tars, zips, whatever
+		Build automation
+			best practice, manual are prone to make mistakes
+		Builds Java projects
+		ant.apache.org/bindownload.cgi
+		
+BUILD.XML
+	ant looks for build.xml and runs it atomatically when you point to that dir.
+	build must have at least one target
+	project - name, can have multiple targets like main function in java
+		must have default set to a target, base dir - the base directory from which all path calculations are done
+	target - can have multiple tasks, must have a name, depends are optional
+	task - unit level ex copy, move, delete, etc.
+	see build.xml
+	-v : verbose, tells you detail output
+	-d : does same as -v
+	ant <target name> - allows you to execute a specif target
+		ex, ant target1
+	-f : helps ant to execute specified build if default build.xml is not present 
+		ex, ant -f build1.xml
+	
+COPY
+	<copy file="myfile.txt" tofile="newfile.txt"/>
+
+
+	
+	
+build.xml - Ant script file that builds a war file.
+
+/> - indicates a closed tag ex, <property name"war-directory" />
+> - indicates a non closed tag ex, <target name"war"> stuff </target>
+
+Properties are variables
+	ex, <property name="project-name" value="${ant.project.name}" />
+
+References to the properties are expressed using ${...} expression language
+
+<target name="war" depends=""> - war target, depends = a way to specify other targets that should be run before the "war" target runs.
+	tasks of the "war" target:
+		<mkdir dir="${build-directory}" /> - makes the directory to hold the war files
+		<delete file="${build-directory}/${war-file-name}" /> - deletes the war if already exists.
+		<war warfile="${build-directory}/${war-file-name}" webxml="${web-xml-file}">
+		makes war file using web xml file inidcated.
+		<classes dir="${classes-directory}" /> - java classes to be placed in the war.
+		<fileset dir="${web-directory}"> - files to include in the war.
+		<manifest> - allows data to be written to the META-INF/MANIFEST.MF file within the war file with information of who, what, when it was built.
+	
+SAMPLE STRUCTURE (not for the code below)
+	█ tomcat-demo
+		█ bin
+			█ test
+				░ TestServlet.class
+				
+		This build directory and file is created after build.xml is built
+		█ build
+				░ tomcat-demo.war  
+		
+		█ src
+			█ test
+				░ TestServlet.java
+		
+		█ web
+			█ WEB-INF
+				█ lib
+					░ mysql-connector-java-5.0.4-bin.jar
+			
+			░ web.xml
+		
+		░ .classpath
+		░ .project
+		░ build.xml - In Eclipse, right-click > Run As > Ant Build
+
+jar -cvf pets.war * (c=create, v=verbose, f=file)  compress everything in this directory
+
+
+SAMPLE PROJECT
+
+<project name="JavaProject" default="dist">
+
+	<!--
+	
+	1. Compile the java source
+	2. Create a jar file
+	3. Copy the web files into the build order
+	4. Create a zip file containing jar as well as web files
+	
+	-->
+	
+	<target name="clean">
+	
+		<delete dir="build/classes">
+		<mkdir dir="build/jar">
+		<mkdir dir="build/web">
+	
+	</target>
+	
+	<target name="init" depends="clean">
+	
+		<mkdir dir="build/classes">
+		<mkdir dir="build/jar">
+		<mkdir dir="build/web">
+	
+	</target>
+	
+	<!-- in order to compile, you need a javac task, use init to create dest directory -->
+	<target name="compile" depends="init">
+		
+		<!-- in order to compile, you need a javac task -->
+		<javac srcdir="src" destdir="build/classes"/>
+	
+	</target>
+	
+	<target name="jar" depends="compile">
+		
+		<!-- jar file is a collection of java classes -->
+		<jar destfile="build/jar/app-1.0.jar" basedir="build/classes"/>
+	
+	</target>
+	
+	<target name="copywebfiles">
+	
+		<!-- copy web files -->
+		<copy todir="build/web">
+			
+			<fileset dir="web">
+				
+				
+				
+			</filese>
+			
+		</copy>
+	
+	</target>
+	
+	<target name="dist" depends="jar, copywebfiles">
+	
+		<zip destfile="dist/app-1.0.zip">
+			<fileset dir="build/web"/>
+			<fileset dir="build/jar"/>
+		</zip>
+	
+	</target>
+	
+</project>
+
+<property name="" value="" />
+
+SAMPLE PROJECT WAR
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="warTarget" basedir=".">
+	<property name="tomcat" value="C:/User/zaneacademy/work/software/apache-tomcat-7.0.27" />
+	<property name="tomcat.deployment" value="${tomcat}/webapps" />
+	<property name="tomcat.bin" value="${tomcat}/bin" />
+	<property name="base" value="." />
+	<property name="source" value="${base}/src" />
+
+	<target name="warTarget">
+		<war warfile="antprj5.war" needxmlfile="false">
+			<fileset dir="${source}/webfiles"/>
+		</war>
+		<antcall target="deploy"/>
+	</target>
+	
+	<target name="deploy">
+	
+		<copy file="${base}/antprj5.war" todir="${tomcat.deployment}" />
+		<antcall target="startTomcat" />
+	</target>
+	
+	<target name="startTomcat">
+	
+		<exec executable="${tomcat.bin}/startup.bat">
+			<env key="CATALINA_HOME" value="${tomcat}/>
+		</exec>
+	</target>
+	
+	<target name="stopTomcat">
+	
+		<exec executable="${tomcat.bin}/shutdown.bat" >
+			<env key="CATALINA_HOME" value="${tomcat}/>
+		</exec>
+	</target>
+	
+</project>	
+
+
+

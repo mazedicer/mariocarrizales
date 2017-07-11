@@ -1,0 +1,92 @@
+server role
+network policy and access server
+|__ network policy server
+|__ routing and remote access
+          |__ remote access service
+          |__ routing
+
+configure and enable
+   |__ vpn
+
+ports
+      |__ properties
+	|__ pptp
+	          |__ max ports:
+	 |__ set others to zero
+
+IPv4
+       |__ DHCP Relay Agent
+	|__ Server address:
+		enter IP
+
+Remote Access Logging & Policies
+      |__ Launch NPS
+	|__ Network Policy
+	          |__ Connection to Microsoft Routing and Remote Access
+	|__ Grant Access
+	|__ Conditions
+		|__ User Group
+
+NAT
+	1 public IP for many computers
+	DSL modem
+	Server only
+	
+ICS
+	home network with dedicated computer
+	
+	
+Remote Access Service
+	Placed on DMZ
+	
+	
+VPN Protocol
+	PPTP 
+		port 1723
+		TCP/IP
+	SSTP
+		port 443
+		client access only
+
+Network Policy Server
+
+Radius	
+	multiple remote access servers and you want to authenticate them all 
+	using one system.
+
+3 Stages
+	1 Connection
+		Encrytion
+	2 Authentication
+	3 Authorization
+		what they can access
+		IP filters
+		NTFS permissions
+	
+DNS
+	Computer Name/Domain Change
+		Computer Name
+			more
+				Primary DNS suffix
+					xxxxx.com
+					localpc1.xxxx.com
+	
+	forward lookup zone
+		name to ip
+		primary zone
+		IPv4
+	
+	reverse lookup zone
+		ip to name
+		primary
+		IPv4
+		xxx.xxx.xxx
+		xxx.xxx.xxx.in-addr.arpa.dns
+
+	Secondary DNS
+		right click DNS
+			Connect to DNS
+		forward lookup zone
+			secondary
+		
+		

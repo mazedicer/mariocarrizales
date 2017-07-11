@@ -1,0 +1,96 @@
+Variables
+	$black: #000;
+	$default: $black !default;
+	Variables use
+	background: $black;
+
+MIXIN
+	@mixin default-txt-clr( $tc: $black ){
+		color: $tc;
+	}
+
+	MIXIN use 
+	@include default-txt-clr($black);
+
+NESTING
+	
+article p a {
+	color: $blue;
+	&:hover, &:focus {
+		color: $duke-blue;
+	}
+	&:visited {
+		color: $light-blue;
+	}
+}
+
+.left-sidebar-links {
+	a {
+		color: $main-green;
+		opacity: .7;
+		&:hover {
+			opacity: 1;
+		}
+	}
+}
+
+.left-sidebar-links {
+	border-bottom: 1px solid $main-green;
+	&:last-child {
+		border: none;
+	}
+}
+
+.elem {
+	border: {
+		top: 1px solid $blue;
+		right: ...;
+		bottom: ...;
+		left: ...;
+	}
+}
+
+EXTEND
+
+#riddle {
+	padding: 20px;
+}
+
+$riddle-2 {
+	@extend #riddle;
+	margin: 10px;
+}
+
+%dotted {
+	border: 1px dotted $black;
+}
+
+#riddle-2 {
+	@extend %dotted;
+}
+
+CONDITION
+
+@if $riddle-color == blue {
+	#riddle {
+		background-color: $alice-blue;
+	}
+} @else {
+	#riddle {
+		background-color: $ash-gray;
+	}
+}
+
+LOOPS
+
+$prct-yellow: 5%;
+
+@for $i from 1 through 14 {
+	#vert-nav ul li:nth-child( #{$i} ){
+		background-color: mix( $yellow, $white, $prct-yellow )
+	}
+	$prct-yellow = $prct-yellow + 5%;
+}
+
+
+

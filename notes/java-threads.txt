@@ -1,0 +1,47 @@
+Thread
+
+-Program's Path of execution
+-Execute 2 or more sections of a program at the same time
+-Multithreaded applications within a single program
+
+-2 ways to create thread
+	-implementing interface
+	-extending class
+
+-How to create a thread
+	-import java.lang.*;
+	-extend the Thread Class or implements Runnable interface
+	- public class X extends Thread/ public class X implements runnable
+
+-Thread.run() is where all the work is done
+-override run() method
+-When implementing runnable interface, only run() must be implemented
+
+Applet, init() method runs first
+
+-run() is an infinite loop
+-a call to start() will call the target's run() method
+-sleep()/pause the thread or call the stop() method to allow other methods to run
+	-thread sleeps for a certain period of time and then begin executing when time limit is reached
+-suspend() allows thread to cease execution (in case of listening for event)
+-resume() allows the suspended thread to start again.
+-stop() makes the thread not restarted
+-boolean var "suspended" used to check current state of applet
+-illegalThreadStateException thrown if calling while in the wrong state.
+
+-Scheduling
+-java monitors threads in all programs-decides which run and which is next
+-daemon flag-if there are only daemon flags running, the JVM will exit.
+-new threads inherit the prioriy and daemon flag from the thread that created it
+-preemptive scheduler give a certain time-slice to all threads running using suspend() and resume()
+-non-preemtive schedule decides which thread should run and run it until the thread is complete
+-yield() is a way for the thread to force the scheduler to start executing another waiting thread
+-depending on the system, scheduler can be preemtive or non-preemtive
+-range of priority is from 1-10 - Static vars Default= Thread.NORM_PRIORITY = 5, Thread.MIN_PRIORITY= 1, and Thread.MAX_PRIORITY = 10
+
+Daemon threads
+-called "Service" threads normally run at a low priority and provide basic service to a program or programs when activity on a machine is reduced - ex, the garbage collector thread
+-garbage collector thread scans for variables that will never be accessed again and free up the resources back to the system.
+-setDaemon() boolean method set before thread is started to true by a thread, if false, the thread becomes a user thread
+
+

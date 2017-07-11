@@ -1,0 +1,1243 @@
+/* Swift is a type safe language
+*/
+
+/* BASICS */
+
+/* Access control */
+/* Open 
+		applies to: classes and class members only.
+		accessible within a module or via import.
+		class can be subclassed.
+		class members can be overriden within a module.
+		use for unrestricted framework API
+	Public 
+		accessible within a module or via import.
+		subclassed in same module.
+		use for framework API access but prevent subclassing.
+	Internal 
+		code available within defining module only.
+		cannot be imported into another module.
+		classes cannot be subclassed outside of the defining module.
+		default for projects.
+	File-Private
+		code available in defining source file.
+		cannot be imported.
+	Private 
+		code available in scope of declaration.
+		cannot be imported.
+*/
+
+//variables type annotation nor required
+	var red, green, blue : Double
+//constants
+	let pi = 3.14159
+//increment decrement
+	var i = 0
+	++i // 1
+
+	var a = 1
+	a += 1 // 2
+
+//ternary operator
+	gender == 0 ? print( "male") : print( "female" )
+
+//range operator 
+	1...3 //1,2,3
+	//half-open does not include d
+	a..<d // a, b, c
+//NOT
+	!a 
+//AND 
+	a && b 
+//OR 
+	a || b 
+//? optional property might contain value or no value at all 
+	var myCode: Int? = 404 
+//nil - a valueless state
+	myCode = nil 
+	var someMsg: String? //automatically nil 
+	
+/*Unwrapping optionals 
+used as a safety measure to check if an optional value equals nil.
+if the value of wrappedOptional is not nil, unwrap it 
+and assign it to unwrappedOptional */
+var wrappedOptional: Int? = 3
+if wrappedOptional != nil {
+	print( wrappedOptional! )
+}
+if let unwrappedOptional = wrappedOptional {
+	print( "Unwrapped optional value == \(unwrappedOptional)")
+}
+
+/* Chaining optionals */
+var optional1: Int? = 3
+var optional2: Int? = 4
+if let optionalA = optional1 {
+	if let optionalB = optional2 {
+		print( "Both optionals are now unwrapped" )
+	}
+}
+	//shorthand optional 
+	if let shorthand_optional = optional1, let another_optional = optional2 {
+			print( "Not nil. Proceed!" )
+		}
+
+/* Guard property
+need else statement.
+return, break, continue can be used in the guard statement in a function 
+ */
+var userExist: Bool? = true 
+var emailTest: String? = ""
+var passwordText: String? = ""
+
+guard let hasUser = userExist else {
+	print( "You shall not pass" )
+	fatalError()
+}
+
+guard let email = emailTest, let password = passwordText else {
+	print( "What he said" )
+	fatalError()
+}
+	
+	
+/////////////////////////////
+/////////////////////////////
+/* CONTROL FLOW & COLLECTIONS 
+default
+break
+continue
+where - checks for additional conditions
+fallthrough (does not check following condition)
+*/
+//if 
+	var temp = 25
+	if temp >= 30 {
+		print( "it's cold." )
+	}else if temp <= 10 {
+		print( "it's colder.")
+	}else {
+		print( "who knows." )
+	}
+//switch
+	switch distance {
+		case 0:
+			print( "not valid" )
+		case 1,2,3,4,5:
+			print( "near" )
+		default
+			print( "too far" )
+	}
+
+	//where 
+	let myPoint = ( 1, -1 )
+	switch myPoint {
+		case let( x, y ) where x == y:
+			print( "(\(x), \(y)) is on the line x == y" )
+		case let( x, y ) where x == -y:
+			print( "(\(x), \(y)) is on the line x == -y" )
+		case let( x, y ):
+			print( "(\(x), \(y)) is just some arbitrary point" )
+	}
+//while loop 
+	while a < b {
+		print( a )
+		a++
+	}
+	//repeat-while similar to do-while in other languages 
+	repeat {
+		x--
+	} while x > 0
+//for loops 
+	//for-in loop 
+	for index in 1...5 {
+		print( "\(index) times 5 is \(index * 5)" )
+	}
+	//for loop 
+	for var index = 0; index < 3; ++index {
+		print( "\(index) is index" )
+	}
+
+/////////////
+/////////////
+/* STRINGS */
+
+var emptyString = ""
+var anoterEmptyString = String() //initializer syntax
+//isEmpty
+	if emptyString.isEmpty
+//concatenation
+	let string1 = "hello"
+	let string2 = " man"
+	print( string1 + string2 )// hello man 
+	//or
+	string1 += string2 // hello man 
+//interpolation \(constants, variables, literals, and expressions)
+	let mult = 4
+	let message = "\(mult) times 1.5 is \(Double(mult) * 1.5)" //4 times 1.5 is 6
+//count property from the characters property of a string 
+	let someString = "Long String to be counted"
+	print( someString.characters.count ) //25
+
+//unicode characters 
+let string1 = "\u{61}\u{301}\u{20DD}"
+let string2 = "\u{E1}\u{20DD}"
+string1 == string2 //true 
+string1.characters.count //1
+string2.characters.count //1
+string1.endIndex //3
+string2.endIndex //2
+var quote = "In the end, we only regret the chances we didn't take."
+let first: Character = quote[ quote.startIndex ] //i
+let second = quote[ quote.index( after: quote.startIndex ) ] //n 
+let fourth = quote[ quote.index( quote.startIndex, offsetBy: 3 ) ] //t 
+let lastIndex = quote.index( before: quote.endIndex ) //53
+let last = quote[ lastIndex ] //. 
+let secondToLast = quote[ quote.index( lastIndex, offsetBy: -1 ) ] //e
+let notACharacterIndex = quote.index( lastIndex, offsetBy: 1, limitedBy: lastIndex ) //nil
+
+//ranges with strings 
+let startIndex = quote.index( quote.startIndex, offsetBy: 12 )
+let range = Range( uncheckedBounds: ( lower: startIndex, upper: quote.endIndex ) )
+print( quote[ range ] ) //we only regret the chances we didn't take.
+
+	//example 2
+	let rangeToReplace = startIndex..<quote.endIndex
+	let replacementString = "it's not the years in your life that count. It's the life in your years."
+	quote.replaceSubrange( rangeToReplace, with: replacementString )
+	print( quote )// In the end, it's not the years in your life that count...
+
+////////////
+////////////	
+/* ARRAYS */
+
+var someInts = [Int]() //initializer syntax 
+var fourDoubles = [Double]( count: 4, repeatedValue: 1.1 )
+// [ 1.1, 1.1, 1.1, 1.1 ]
+var shoppingList = [ "Bread", "Milk" ]
+//all values are strings so Switf infers that it is of [String] type
+//+ (plus) operator joins two arrays	
+[ "Bread", "Milk" ] + [ "Bread", "Milk" ]
+//count 
+shoppingList.count //2
+//isEmpty 
+shoppingList.isEmpty //false 
+//append
+shoppingList.append( "Flour" )
+	//or +=
+	shoppingList += [ "Juice", "Cheese" ]
+//array access
+	shoppingList[0] //Bread 
+//replace
+	shoppingList[0] = "Bananas"
+	//with range (subscript syntax)
+	shoppingList[ 4...6 ] = [ "Chocolate", "Oranges" ]
+//insert .insert( <value>, atIndex: <index> )
+	shoppingList.insert( "Syrup", atIndex: 0 )
+//remove removeAtIndex returns removed item
+	let syrup = shoppingList.removeAtIndex( 0 )
+	//remove last item removeLast()
+	let apples = shoppingList.removeLast()
+//iterate over arrays 
+	for item in shoppingList {
+		print( item )
+	}
+//enumerate() will return index, value as a tuple ( index, value )
+	for ( index, value ) in shoppingList.enumerate(){
+		print( "\(index + 1): \(value)" )
+	}
+//prefix 
+let letters = [ "a", "b", "c", "d", "e" ]
+// upTo: 3 is the same as letters[ 0..<3 ] (half-open range operator )
+letters.prefix( upTo: 3 ) //[ "a", "b", "c" ]
+// through: 3 is the same as letters[ 0...3 ]
+letters.prefix( through: 3 ) //[ "a", "b", "c", "c" ]
+//avoid out-of-index 
+let integers = [ 1,2,3,4,5 ]
+integers.prefix( 10 ) // will return an array up to 10 items or all 
+//with a string 
+let comment = "Great article!! Very insightful."
+let maxLength = 20
+let truncatedComment = String( comment.characters.prefix( maxLength ) ) +
+	( comment.characters.count > maxLength ? "..." : "" )
+//Great aritcle!! Very...
+
+//dops 
+integers.dropFirst() // [ 2,3,4,5 ]
+integers.dropLast() // [ 1,2,3,4 ]
+integers.dropLast( 2 ) // [ 1,2,3 ]
+
+//chaining drops 
+let paddedComment = ">>>This is a comment<<<"
+let s = String( paddedComment.characters.dropFirst( 3 ).dropLast( 3 ) )
+// This is a comment 
+
+//prefix while 
+[ 2,4,6,7,9,10 ].prefix( while: { $0 % 2 == 0 } ) // [ 2,4,6 ]
+
+//drop while returns remaining elements after false 
+[ 1,2,4,6,9 ].drop( while: { $0 % 2 != 0 } ) // [ 4,6,9 ]
+	
+//////////
+//////////
+/* SETS */
+/*
+stores unique values with no defined ordering
+*/
+var letters = Set<Character>() //initializer syntax 
+var names: Set<String> = [ "David", "Gustavo", "Mario" ]
+var names: Set = [ "David", "Gustavo", "Mario" ] //there is no shorthand 
+//accessing, count, isEmpty similar to arrays 
+//insert 
+	names.insert( "Paul" )
+//remove return the removed item 
+	let david = names.remove( "David" )
+	//remove all 
+	names.removeAll()
+//check item exist
+	if name.contains( "James" )
+//iterate with for-in loop 
+	for name in names {
+		print( "\(name)" )
+	}
+//sort 
+	for name in names.sort(){
+		print( "\(name)" )
+	}
+/*operations
+	**intersect** ( values in a that match values in b ) - creates a new set, with only the values common to both sets.
+	**exclusiveOr** ( values not in intersect / values in a that don't match values in b and values in b that don't match values in a ) - creates a new set with values in either set, but not both.
+	**union** ( all values in a and b ) - creates a new set with all of the values in both sets.
+	**subtract** ( values in a that don't match values in b ) - creates a new set with values not in the specified set. */
+	let oddDigits: Set = [ 1,3,5,7 ]
+	let evenDigits: Set = [ 2,4,6,8 ]
+	oddDigits.union( evenDigits ).sort() //[ 1,2,3,4,5,6,7,8 ]
+/*membership
+	**is equal** (==): Determines whether two sets contain all of the same values.
+	**isSubsetOf** Determines whether all of the values of a set are contained in the specified set.
+	**isSupersetOf** Determines whether a set contains all of the values in a specified set.
+	**isStrictSubsetOf** or **isStrictSupersetOf** Determines whether a set is a subset or superset of, but not equal to, a specified set.
+	**isDisjointWith** determines whether two sets have any values in common.*/
+
+//////////////////
+//////////////////
+/* DICTIONARIES */
+/*
+Dictionary<Key, Value>. Key and Value specifies the types to be used e.g. Int, String.
+*/
+var airports = [ Int, String ]() //initializer syntax
+//keys are of type Integer and Values of type String
+var airports: [ String, String ] = [ "TOR": "Toronto", "NY": "New York" ]
+//or shorthand if consistent type values are maintained
+var airports = [ "TOR": "Toronto", "NY": "New York" ] 
+//count and isEmpty work on dictionaries
+//add new item 
+	airports[ "LAX" ] = "California LA"
+//change value 
+	airports[ "LAX" ] = "Los Angeles"
+	//change value and return old value 
+	let oldValue = airports.updateValue( "New York", forKey: "NY" )
+//get value 
+	let airportName = airports[ "NY" ]
+//remove key-value pair
+	airports[ "NY" ] = nil
+	// .removeValueForKey(<key>) remove key-value pair and return the removed value 
+	let removedValue = airports.removeValueForKey( "NY" )
+/*iterate for-in loop 
+	each item is returned as a (key, value) tuple */
+	for( airportCode, airportName ) in airports {
+		print( "\(airportCode): \(airportName)" )
+	}
+	//or use the key or value independently with sort
+	for airportCode in airports.keys.sort() {
+		print( "\(airportCode)" )
+	}
+	for airportName in airports.values.sort() {
+		print( "\(airportName)" )
+	}
+
+///////////////
+///////////////
+/* COLLECTIONS 
+Is a sequence, inherits from sequence.
+Elements are accessible via subscripting.
+Can be iterated repeatedly.
+Elements can be accessed repeatedly.
+*/
+/*range is a sequence, you can't index and is prone to errors
+so avoid repeated iterating over a sequence */
+let range = ( 1...5 )
+for i in range {
+	print( i )
+	if i > 3 {
+		break 
+	}
+}
+for i in range {
+	print( i )
+}
+//you can index an array because is a collection 
+let array = [ 1, 2, 3, 4, 5 ][ 3 ] //4
+
+let runners = [ "Charlotte", "Lori", "Scott" ]
+var raceResults = [ String: Int ]() //dictionary with "strings": integers 
+//zip ignores the last 2 values
+for ( runners, place ) in zip( runners, 1...5 ){
+	raceResults[ runner ] = place 
+}
+print( raceResults )
+
+
+///////////////
+///////////////
+/* FUNCTIONS */
+/*
+func <function name>( <argument name>: <type>) -> <return type>
+*/
+//this function returns Void
+func seyHello( name: String ){
+	print( "Hello " + name )
+}
+
+//return value 
+func sayHello( personName: String ) -> String {
+	let greeting = "Hello, " + personName + "!"
+	return greeting 
+}
+//multiple arguments 
+	func rangeLength( start: Int, end: Int ) -> Int {
+		return end - start
+	}
+	print( rangeLength( start: 2, end: 7 ) ) // 5
+//external, internal parameter names 
+/*
+func <function name>( <external argument name> <internal argument name>: <type> ) */
+	func sayHello( to person1: String, and person2: String ) -> String {
+		return "Hello \(person1) and \(person2)!"
+	}
+	print( sayHello( to: "Tom", and: "Jerry" ) )
+//default argument values go after non-default arguments 
+	func someFunction( p1: Int = 12 ){}
+/*variadic arguments <function name>( numbers: <type>... ) 
+	indicated by the ... (three periods) can accept zero or more arguments.
+	the value appears as an array of specified type in the declaration.
+	must always be the last parameter in the argument list. */
+	func arithmeticMean( numbers: Double... ) -> Double {
+		var total: Double = 0
+		for number in numbers {
+			total += number 
+		}
+		return ( total / Double( numbers.count ) )
+	}
+/* variable arguments 
+all arguments are constants in the function declaration
+to make it a variable argument, prefix it with "var <argument>" */
+	func myFunction( var num1: Int, num2: Int ) -> Int {
+		num1 = num1 + num2
+		return num1
+	}
+/* in-out arguments
+is similar to a variable argument but the change continues after the function call ends.
+prefix with "inout <argument>". It's value is passed in, modified. Then passed out where
+it replaces the original value.
+cannot be assigned a default value. inout cannot be assigned to variadic arguments */
+	func swapInts( inout a: Int, inout b: Int ) {
+		let temp_a = a 
+		a = b 
+		b = temp_a 
+	}
+//function types 
+	//type ( Int, Int ) -> Int 
+	func addInts(a: Int, b: Int) -> Int {
+		return a + b
+	}
+	func multiplyInts(a: Int, b: Int) -> Int {
+		return a * b
+	}
+	//type () -> Void 
+	func printHelloWorld() {
+		print("Hello, world")
+	}
+	//function types 
+	var mathFunction: ( Int, Int ) -> Int = addInts
+	varm mathFunction2: ( Int, Int ) -> Int = multiplyInts
+	mathFunction( 2, 3 ) //5
+	mathFunction2( 2, 3 ) //6
+	//function types as argument types 
+	func printResult( mathFunc: ( Int, Int ) -> Int, a: Int, b: Int ){
+		print( "Result: \(mathFunc( a, b ))" )
+	}
+	printResult( addInts, 3, 5 ) // Result: 8
+	//function types as return types 
+	func plus( input: Int ) -> Int {
+		return input + 1
+	}
+	func minus( input: Int ) -> Int {
+		return input - 1
+	}
+	func chooseFunc( flag: Bool ) -> ( Int ) -> Int {
+		if flag {
+			return plus 
+		}else{
+			return minus 
+		}
+	}
+	let plusFunc = chooseFunc( True )
+	plusFunc( 2 ) //3
+/*nested functions */
+	func chooseFunc( flag: Bool ) -> ( Int ) -> Int {
+		func plus( input: Int ) -> Int {
+			return input + 1
+		}
+		func minus( input: Int ) -> Int {
+			return input - 1
+		}
+		if flag {
+			return plus 
+		}else{
+			return minus 
+		}
+	}
+	let plusFunc = chooseFunc( True )
+	plusFunc( 2 ) //3
+
+/* currying
+replace a multi-paramenter function with a single-parameter currying function.
+the currying function will hold the original value across multiple calls to it. */
+/*lineItemAddedFor takes two arguments:product,price.
+	returns function that adds items takes 1 Int argument 
+		returns String */
+func lineItemAddedFor( product: String, price: Double ) -> ( ( Int ) -> String ){
+	//property that holds number formatter set to currency 
+	var formatter: NumberFormatter = {
+		let formatter = NumberFormatter()
+		formatter.numberStyle = .currency
+		return formatter 
+	}
+	func addLineItemWith( quantity: Int ) -> String {
+		let discountMultiplier: Double
+		switch quantity {
+			case 1...10:
+				discountMultiplier = 1.0
+			case 11...20:
+				discountMultiplier = 0.9
+			default:
+				discountMultiplier = 0.8
+		}
+		let priceString = formatter.string(
+			from: NSNumber( value: price * discountMultiplier )
+		)!
+		let subtotal = Double(quantity) * price * discountMultiplier
+		let subtotalString = formatter.string( from: NSNumber( value: subtotal ) )!
+		return "\(quantity) of \(product) at \(priceString) each = \(subtotalString)"
+	}
+	return addLineItemWith
+}
+//set Custom T-shirt for $10.00
+let lineItemForQuantity = lineItemAddedFor( product: "Custom T-Shirt", price: 10.0 )
+//return total after quantity and discount 
+print( lineItemForQuantity(5) ) //5 of Custom T-Shirts at $10.00 each = $50.00
+print( lineItemForQuantity(10) ) //100 of Custom T-Shirts at $8.00 each = $100.00 
+
+
+	
+//recursion - when a function calls itself
+	func factorial( n: Int ) -> Int {
+		return n == 0 ? 1 : n * factorial( n - 1)
+	}
+	print( factorial( 5 ) )
+
+//////////////
+//////////////
+/* CLOSURES */
+/*
+self contained block of functionality such as nested functions
+closure expression: 
+	( <arguments> ) -> <return type> in
+		<statement>
+in - marks the end of parameter and return type. At the same time, 
+introduces the body of the closure.
+*/
+	func backwards( s1: String, s2: String ) -> Bool {
+		return s1 > s2 
+	}
+	let names = [ "Cc", "Aa", "Ee", "Bb", "Dd" ]
+	var reversed = names.sort( backwards )
+	//or for inline 
+	reverse = names.sort({ ( s1: String, s2: String) -> Bool in 
+			return s1 > s2 
+	})
+	//or for short 
+	reverse = names.sort( { s1, s2 in return s1 > s2 } )
+	//or for shorter
+	reverse = names.sort( { s1, s2 in s1 > s2 } )
+	//or with shorthand argument names $0, $1, $2, ... 
+	reverse = names.sort( { $0 > $1 } ) // $0 = first argument, $1 second argument 
+	//or shortest 
+	reverse = names.sort( > )
+	/*
+	in definition the ">" greater-than operator requires two parameters and returns a boolean
+	type. Thus, Swift can infer that you want to use the string-specific implementation
+	*/
+
+////////////
+////////////
+/* TUPLES */
+/*
+values can be of any type
+*/
+let error = ( 404, "Not Found" )
+let ( statusCode, statusMessage ) = error //statusCode = 404, statsMessage = "Not Found"
+//accessing
+	error.0 //404
+	error.1 //Not Found 
+//naming elements 
+	let http200Status = ( statusCode: 200, description: "OK" )
+	http200Status.statusCode // 200
+	http200Status.description // OK 
+	
+/* ENUMERATIONS */
+/* defines a common type for a group of values. */
+enum Compass {
+	case North
+	case South
+	case East
+	case West
+}
+//Compass is the type of North, South, East, and West 
+enum Planet {
+	case Mercury, Venus, Earth, Saturn
+}
+var direction = Compass.West 
+
+//if case statement 
+enum Number {
+	case integer( Int )
+	case floatingPoint( Double )
+	case text( String )
+}
+let someNumber = Number.floatingPoint( 12.34 )
+
+switch someNumber {
+	case .floatingPoint( let n ):
+		print( n ) //12.34
+	default:
+		break
+}
+	//same as above but better
+	if case .floatingPoint( let n ) = someNumber, n > 12.0 {
+		print( n )
+	}
+
+//for case optional pattern matching
+let optionalNumbers: [ Number? ] = [
+	nil,
+	.floatingPoint( 28.0 ),
+	nil,
+	.integer( 37 )
+	nil,
+	.integer( 46 )
+]
+for case .integer( let n )! in optionalNumbers where n < 40 {
+	print( n ) //37
+}
+
+/* recursive enumaration
+Enumeration can associate to an instance of itself to one of its cases.
+Prefix with indirect to enable recursion */
+enum Employee {
+	indirect case some( name: String, title: String, manager: Employee? )
+	case none
+	//print reporting
+	func printReportingStructure(){
+		if case let .some( name, title, manager ) = self {
+			print( "\(name), \(title)", terminator: "" )
+			if let manager = manager {
+				print( " -> ", terminator: "")
+				manager.printReportingStructure()
+			}
+		}
+	}
+}
+let charlotte = Employee.some( name: "Charlotte", title: "CEO", manager: nil )
+let lori = Employee.some( name: "Lori", title: "VP", manager: charlotte )
+let scott = Employee.some( name: "Scott", title: "Developer", manager: lori )
+scott.printReportingStructure() //Scott, Developer -> Lori, VP -> Charlotte, CEO 
+
+////////////////////////////
+////////////////////////////
+/* STRUCTURES */
+/*
+when a structure is defined, a brand new Swift type is defined.
+Use structures when:
+	1. you need to encapsulate a few data values.
+	2. you need to pass by value and not reference.
+	4. you don't need to inherit properties or behavior from another existing type.
+String, Array, and Dictionary types are implemented as structures.
+*/
+struct Resolution {
+	var width = 0
+	ver height = 0
+}
+let someResolution = Resolution() 
+//someResolution = new instance of Resolution
+//accessing properties
+	someResolution.width // 0
+//instance with defined properties
+	let vga = Resolution( width: 640, height: 480 )
+/* value type - integers, floating-point numbers, Booleans, strings,
+arrays, enumerations, and dictionaries. 
+when an instance is created, the instance is a new entity and 
+all properties belong to that instance */
+
+/* identity operators - check if constant, variable refer to same instance 
+=== Identical to
+!== Not identical to */
+	if tenEighty === alsoTenEighty {
+		print( "Same" )
+	}
+  
+/////////////
+/////////////
+/* CLASSES */
+/*
+when a class is defined, a brand new Swift type is defined.
+classes are reference type, meaning that when an instance is created 
+the instance is a reference to the original object.
+Singleton is an instance of a class that is instantiated only once. But 
+is computational expensive. 
+*/
+class VideoMode {
+	var resolution = Resolution() //structure 
+	var interlace = false 
+	var frameRate = 0.0
+}
+let someVideoMode = VideoMode()
+let videoResolutionWidth = someVideoMode.resolution.width // 0
+
+//singleton 
+class Singleton {
+	static let shared = Singleton() //will allow instantiating 
+	private inti(){} //will prevent from instantiating
+}
+let singletonA = Singleton() //ERROR 
+let singletonA = Singleton().shared //will instantiate 
+
+
+//reference type 
+	let tenEighty = VideoMode()
+	let alsoTenEighty = tenEighty
+	alsoTenEighty.interlace = false 
+	/*
+	tenEighty and alsoTenEighty refer to the same VideoMode()
+	instance; Therefore, the interlace value is changed on both.
+	*/
+
+//type checking and casting operators 
+class ClassA {
+	var aValue = 867_5309
+}
+class ClassB : ClassA {
+	var bValue = "Stay classy San Diego"
+}
+let a = ClassA()
+let b = ClassB()
+let array = [ a, b ] //array's type is infered as ClassA 
+array[ 0 ].aValue 
+array[ 1 ].aValue 
+array[ 1 ].bValue //error 
+array[ 1 ] is ClassB //true 
+
+//forced as! downcasting classes 
+( array[ 1 ] as! ClassB ).bValue //Stay classy San Diego 
+
+//conditional as? cast operator 
+if let classBInstance = array[ 1 ] as? ClassB {
+	classBInstance.bValue //Stay classy San Diego 
+}
+//base as upcasts
+let reallyAClassBInstance = ClassB() as ClassA 
+reallyAClassBInstance.bValue //error 
+
+////////////////
+////////////////
+/* PROPERTIES */
+/*
+when creating an instance of a structure, if you assign an instance 
+of a structure to a constant, the instance's properties cannot be modified,
+even if they were declared as variable type.
+*/
+struct Size {
+	var width: Int 
+	let height: Int //this property cannot be changed after initialized 
+}
+var size1 = Size( width: 10, height: 35 )
+size1.width = 6 //only this property can be changed
+
+/* Lazy stored (instantiated) property initial value is not calculated until
+called for.
+Useful when the value is dependent on outside factors.
+values are not known until after an instance's initialization is complete.
+value requires complex computational expensive setup.
+Lazy can only be applied to variable types since constants must have a value 
+before initialization */
+class DataManage {
+	lazy var importer = DataImporter()
+	var data = [String]()
+}
+
+/* Computed properties
+retrieve and set other properties and values.
+if setter does not define a name for the new value, a default name "newValue"
+is used. */
+struct Point {
+	var x = 0.0, y = 0.0
+}
+struct Shape {
+	var origin = Point()
+	var center: Point {
+		get {
+			return Point( x: origin.x / 2, y: origin.y / 2 )
+		}
+		set( newCenter ){
+			origin.x = newCenter.x / 2
+			origin.y = newCenter.y / 2
+		}
+		/* without new value name:
+		set {
+			origin.x = newValue.x / 2
+			origin.y = newValue.y / 2
+		*/
+		}
+	}
+}
+/* property observers
+detect and respond to changes in a property's value.
+cannot be used by lazy stored properties.
+	willSet - called just before the value is set 
+	didSet - called after the new value is set */
+class StepCounter {
+	var totalSteps: Int = 0 {
+		willSet( newStep ){
+			print( "About to set totalSteps to \(newStep)" )
+		}
+		didSet {
+			if totalSteps > oldValue {
+				print( "Added \(totalSteps - oldValue) steps" )
+			}
+		}
+	}
+}
+let stepCounter = StepCounter()
+stepCounter.totalSteps = 50 // About to set totalSteps to 50
+//Added 50 steps 
+stepCounter.totalSteps = 150 // About to set totalSteps to 150
+//Added 100 steps
+
+/*type properties **static**
+Are quieried and set on the type, not on an instance of that type.
+Stored type properties must have a default value because it does not 
+have an initializer*/
+class SomeClass {
+	static var storedProp = "Some value."
+	static var computedProp: Int {
+		return 42
+	}
+	static func someTypeMethod(){}
+}
+
+/*self property 
+To distinguish between the parameter name and the property name.
+Here self separates property x from a method's x argument */
+struct Point {
+	var x = 0.0, y = 0.0
+	funct isToTheRight( x: Double ) -> Bool {
+		return self.x > y 
+	}
+}
+
+/*mutating
+Structures and enumerations are value types. By default, their
+properties cannot be modified from within its instance methods.
+The method is prefixed with mutating so it can modify its variable 
+properties only.*/
+struct Point {
+	var x = 0.0, y = 0.0
+	mutating func moveByX( dX: Double, dY: Double ){
+		x += dX
+		y += dY
+	}
+}
+
+	//example 2
+	struct Counter {
+		var total = 0
+		mutating func increment( by amount: Int = 1 ) -> Counter {
+			total += amount 
+			return self //returning itself allows for chaining functions 
+		}
+		mutating func reset() -> Counter {
+			self = Counter()
+			return self 
+		}
+	}
+	var counter = Counter()
+	counter.increment().total 
+	counter.increment( by: 4 ).total 
+	counter.increment().increment() //Will cause error function call returns immutable value 
+	//workaround 
+	( 0...2 ).forEach { _ in _ = counter.increment() }
+	//reset counter 
+	counter.reset().total //0
+	
+/* subscripts 
+used for manipulating collections, sequences, and lists in 
+classes, structures, and enumerations.
+Subscript overloading: defining multiple subscripts for different value types.
+Can take variables and variadic arguments.
+*/
+subscript( index: Int ) -> Int {
+	get {}
+	set( newValue ){}
+}
+//example 1
+	struct subexample {
+		let decrement: Int 
+		subscript( index: Int ) -> Int {
+			return decrement / index 
+		}
+	}
+	let division = subexample( decrement: 100 )
+	division[ 9 ] // 11
+	division[ 2 ] // 50
+//example 2
+	class dayofaweek{
+		private var days = [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
+		subscript( index: Int ) -> String {
+			get{
+				return days[ index ]
+			}
+			set{
+				self.days[ index ] = newValue
+			}
+		}
+	}
+	var p = daysofaweek()
+	p[ 0 ] // Sun 
+//example 3
+	struct Matrix {
+		let rows: Int 
+		let columns: Int 
+		var grid: [ Double ]
+		init( rows: Int, columns: Int ){
+			self.rows = rows 
+			self.columns = columns 
+			grid = Array( count: rows * columns, repeatedValue: 0.0 )
+		}
+		subscript( row: Int, column: Int ) -> Double {
+			get{
+				return grid[ ( row * column ) + column ]
+			}
+			set{
+				grid[ ( row * column ) + column ] = newValue 
+			}
+		}
+	}
+	var mat = Matrix( rows: 3, columns: 3 )
+	mat[ 0, 0 ] = 1.0 //sets 1.0 
+//with extension 
+	extension String {
+		subscript( _ index: Int ) -> Character { //underscore excludes external name argument 
+			let stringIndex = self.index( startIndex, offsetBy: index )
+			return self[ stringIndex ]
+		}
+	}
+	var someText = "Subscripts are awesome!"
+	someText[3] //s
+	
+/* Inheritance */
+class Vehicle {
+	var currentSpeed = 0.0
+	var desc: String{
+		return "traveling at \(currentSpeed) mph"
+	}
+	func makeNoise(){}
+}
+	//subclass Bicycle
+	class Bicycle: Vehicle {
+		var hasBasket = false 
+	}
+
+/* Overriding */
+class Train: Vehicle {
+	override func makeNoise(){
+		print( "Choo Choo" )
+	}
+}
+/* Super class super.method|property */
+class Car: Vehicle {
+	var gear = 1
+	//traveling at \(currentSpeed) mph in gear \(gear)
+	override var desc: String {
+		return super.desc + " in gear \(gear)" 
+	}
+}
+/* final property prefix 
+prevents method|property|subscript|class override 
+*/
+class ClassA {
+	final func printGreeting(){
+		print( "greetings!" )
+	}
+}
+final class ClassB : ClassA {
+	override func printGreeting(){ //Will cause error 
+		print( "Cheers!" )
+	}
+}
+class ClassC : ClassB {} //will cause error 
+
+/* Structure Initialization */
+struct Celsius {
+	var tempInCelsius: Double 
+	init( fromFahrenheit fahrenheit: Double ){
+		tempInCelsius = ( fahrenheit - 32.0 ) / 1.8
+	}
+	init( fromKelvin kelvin: Double ){
+		tempInCelsius = kelvin - 273.15
+	}
+}
+let boilingPoint = Celsius( fromFahrenheit: 212.0 )
+let freezingPoint = Celsius( fromKelvin: 273.15 )
+	//without init 
+	struct Size{
+		var width = 0.0, height = 0.0
+	}
+	let twoByTwo = Size( width: 2.0, height: 2.0 )
+
+/* Class Initialization */
+class Size {
+	var width: Double, height: Double 
+	init( w: Double, h: Double ){
+		width = w
+		height = h 
+	}
+}
+let twoByTwo = Size( w: 2.0, h: 2.0 )
+
+/* Required Initializaters
+Prefix required init() to make every subclass implement the init().
+Add the prefix required init() for every subclasses down the chain. */
+class HeadClass{
+	required init(){}
+}
+class NeckClass: HeadClass {
+	required init(){}
+}
+
+/* Deinitializing Classes
+Called right before a class instance is deallocated.
+*/
+var counter = 0
+class BaseClass {
+	init(){
+		counter++
+	}
+	deinit{
+		counter--
+	}
+}
+var print: BaseClass? = BaseClass()
+println( counter ) //1
+print = nil 
+println( counter ) //0
+
+/* Extensions
+similar to javascript prototyping.
+can be used to add computed properties, initializers, methods, subscripts, nested types .
+finals can be extended.
+Can contain computed properties.
+Cannot contain stored values.
+ */
+ //extending the String class 
+extension String {
+	func addDebug() -> String {
+		return "DEBUG LOG: \(self)"
+	}
+}
+let regular_string = "Connection Error"
+regular_string.addDebug() // DEBUG LOG: Connection Error 
+
+//extending the Optional class 
+extension Optional {
+	var hasValue: Bool {
+		switch self {
+			case .none:
+				return false 
+			case .some( _ ):
+			return true 
+		}
+	}
+}
+let optionalString: String? = "Extensions are powerful!"
+optionalString.hasValue //true 
+
+/* Protocols 
+A contract that defines requirements.
+Can inherit.
+Can be extended.
+
+Protocols for cars (define requirements): Electric, Gas, Wheeled, Amphibious, Flyable.
+Create a Vehicle class that implements the requirements: FlyingCar implements Gas, Wheeled, and Flyable.
+
+*/
+protocol DemonstratesProtocol {
+	var value: Int{ get set } //at least a getter
+	init?( x: Int, y: String? )
+	funct spellOut( _ input: Int ) -> String?
+	subscript( x: Int, y: Int ) -> Int { get set }
+	//optional requirement with @objc optional protocol 
+	@objc optional var subtitle: String? { get }
+}
+
+//set protocol for classes only with : class 
+protocol Ratable : class {}
+
+//set an array that adopts protocols 
+typealias LineItemable = Purchasable & Ratable;
+let cart: [ LineItemable ] = [ book, blueRay ]
+
+//example 2
+protocol PUser {
+	var firstName: String  {get}
+	var lastName: String  {get set}
+	func createFullName() -> String 
+}
+extension PUser {
+	func createFullName() -> String {
+		return "\(self.firstName) \(self.lastName)"
+	}
+}
+struct User: PUser {
+	var firstName: String 
+	var lastName: Sting 
+}
+var newUser = User( firstName: "Harrison", lastName: "Ferroni" )
+newUser.createFullName() // Harrison Ferroni 
+
+/*associatedtype
+type aliases for defining requirements that the adopting type will define.
+*/
+protocol HasMiddle {
+	associatedtype Item
+	func middle() -> Item?
+	finc middleArray() - [ Item ]
+}
+extension Array : HasMiddle {
+	typealias Item = Element 
+	
+}
+
+/* Generics
+re-usability. 
+Generalize functionality to be non-type-specific.
+The T must be of the same type.
+ */
+func genericAppend<T>( item: T, itemArray: [T] ) -> [T]{
+	var returnArray = itemArray
+	returnArray.append( item )
+	return returnArray
+}
+var genericTest = genericAppend( item: 4, itemArray: [ 1, 2, 3 ] )
+// [ 1,2,3,4 ]
+var anotherGenetic = genericAppend( item: "WOrld", itemArray: [ "Hello" ] )
+// [ "Hello", "WOrld" ]
+ 
+//example swift generic function 
+swap( x, y )
+ 
+/* Map Reduce */
+var scores = [ 123, 43, 57, 2001 ]
+//map 
+var mappedScores = scores.map { ( score ) -> Int in 
+	let newScore = score + 1
+	return newScore 
+} 
+	//shorthand 
+	led addOne = { $0 + 1 }
+	var shorthandMap = score.map { $0 + 1 }
+	//or 
+	var shorthandMap = score.map( addOne )
+	print ( shorthandMap ) // [ 124, 44, 58, 2002 ]
+	
+//filter
+var filteredScore = scores.filter { ( score ) -> Bool in 
+	return score != 43
+}
+	//shorthand
+	let notFortyThree = { $0 != 43 }
+	var shorthandFilter = scores.filter( { $0 != 43 } )
+	//or 
+	var shorthandFilter = scores.filter( notFortyThree )
+	print( shorthandFilter )
+
+/* reduce
+reduce( <start>, <function> ) */
+var reducedScores = scores.reduce( 0 ){ ( score1, score2 ) -> Int in 
+	score1 + score2
+}
+	//shorthand 
+	var shorthandReduce = scores.reduce( 0, { $0 + $1 } )
+	print( shorthandReduce )
+	//shorter 
+	[ 1,2,4,8,16 ].reduce( 0, + ) //31
+	
+/* flatMap
+filter out nils.
+flatten an array of nested arrays. */
+let integers = [ 1, nil, 2, nil, 3 ].flatMap { $0 } // [ 1,2,3 ]
+
+let flattenAndReduce: ( [ Int ] ) -> Int = { $0.reduce( 0, + ) }
+let ints = [ [1,2], [3,4,5], [6] ].flatMap( flattenAndReduce )	// [ 3, 12, 6 ]
+
+let dictionary = [ "one": 1, "two", 2, "four": 4 ]
+let uppercaseKeys = dictionary.reduce( 0 ) { $0 + $1.value } //7
+
+/* Labels */
+var i = 0
+let hello = "Hello, playground!"
+start: do {
+	i += 1
+	do {
+		print( hello )
+		if i < 3 {
+			continue start
+		}
+	}
+}
+	
+/* Playground */
+/* directory structure 
+01_02.playground
+	Sources
+		SpelloutNumber.swift 
+	Resources
+		Betty.png 
+		Crazy Ones.txt
+*/
+//01_02 
+import UIKit
+
+//embedd image 
+// ![<alt text] ( <image source> "hovering text" )
+//: ![ Betty ]( Betty.png "My coding buggy")
+
+//files
+if let filepath = Bundle.main.path( forResource: "Crazy Ones", ofType: "txt" ),
+	let data = FileManager.default.contents( atPath: filepath ),
+	let contents = String( data: data, encoding: .utf8 ){
+		print( contents )
+	}
+
+//links
+//: [ Swift blog ]( https://sample.org/blog/ "The Swift Blog" )
