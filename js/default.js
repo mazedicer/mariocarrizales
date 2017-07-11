@@ -108,6 +108,7 @@
 	changeImage();
 
 //get notes
+	/*
 	fetch( "get_notes.php", {
 		method: 'post',
 		headers: {
@@ -116,11 +117,13 @@
 		body: 'get_notes=getnotes'
 	} )
 	.then( function( data ){
-		let notes_list = data.json();
-		return Promise.resolve( notes_list );
-	} )
-	.then( function( data ){
-		displayNotes( data );
+		if( data.status === 500 || data.status === 200 ){
+			let notes_list = data.json();
+			return Promise.resolve( notes_list )
+			.then( function( data ){
+				displayNotes( data );
+			} );
+		}
 	} )
 	.catch( function( error ){
 		console.log( 'Request failed', error );
@@ -145,4 +148,5 @@
 		template += `</div>`;
 		document.getElementById( "notes_content_div" ).innerHTML = template;
 	}
+	*/
 } )();
