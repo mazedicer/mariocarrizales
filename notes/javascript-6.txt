@@ -363,6 +363,10 @@ var loadData = function( endpoint ){
 		});
 }	
 loadData( endPoint )
+
+//fetch()
+
+
 //SWITCH
 
 let val1 = 1, val2 = 2;

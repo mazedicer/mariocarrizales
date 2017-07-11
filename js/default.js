@@ -44,18 +44,18 @@
 		} );
 		//preload images
 		function preload(){
-			var images = [];
+			var images = [ ];
 			for( i = 0; i < preload.arguments.length; i++ ){
 				images[i] = new Image();
 				images[i].src = preload.arguments[i];
 			}
 		}
 		preload(
-			"images/selfie1000x1000_0.jpg",
-			"images/selfie1000x1000_1.jpg",
-			"images/selfie1000x1000_2.jpg",
-			"images/selfie1000x1000_3.jpg"
-		);
+				"images/selfie1000x1000_0.jpg",
+				"images/selfie1000x1000_1.jpg",
+				"images/selfie1000x1000_2.jpg",
+				"images/selfie1000x1000_3.jpg"
+				);
 
 	}, 2000 );
 	setTimeout( function(){
@@ -107,4 +107,42 @@
 	}
 	changeImage();
 
+//get notes
+	fetch( "get_notes.php", {
+		method: 'post',
+		headers: {
+			"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+		},
+		body: 'get_notes=getnotes'
+	} )
+	.then( function( data ){
+		let notes_list = data.json();
+		return Promise.resolve( notes_list );
+	} )
+	.then( function( data ){
+		displayNotes( data );
+	} )
+	.catch( function( error ){
+		console.log( 'Request failed', error );
+	} );
+	function displayNotes( notes_array ){
+		var template = `<div class="row">`;
+		for( var i = 1; i < notes_array.length; i++ ){
+			var title = notes_array[i].replace( /notes\//g, " " );
+			template += `<div class="col-xs-6 col-sm-4 col-md-3">
+						<div class="thumbnail">
+							<img src="images/notes-icon.png" alt="${title}">
+							<div class="caption">
+								<h3>${title}</h3>
+								<p><a href="${notes_array[i]}" class="btn btn-primary" target="_blank" role="button">Open</a></p>
+							</div>
+						</div>
+					</div>`;
+			if( i >= 4 && i % 4 === 0 ){
+				template += `</div><div class="row">`;
+			}
+		}
+		template += `</div>`;
+		document.getElementById( "notes_content_div" ).innerHTML = template;
+	}
 } )();
