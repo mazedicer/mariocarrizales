@@ -108,18 +108,16 @@
 	changeImage();
 
 //get notes
-	/*
-	fetch( "get_notes.php", {
+	fetch( "notes.php", {
 		method: 'post',
 		headers: {
 			"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
 		},
 		body: 'get_notes=getnotes'
 	} )
-	.then( function( data ){
-		if( data.status === 500 || data.status === 200 ){
-			let notes_list = data.json();
-			return Promise.resolve( notes_list )
+	.then( function( response ){
+		if( response.status === 500 || response.status === 200 ){
+			return response.json()
 			.then( function( data ){
 				displayNotes( data );
 			} );
@@ -148,5 +146,4 @@
 		template += `</div>`;
 		document.getElementById( "notes_content_div" ).innerHTML = template;
 	}
-	*/
 } )();
