@@ -130,7 +130,7 @@
 		var template = `<div class="row">`;
 		for( var i = 1; i < notes_array.length; i++ ){
 			var title = notes_array[i].replace( /notes\//g, " " );
-			template += `<div class="col-xs-6 col-sm-4 col-md-3">
+			template += `<div class="col-xs-6 col-sm-4 col-md-2">
 						<div class="thumbnail">
 							<img src="images/notes-icon.png" alt="${title}">
 							<div class="caption">
@@ -139,7 +139,7 @@
 							</div>
 						</div>
 					</div>`;
-			if( i >= 4 && i % 4 === 0 ){
+			if( i >= 6 && i % 6 === 0 ){
 				template += `</div><div class="row">`;
 			}
 		}

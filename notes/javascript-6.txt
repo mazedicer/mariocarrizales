@@ -166,6 +166,8 @@ const result = pipeline.reduce( function( acc, cur ){
 }, 1 );
 // 3
 
+
+
 //array from array-like objects 
 let array1 = Array.of( 1,2,3 );
 let array2 = Array.from( "word" );
@@ -218,6 +220,46 @@ Array( 7 ) // [ , , , , , , ]
 /*It copies the elements whose indices are in the range [start,end] to index target and subsequent indices. shallow copies part of an array to another location in the same array and returns it, without modifying its size. */
 [ 'alpha', 'bravo', 'charlie', 'delta' ].copyWithin( 2, 0 );
 // [ 'alpha', 'bravo', 'alpha', 'bravo' ]
+
+// concat() Joins two or more arrays, and returns a copy of the joined arrays
+var array3 = array2.concat( array1 );
+
+// every( function( current_value, index, array ), this_value_to_function ) Checks if every element in an array pass a test and returns a boolean 
+var true_or_false = ages_array.every( isOlderThan18Func );
+
+// some( function( current_value, index, array ), this_value_to_function ) Checks if any of the elements in an array pass a test
+
+// fill( fill_value, start_index, stop_index ) Fill the elements in an array with a static value
+var fruits = ["Banana", "Orange", "Apple", "Mango"];
+fruits.fill("Kiwi", 2, 4);
+// Banana,Orange,Kiwi,Kiwi
+
+// join( seperator[default=,] ) joins the elements of an array into a string, and returns the string
+
+// map( function( current_value, index, array ), this_value_to_function ) creates a new array with the results of calling a function for every array element
+
+// pop() Removes the last element of an array, and returns that element
+
+// push() Adds new elements to the end of an array, and returns the new length
+
+// shift() Removes the first element of an array, and returns that element
+
+// slice( start, end ) Selects a part of an array, and returns the new array
+
+// sort( compareFunction ) Sorts the elements of an array
+
+// splice( index, how_many, item1, ... ) Adds/Removes elements from an array
+var fruits = ["Banana", "Orange", "Apple", "Mango"];
+fruits.splice(2, 1, "Lemon", "Kiwi");
+//Banana,Orange,Lemon,Kiwi,Mango
+fruits.splice(2, 2);
+//Banana,Orange
+
+// toString() Converts an array to a string, and returns the result
+
+// unshift() Adds new elements to the beginning of an array, and returns the new length
+
+
 
 //SETS
 

@@ -37,9 +37,9 @@
 					<h2 class="h2_button">TECHNICAL SKILLS</h2>
 					<div class="content_div">
 						<div><span class="title_class">Operating Systems:</span> Windows 7/10, Linux, Android, Mac iOS</div>
-						<div><span class="title_class">Languages:</span> Javascript ES6, PHP 7, Java</div>
-						<div><span class="title_class">Web Frameworks:</span> Angular2, React, CodeIgniter, Wordpress</div>
-						<div><span class="title_class">Tools:</span> Node.js, Git/Github VCS, Composer, JQuery, Bootstrap, Pug, Grunt, LESS, AJAX, REST, SOAP, JSON, WAMP, PHPMyAdmin, Tomcat, Adobe Illustrator, Adobe Photoshop, 3DSMax, Fabric.js, AWS, cPanel</div>
+						<div><span class="title_class">Languages:</span> Javascript ES6, PHP 7, Java, C#, Python</div>
+						<div><span class="title_class">Web Frameworks:</span> Angular2, React, React-native, CodeIgniter, Wordpress</div>
+						<div><span class="title_class">Tools:</span> Node.js, Git/Github, Composer, JQuery, Bootstrap, D3, Pug, Grunt, LESS, AJAX, REST, SOAP, JSON, WAMP, PHPMyAdmin, Tomcat, Adobe Illustrator, Adobe Photoshop, 3DSMax, Fabric.js, AWS, cPanel</div>
 						<div><span class="title_class">Databases:</span>  SQL, MySQL, NoSQL</div>
 					</div><!-- end content div -->
 				</div><!-- end objective div -->
@@ -225,7 +225,7 @@
 					<h2 class="h2_button">CERTIFICATES</h2>
 					<div class="content_div">
 						<div class="row">
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Amazon Web Services Essential Training 2">
 									<div class="caption">
@@ -234,7 +234,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Api Design In Nodejs Using Express And Mongo">
 									<div class="caption">
@@ -243,7 +243,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Learning Cake php 3">
 									<div class="caption">
@@ -252,7 +252,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Learning Codeigniter 3">
 									<div class="caption">
@@ -261,10 +261,7 @@
 									</div>
 								</div>
 							</div>
-
-						</div>
-						<div class="row">
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Learning Kotlin For Android Development">
 									<div class="caption">
@@ -273,7 +270,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Learning ReactJs 2">
 									<div class="caption">
@@ -282,7 +279,10 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+						</div>
+						<div class="row">
+							
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion NodeJs Essential Training">
 									<div class="caption">
@@ -291,7 +291,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Programming Foundations Web Services">
 									<div class="caption">
@@ -300,9 +300,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Reactjs Essential Training">
 									<div class="caption">
@@ -311,7 +309,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Wordpress Understanding Custom Plugins With Php">
 									<div class="caption">
@@ -320,7 +318,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="Certificate Of Completion Java Tutorial Course">
 									<div class="caption">
@@ -329,7 +327,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="Certificate Of Completion Javascript Tutorial Course">
 									<div class="caption">
@@ -340,7 +338,7 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="Certificate Of Completion PHP Tutorial Course">
 									<div class="caption">
@@ -349,7 +347,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="Certificate Of Completion Python 3">
 									<div class="caption">
@@ -358,7 +356,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="Certificate Of Completion Swift Fundamentals">
 									<div class="caption">
@@ -367,7 +365,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="ITT Tech 2005 December Honors">
 									<div class="caption">
@@ -376,9 +374,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="ITT Tech 2005 Spring Honors">
 									<div class="caption">
@@ -387,7 +383,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="ITT Tech IT Associate Of Science 2007-6-19">
 									<div class="caption">
@@ -396,7 +392,10 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+						</div>
+						<div class="row">
+							
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="itt-tech-2004-fall-honors">
 									<div class="caption">
@@ -405,7 +404,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="Mario Carrizales High School Diploma 1995">
 									<div class="caption">
@@ -414,9 +413,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="2nd Place Art Award 1994-6-7">
 									<div class="caption">
@@ -425,7 +422,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="2nd Place Art Award Letter from The Mayor of National City 1994-6-7">
 									<div class="caption">
@@ -434,7 +431,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="2nd Place Art Award Sweetwater High School National City 1994-6-7">
 									<div class="caption">
@@ -443,7 +440,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-sm-4 col-md-3">
+							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="itt-tech-2004-fall-honors">
 									<div class="caption">
