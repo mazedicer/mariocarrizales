@@ -1,0 +1,604 @@
+//these are progressive style notes meaning as you go along
+//modifications are applied to elements created earlier
+
+<section id="chart">
+	<div class="item">asdf</div>
+	<div class="item">asdf</div>
+	<div class="item">asdf</div>
+	<div class="item">asdf</div>
+</section>
+
+//script.js 
+/* d3.select( css selector | node ) to select DOM elements
+selectAll() returns array-like object */
+//will replace text from the first element 
+d3.select( '.item' ).text( 'new asdf' );
+//will replcae all text 
+d3.selectAll( '.item' ).text( 'new asdf' );
+// nth-child replace text, nth-child index starts at 1
+d3.selectAll( '.item:nth-child(2)' ).text( 'new asdf' );
+// nth-child( odd | even | 2n(even) | 3n(every third) | 3n+1(after and including 3rd) ) 
+
+// .html( 'html_content' )
+d3.selectAll( '.item:nth-child(2)' )
+	.html( '<strong>content</strong>' );
+	
+// .append( 'DOM_element' ) will add DOM element at lastChild
+d3.select( '.item' )
+	.append( 'div' )
+	.html( '<strong>content</strong>' );
+	
+// .insert( 'DOM_element', 'position' ) will insert at specified position 
+d3.select( '#chart' )
+	.insert( 'span', ':nth-child(2)' )
+	.html( '<strong>content</strong>' );
+
+// .remove( 'DOM_element' ) will remove element 
+d3.select( '#chart .item:nth-child(3)' )
+	.remove();
+
+// .attr( 'ATTRIBUTE', 'ATTRIBUTE_VALUE' ) adds an attribute to the elements 
+d3.selectAll( '.item' )
+	.attr( 'class', 'highlight' );
+
+// .classed( 'class_name', true | false ) will apply specified class to elements 
+d3.selectAll( '.item' )
+	.classsed( 'highlight', true );
+	
+/* .classed({
+	'class1': true,
+	'item': false,
+	'class2': true
+}) pass object specifying which classes are active/inactive */
+
+/* .style({
+	'background': '#000',
+	'padding': '10px',
+	'margin': '4px',
+	'color': 'red'
+}) inline styles */
+
+/* .data( array ) each item in the array refers to each DOM element */
+//this will apply background color to the first 3 DOM elements 
+d3.selectAll( '.item' )
+	.data( [ true, true, true ] ) //can come from a variable .data( array_variable )
+	.style( 'background', '#000' )
+//example 2 will apply the first value of the array to the first DOM element in the selection 
+var my_style = [ '#000', '#ccc' ];
+d3.selectAll( '.item' )
+	.data( my_style )
+	.style( 'background', my_style[0] );
+	
+// callback function from data to function 
+d3.selectAll( '.item' )
+	.data( my_style )
+	.style( 'background', function( d ){
+		return d; //will apply #000 to first DOM element and #ccc to second DOM element 
+	});
+//example 2
+d3.selectAll( '.item' )
+	.data( my_style )
+	.style({
+		'color': 'white',
+		'background': function( d ){
+			return d;
+		}
+	})
+//example 3 with array of objects
+my_styles = [ 
+	{ width: 200, color: '#000' }, 
+	{ width: 250, color: '#ccc' }, 
+	{ width: 300, color: '#eee' } ];
+d3.selectAll( '.item' )
+	.style({
+		'color': 'white',
+		'background': function( d ){
+			return d.color;
+		},
+		width: function( d ){
+			return d.width + 'px';
+		}
+	})
+	
+/* .selectAll( 'selector' ).selectAll( 'DOM_element' ) followed by .enter().append( 'DOM_element' ) allows you to select DOM elements before they are created.
+If ommiting the second .selectAll(), new DOM elements will appear after </body> tag */
+d3.selectAll( '#chart' )
+	.selectAll( 'div' ) //selection before divs are created 
+	.data( my_styles )
+	.enter().append( 'div' ) //divs being created here 
+	.text( function( d ){
+		return d.name; //say my_styles contained name property 
+	})
+	
+///////////////////////////////////////////////////////////////////////////////
+// SVG 
+///////////////////////////////////////////////////////////////////////////////
+/* XML based */
+<svg width="600" height="400"
+	style="background: #93A1A1">
+	//<rect /> rectangle (self closing)
+	<rect x="250" y="150" width="100" height="100" style="fill: #c61c6f" />
+	//<circle /> (self closing) cx = center x, cy = center y axis
+	<circle cx="300" cy="200" r="50" style="fill: #000" />
+	//<g> grouping elements 
+	<g id="triangle">
+		//drawing a triangle with polyline 
+		<polyline points "10 35, 30 10, 50 35"
+			style="fill: #f7B330" />
+		<polyline points "20 35, 30 10, 50 35"
+			style="fill: #f7B330" />	
+	</g>
+	//<use /> use to create a symbol element by passing the id of a group element 
+	<use xlink:href="#triangle" x="30" y="0" />
+	//text 
+	<text x="10" y="390"
+		font-family="sans-serif"
+		font-size="25"
+		fill="white">SVG Text</text>
+</svg>
+
+//SVG with D3 chaining
+d3.select( '#chart' )
+	.append( 'svg' )
+		.attr( 'width', 600 )
+		.attr( 'height', 400 )
+		.style( 'background', '#93a1a1' )
+	.append( 'rect' )
+		.attr( 'x', 200 )
+		.attr( 'y', 200 )
+		.attr( 'width', 200 )
+		.attr( 'height', 200 )
+		.style( 'fill', '#000' )
+	d3.select( 'svg' )
+		.append( 'circle' )
+		.attr( 'cx', '300' )
+		.attr( 'cy', '200' )
+		.attr( 'r', '50' )
+		.style( 'fill', '#ccc' )
+		
+// bar chart with SVG 
+var bardata = [ 20, 30, 45, 15 ];
+var height = 400, width = 600, barWidth = 50, barOffset = 5;
+d3.select( '#chart' ).append( 'svg' )
+	.attr( 'width', 600 )
+	.attr( 'height', 400 )
+	.style( 'background', '#93a1a1' )
+	//this selectAll( 'rect' ) is targeting the .enter().append( 'rect' )
+	.selectAll( 'rect' ).data( bardata )
+	.enter().append( 'rect' )
+		.style( 'background', '#c61c6f' )
+		.attr( 'width', barWidth )
+		//grabbing from .data( bardata )
+		.attr( 'height', function( d ){
+			return d;
+		})
+		//offset i = index of the data bardata 
+		.attr( 'x', function( d, i ){
+			return i * ( barWidth + barOffset );
+		})
+		//position vertically from the bottom-up 
+		.attr( 'y', function(){
+			return height - d;
+		})
+		
+/* scale chart to fit svg container proportionately
+Quantity - unordered such as grocery store items 
+	- linear:
+	...
+Ordinal - ordered such as army ranks 
+Time - */
+//Quantitative scale 
+var bardata = [ 20, 30, 45, 15 ];
+var height = 400, width = 600, barWidth = 50, barOffset = 5;
+/* de.scale.linear()
+.domain()
+.range()
+*/
+//scale vertically proportionate to the svg container 
+var y_scale = d3.scale.linear()
+	.domain( [ 0, d3.max(bardata) ] )
+	.range( [ 0, height ] );
+	
+d3.select( '#chart' ).append( 'svg' )
+	.attr( 'width', 600 )
+	.attr( 'height', 400 )
+	.style( 'background', '#93a1a1' )
+	//this selectAll( 'rect' ) is targeting the .enter().append( 'rect' )
+	.selectAll( 'rect' ).data( bardata )
+	.enter().append( 'rect' )
+		.style( 'background', '#c61c6f' )
+		.attr( 'width', barWidth )
+		//grabbing from .data( bardata )
+		.attr( 'height', function( d ){
+			//using the y_scale
+			return y_scale( d );
+		})
+		//offset i = index of the data bardata 
+		.attr( 'x', function( d, i ){
+			return i * ( barWidth + barOffset );
+		})
+		//position vertically from the bottom-up 
+		.attr( 'y', function(){
+			return height - y_scale( d );
+		})
+//scale horizontally using ordinal scale 
+//y-scale variable 
+var y_scale = d3.scale.linear()
+	.domain( [ 0, d3.max(bardata) ] )
+	.range( [ 0, height ] );
+//x-scale variable 
+var x_scale = d3.scale.ordinal()
+	.domain( d3.range( 0, bardata.length ) )
+	//0-1 for padding, 0.2 etc.
+	.rangeBands( [ 0, width ], 0.2 );
+	
+d3.select( '#chart' ).append( 'svg' )
+	.attr( 'width', 600 )
+	.attr( 'height', 400 )
+	.style( 'background', '#93a1a1' )
+	//this selectAll( 'rect' ) is targeting the .enter().append( 'rect' )
+	.selectAll( 'rect' ).data( bardata )
+	.enter().append( 'rect' )
+		.style( 'fill', '#c61c6f' )
+		//use .rangeBand() for each rectangle
+		.attr( 'width', x_scale.rangeBand() )
+		//grabbing from .data( bardata )
+		.attr( 'height', function( d ){
+			//using the y_scale
+			return y_scale( d );
+		})
+		//offset i = index of the data bardata 
+		.attr( 'x', function( d, i ){
+			return x_scale( i );
+		})
+		//position vertically from the bottom-up 
+		.attr( 'y', function(){
+			return height - y_scale( d );
+		})
+	
+//2 colors depending on bar size 
+var colors = d3.scale.linear()
+	//colors applied depending on bar size d3.max( bardata )
+	.domain( [ 0, d3.max( bardata ) ] )
+	//pass array of colors to range, so it will go from smallest bar #000 to biggest bar #ccc 
+	.range( [ '#000', '#ccc' ] );
+	//apply it to the .style of the .enter().append( 'rect' )
+	.style( 'fill', colors )
+
+//2 colors depending on bar position 
+var colors = d3.scale.linear()
+	//colors applied depending on bar position bardata.length 
+	.domain( [ 0, bardata.length ] )
+	.range( [ '#000', '#ccc' ] );
+	//apply a function to .style of the .enter().append( 'rect' )
+	.style( 'fill', function( d, i){
+		return colors(i);
+	})
+
+//to add more colors, the domain and the range need to have the same number of array elements 
+var colors = d3.scale.linear()
+	.domain( [ 0, bardata.length*.33, bardata.length*.66, bardata.length ] )
+	.range( [ '#000', '#333', '#666', '#999' ] )
+
+///////////////////////////////////////////////////////////////////////////////
+//events  .on( 'event', function( data ) )
+///////////////////////////////////////////////////////////////////////////////
+//mouseover/mouseout opacity and fill change
+//this refers to the current rect element  
+.on( 'mouseover', function( d ){
+	tempColor = this.style.fill;
+	d3.select( this )
+		.style( 'opacity', .5 )
+		.style( 'fill', 'yellow' )
+})
+.on( 'mouseout', function( d ){
+	d3.select( this )
+		.style( 'opacity', 1 )
+		.style( 'fill', tempColor )
+})
+
+///////////////////////////////////////////////////////////////////////////////
+//transitions and animations  .transition().delay( milliseconds | function( data, index ) )
+///////////////////////////////////////////////////////////////////////////////
+.on( 'mouseover', function( d ){
+	tempColor = this.style.fill;
+	d3.select( this )
+		.transition() //will smoothout mouseover event 
+		.style( 'opacity', .5 )
+		.style( 'fill', 'yellow' )
+})
+.on( 'mouseout', function( d ){
+	d3.select( this )
+		.transition().delay( 500 ) //will delay transition 500ms 
+		.duration( 800 ) //will smoothout mouseout in 800ms
+		.style( 'opacity', 1 )
+		.style( 'fill', tempColor )
+})
+
+/* You can seperate transitions from the chain by putting the d3 select object into a variable and calling that variable with the added transitions */
+var my_chart = d3.select( '#chart' ).append( 'svg' ) 
+	//re-configure the attributes to allow for transitions
+	// remember that the original values used to be functions, the final result
+	// but we are going to use the functions later as the final result for the transition 
+	.attr( 'height', 0 ) 
+	.attr( 'y', height )
+
+my_chart.transition()
+	//grabbing from .data( bardata )
+	.attr( 'height', function( d ){
+		//using the y_scale
+		return y_scale( d );
+	})
+	//position vertically from the bottom-up 
+	.attr( 'y', function(){
+		return height - y_scale( d );
+	})
+	//animate each rect bar 
+	.delay( function( d, i ){
+		return i * 20;
+	})
+	.duration( 1000 ) //set the animation time 
+	//easing to add a little bounce 
+	.ease( 'elastic' );
+	
+//tooltip on event 
+var tooltip = d3.select( 'body' ).append( 'div' )
+	.style( 'position', 'absolute' )
+	.style( 'padding', '0 10px' )
+	.style( 'background', 'white' )
+	.style( 'opacity', 0 ) //0 because we don't want to show it before the chart appears 
+//add it to the mouseover event 
+.on( 'mouseover', function( d ){
+	tooltip.transition()
+		.style( 'opacity', .9 )
+	tooltip.html( d ) //show the data for each one of the rect bars 
+		//re-position the div to appear next to the mouse pointer 
+		.style( 'left', ( d3.event.pageX ) + 'px' )
+		.style( 'top', ( d3.event.pageY ) + 'px' )
+}) 
+
+//Grouping
+/* you can put everything inside a group <g></g> by appending it */
+var my_chart = d3.select( '#chart' ).append( 'svg' )
+	.append( 'g' )
+	//....
+
+//SVG Axes 
+//adding the vertical axes
+var vGuideScale = d3.scale.linear()
+	.domain( [ 0, d3.max( bardata ) ] )
+	.range( [ height, 0 ] ); 
+	
+var vAxis = d3.svg.axis()
+	//using the y_scale created earlier will show the numbers 0 - max from top to bottom 
+	//.scale( y_scale )  
+	//replacing the y_scale with vGuideScale will show the numbers 0 - max from bottom to top 
+	.scale( vGuideScale )
+	//on the left | right 
+	.orientation( 'left' ) 
+	//number of sections 
+	.ticks( 10 );
+//append a group to the svg container 
+var vGuide = d3.select( 'svg' ).append( 'g' )
+	//apply the vAxis in the vGuide 
+	vAxis( vGuide )
+	//position the vGuide 35px from the left, 10px from the top 
+	vGuide.attr( 'transform', 'translate( 35, 10 )' ) 
+	//paths and line are the vAxis' elements 
+	vGuide.selectAll( 'path' )  
+		.style( { fill:'none', stroke: "#000" } )
+	vGuide.selectAll( 'line' )
+		.style( { stroke: "#000" } )
+		
+//adding the horizontal axes 
+var hAxis = d3.svg.axis()
+	.scale( x_scale )
+	.orientation( 'bottom' )
+	.tickvalues( x_scale.domain().filter( function( d, i ){
+		//don't put ticks on every single bar that's why we use a filter 
+		//to return every 5th in the bardata 
+		return !( i % ( bardata.length / 5 ) );
+	}))
+var hGuide = d3.select( 'svg' ).append( g )
+	hAxis( hGuide )
+	hGuide.attr( 'transform', 'translate( 0, ' + ( height-30) + ' )' )
+	//paths and line are the hGuide's elements 
+	hGuide.selectAll( 'path' )  
+		.style( { fill:'none', stroke: "#000" } )
+	hGuide.selectAll( 'line' )
+		.style( { stroke: "#000" } )
+		
+//adjusting margins 
+//create a margin object 
+var margin = { top: 30, right: 30, bottom: 40, left: 50 }
+var height = 400 - margin.top - margin.bottom,
+	width = 600 - margin.left - margin.right,
+	//... see above 
+var my_chart = d3.select( '#chart' ).append( 'svg' )
+	//add background color to see the margins 
+	.style( 'backgroun', '#ccc' ) 
+	//add what was taken from the margins back 
+	.attr( 'width', width + margin.left + margin.right )
+	.attr( 'height', height + margin.top + margin.bottom )
+	.append( 'g' )
+	.attr( 'transform', 'translate(' + margin.left + ', ' + margin.top + ')')
+//adjust the vGuide.attr( 'transform', 'translate( 35, 10 )' ) 
+//will align the vertical axes 
+vGuide.attr( 'transform', 'translate( ' + margin.left + ', ' + margin.top + ' )' )
+//adjust the hGuide 
+hGuide.attr( 'transform', 'translate( ' + margin.left + ', ' + ( height + margin.top ) + ' )' )	
+	
+///////////////////////////////////////////////////////////////////////////////
+// Working with Data d3.json(), d3.csv(), d3.html(), d3.text()
+///////////////////////////////////////////////////////////////////////////////
+//data.tsv 
+/* 
+data
+10
+40
+5
+...
+*/
+var bardata = [];
+d3.tsv( 'data.tsv', function( data ){
+	for( key in data ){
+		bardata.push( data[key].value )
+	}
+	//put all the code above here ...d3.select( '#chart' ).append( 'svg' ) 
+})
+
+///////////////////////////////////////////////////////////////////////////////
+// Pie Layout
+///////////////////////////////////////////////////////////////////////////////
+var width = 400, height = 400, radius = 200, colors = d3.sale.category20c();
+var piedata = [
+	{ label: 'name1', value: 50 },
+	{ label: 'name2', value: 10 },
+	{ label: 'name3', value: 20 },
+	{ label: 'name4', value: 50 }
+];
+var pie = d3.layout.pie()
+	.value( function( d ){
+		return d.value;
+	});
+var arc = d3.svg.arc()
+	.outerRadius( radius )
+
+var my_chart = d3.select( '#chart' ).append( 'svg' )
+	.attr( 'width', width )
+	.attr( 'height', height )
+	.append( 'g' )
+	.attr( 'transform', 'translate( '+ (width-radius) +', '+ (height-radius) +' )' )
+	.selectAll( 'path' ).data( pie( piedata ) )	
+	.enter().append( 'g' )
+		.attr( 'class', 'slice' )
+//add slices 		
+var slices = d3.selectAll( 'g.slice' )
+	.append( 'path' )
+	.attr( 'fill', function( d, i ){
+		return colors(i); //categorical colors 
+	})
+	//use the arc 
+	.attr( 'd', arc )
+//add text 
+var text = d3.selectAll( 'g.slice' )
+	.append( 'text' )
+	.text( function( d, i ){
+		return d.data.label;
+	})
+	//svg attributes 
+	.attr( 'text-achor', 'middle' )
+	.attr( 'fill', 'white' )
+	.attr( 'transform', function( d ){
+		d.innerRadius = 0;
+		d.outerRadius = radius;
+		return 'translate( ' + arc.centroid( d ) + ' )'
+	})
+	
+///////////////////////////////////////////////////////////////////////////////
+// force Layout
+///////////////////////////////////////////////////////////////////////////////
+//create svg dimensions 
+var w = 400, h = 400;
+var circleWidth = 5;
+//create a color palette 
+var palette = {
+	"lightgray": "#819090",
+	"gray": "#708284",
+	"mediumgray": "#536870"
+}
+
+var nodes = [
+	{ name: "parent" },
+	{ name: "child1" },
+	//attach to parent 
+	{ name: "child2", target[0] },
+	//attach to child1 
+	{ name: "child3", target[1] },
+	{ name: "child4", target[ 0,1,2 ] }
+]
+
+var links = [];
+//fill up the links array 
+for( var i = 0; i < nodes.length; i++ ){
+	if( nodes[i].target !== undefined ){
+		for( var x = 0; x < nodes[i].target.length; x++ ){
+			links.push({
+				source: nodes[i],
+				target: nodes[ nodes[i].target[x] ]
+			})
+		}
+	}
+}
+
+var my_chart = d3.select( '#chart' )
+	.append( 'svg' )
+	.attr( 'width', w )
+	.attr( 'height', h )
+	
+var force = d3.layout.force()
+	.nodes( nodes )
+	.links([])
+	.gravity( 0.1 )
+	.charg( -1000 )
+	.size( [ w, h ] )
+	
+//svg lines connecting the node circles 
+var link = my_chart.selectAll( 'line' )
+	//pass the data links array to line element 
+	.data( links ).enter().append( 'line' )
+	.attr( 'stroke', palette.gray )
+	
+var nodes = my_chart.selectAll( 'circle' )
+	.data( nodes ).enter().append( 'g' )
+	//allow to animate, click, and drag 
+	.call( force.drag )
+
+node.append( 'circle' )
+	.attr( 'cx', function( d ){ return d.x; })
+	.attr( 'cy', function( d ){ return d.y })
+	.attr( 'r', circleWidth )
+	.attr( 'fill', palette.mediumgray )
+//add text 
+node.append( 'text' )
+	.text( function( d ){ return d.name })
+	.attr( 'font-family', 'sans-serif' )
+	.attr( 'fill', function( d, i ){
+		if( i < 0 ){ return palette.mediumgray }
+		else{ return palette.yellow }
+	})
+	//place a small gap between the circle and the text 
+	.attr( 'x', function( d, i ){
+		if( i > 0 ){ return circleWidth + 5 }
+		else{ return circleWidth - 10 }
+	})
+	.attr( 'y', function( d, i ){
+		if( i > 0 ){ return circleWidth }
+		else{ return 10 }
+	})
+	//position of the text relative to the node circle 
+	.attr( 'text-anchor', function( d, i ){
+		//parent node is at 0, child text will appear at the end (to the right) of the circle
+		//and parent text to the left 
+		if( i > 0 ){ return 'beginning' }
+		else{ return 'end' }
+	})
+	//set the parent and child text font sizes
+	.attr( 'font-size', function( d, i ){
+		if( i > 0 ){ return '1em' }
+		else{ return '1.8em' }
+	})
+
+//ticks refers to time passing 	
+force.on( 'tick', function( e ){
+	node.attr( 'transform', function( d, i ){
+		return 'translate( '+ d.x +', '+ d.y +' )';
+	})
+	link
+		.attr( 'x1', function(d){ return d.source.x })
+		.attr( 'y1', function(d){ return d.source.y })
+		.attr( 'x2', function(d){ return d.target.x })
+		.attr( 'y2', function(d){ return d.target.y })
+})
+
+force.start()

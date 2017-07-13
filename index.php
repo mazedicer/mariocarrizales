@@ -245,6 +245,15 @@
 							</div>
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
+									<img src="images/pdf-icon.png" alt="Certificate Of Completion D3 Js Data Visualization">
+									<div class="caption">
+										<h3>Certificate Of Completion D3 Js Data Visualization</h3>
+										<p><a href="certificates/CertificateOfCompletion_D3JsDataVisualization.pdf" class="btn btn-primary" target="_blank" role="button">Open</a></p>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-6 col-sm-4 col-md-2">
+								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Learning Cake php 3">
 									<div class="caption">
 										<h3>Certificate Of Completion Learning Cake php 3</h3>
@@ -270,6 +279,8 @@
 									</div>
 								</div>
 							</div>
+						</div>
+						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Learning ReactJs 2">
@@ -279,8 +290,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
+						
 							
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
@@ -327,6 +337,8 @@
 									</div>
 								</div>
 							</div>
+						</div>
+						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="Certificate Of Completion Javascript Tutorial Course">
@@ -336,8 +348,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
+						
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="Certificate Of Completion PHP Tutorial Course">
@@ -383,6 +394,8 @@
 									</div>
 								</div>
 							</div>
+						</div>
+						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="ITT Tech IT Associate Of Science 2007-6-19">
@@ -392,8 +405,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
+						
 							
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
@@ -440,6 +452,8 @@
 									</div>
 								</div>
 							</div>
+						</div>
+						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="itt-tech-2004-fall-honors">
