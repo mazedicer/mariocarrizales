@@ -558,7 +558,11 @@ node.append( 'circle' )
 	.attr( 'cx', function( d ){ return d.x; })
 	.attr( 'cy', function( d ){ return d.y })
 	.attr( 'r', circleWidth )
-	.attr( 'fill', palette.mediumgray )
+	//set the parent and child circle colors 
+	.attr( 'fill', function( d, i ){
+		if( i > 0 ){ return palette.mediumgray }
+		else{ return palette.yellow }
+	} )
 //add text 
 node.append( 'text' )
 	.text( function( d ){ return d.name })
