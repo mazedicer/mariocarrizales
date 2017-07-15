@@ -259,7 +259,7 @@ fruits.splice(2, 2);
 
 // unshift() Adds new elements to the beginning of an array, and returns the new length
 
-
+// reverse() Reverses the order of the elements in an array
 
 //SETS
 
