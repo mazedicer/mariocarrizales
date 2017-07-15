@@ -254,6 +254,15 @@
 							</div>
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
+									<img src="images/pdf-icon.png" alt="Certificate Of Completion Learning BackboneJs">
+									<div class="caption">
+										<h3>Certificate Of Completion Learning BackboneJs</h3>
+										<p><a href="certificates/CertificateOfCompletion_LearningBackboneJs.pdf" class="btn btn-primary" target="_blank" role="button">Open</a></p>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-6 col-sm-4 col-md-2">
+								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Learning Cake php 3">
 									<div class="caption">
 										<h3>Certificate Of Completion Learning Cake php 3</h3>
@@ -270,6 +279,9 @@
 									</div>
 								</div>
 							</div>
+							
+						</div>
+						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Learning Kotlin For Android Development">
@@ -279,8 +291,6 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/pdf-icon.png" alt="Certificate Of Completion Learning ReactJs 2">
@@ -328,6 +338,9 @@
 									</div>
 								</div>
 							</div>
+							
+						</div>
+						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="Certificate Of Completion Java Tutorial Course">
@@ -337,8 +350,6 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="Certificate Of Completion Javascript Tutorial Course">
@@ -385,6 +396,9 @@
 									</div>
 								</div>
 							</div>
+							
+						</div>
+						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="ITT Tech 2005 Spring Honors">
@@ -394,8 +408,6 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="ITT Tech IT Associate Of Science 2007-6-19">
@@ -443,6 +455,9 @@
 									</div>
 								</div>
 							</div>
+							
+						</div>
+						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="2nd Place Art Award Sweetwater High School National City 1994-6-7">
@@ -452,8 +467,6 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
 							<div class="col-xs-6 col-sm-4 col-md-2">
 								<div class="thumbnail">
 									<img src="images/certificate-icon.png" alt="itt-tech-2004-fall-honors">
