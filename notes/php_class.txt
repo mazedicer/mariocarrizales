@@ -13,17 +13,13 @@ class Address {
 	
 }
 
-
-
-?>
-
-DEFAULT VALUE FOR ARGUMENTS
+//DEFAULT VALUE FOR ARGUMENTS
 
 	function paint($color="red"){
 		echo "The color of the room is {$color}.";
 	}
 
-REFERENCE ASSIGNMENT
+//REFERENCE ASSIGNMENT
 	
 	same as alias
 	$b =& $a;
@@ -52,26 +48,26 @@ REFERENCE ASSIGNMENT
 		$a = 10;
 		$b =& ref_return(); //alias of $a
 
-FIND CLASS NAME OF OBJECTS
+//FIND CLASS NAME OF OBJECTS
 
 	get_class($address_business);
 	
 	($address_copy instanceOf Address)
 
-INSTANTIATION OF CLASS
+//INSTANTIATION OF CLASS
 
 	$address = new Address;
 
-CHANGING PROPERTY OF INSTATIATED CLASS
+//CHANGING PROPERTY OF INSTATIATED CLASS
 
 	$address->streetName = "Oregon";
 	
-CALLING A FUNCTION WITH INSTANTIATED OBJECTS
+//CALLING A FUNCTION WITH INSTANTIATED OBJECTS
 
 	$address->display();
 	
-VISIBILITY SCOPE
-
+//VISIBILITY SCOPE
+/*
 	Public - to all the program
 	Protected - within class and children class
 	Private - within the class
@@ -83,11 +79,11 @@ VISIBILITY SCOPE
 			MyBank::$my_money;
 			
 	final - prevents child classes from overriding and classes from extending
+*/
+//GETTER AND SETTERS
 
-GETTER AND SETTERS
-
-	analogy: bank teller is getter and setter for our money in the bank
-	ex,
+	//analogy: bank teller is getter and setter for our money in the bank
+	//ex,
 		class MyBank {
 			
 			private $my_money = 1; //nobody can access this, only from inside
@@ -106,7 +102,7 @@ GETTER AND SETTERS
 		
 		}//end class
 	
-MAGIC METHODS
+//MAGIC METHODS
 
 	__construct() //runs when instantiating the object
 	__get()
@@ -124,29 +120,34 @@ MAGIC METHODS
 			
 		}//end clone
 	
-SCOPE RESOLUTION OPERATOR
+//SCOPE RESOLUTION OPERATOR
 	
-	:: allows access to static properties and constants
-	calling a parent class from its child class 
+	// :: allows access to static properties and constants
+	// calling a parent class from its child class 
 		
 		//calling a method
 		$output .= parent::display();
 
-STATIC METHODS
-	cannot use $this, instead use self::function()
+//STATIC METHODS
+//cannot use 
+$this, 
+//instead use 
+self::function()
 	
-CONSTANTS
+//CONSTANTS
 
 	const ADDRESS_TYPE_RESIDENCE = 1;
 	$myAddressType = Address::ADDRESS_TYPE_RESIDENCE;
 	
-ABSTRACT CLASSES AND METHODS
+//ABSTRACT CLASSES AND METHODS
+/*contains at least one abstract method, which is a method without any actual code in it, just the name and the parameters, and that has been marked as "abstract". The purpose of this is to provide a kind of template to inherit from and to force the inheriting class to implement the abstract methods.
+An abstract class thus is something between a regular class and a pure interface. Also interfaces are a special case of abstract classes where ALL methods are abstract.*/
 
-	if class has abstract method, the class must be abstract also ex,
+//if class has abstract method, the class must be abstract also ex,
 		abstract class Address {}
 		
-INTERFACES
-
+//INTERFACES
+/*
 	-100% abstract classes
 	-Cannot be instantiated
 	-Shell
@@ -163,7 +164,7 @@ INTERFACES
 		When you know what methods you need but don't have the code details.
 		
 		Quickly map out the basic structures of your classes to serve as a template for others to follow --keeps the code-base predictable and consistent.
-	
+*/
 
 	interface Model {
 	
@@ -187,31 +188,9 @@ INTERFACES
 	
 	
 	
-CLONING AND COMPARING
-
+//CLONING AND COMPARING
+/*
 	== checks properties are the same
 	=== check that the objects are the same
-	
+*/
 	$address_park_clone = clone $address_park;
-	
-	
-FOREACH
-
-	foreach ($arr as $key => $value) {
-		echo "Key: $key; Value: $value<br />\n";
-	}
-	
-	foreach ($arr as $value) {
-		echo "Value: $value<br />\n";
-	}
-	
-	Reference of a $value and the last array element remain even after the foreach loop. It is recommended to destroy it by unset().
-	
-ARRAYS
-
-	count($arr)
-	
-VARIABLES
-
-	unset($var)
-	var_dump($var)

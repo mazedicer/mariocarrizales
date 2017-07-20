@@ -1,4 +1,336 @@
 <?php 
+//FOREACH
+
+	foreach ($arr as $key => $value) {
+		echo "Key: $key; Value: $value<br />\n";
+	}
+	
+	foreach ($arr as $value) {
+		echo "Value: $value<br />\n";
+	}
+	
+//Reference of a $value and the last array element remain even after the foreach loop. It is recommended to destroy it by unset().
+	
+//VARIABLES
+unset($var)
+var_dump($var)
+//ampersand (&) pass by reference 
+$a=5;
+function foo(&$var){return $var-1;}
+foo($a) // $a is now equal to 4 
+
+// ARRAYS
+//is_array($var) Finds whether a variable is an array
+
+/*explode(string $delimiter, string $string, int $limit) 
+$delimiter - Split a string by $delimiter boundary
+$string - the input string 
+$limit - If limit is set and positive, the returned array will contain a maximum of limit elements with the last element containing the rest of string.
+If delimiter is an empty string (""), explode() will return FALSE.
+returns an array of strings
+*/
+$pizza  = "piece1 piece2 piece3 piece4 piece5 piece6";
+$pieces = explode(" ", $pizza);
+echo $pieces[0]; // piece1
+echo $pieces[1]; // piece2
+// Example 2
+$data = "foo:*:1023:1000::/home/foo:/bin/sh";
+list($user, $pass, $uid, $gid, $gecos, $home, $shell) = explode(":", $data);
+echo $user; // foo
+echo $pass; // *
+
+/*implode(string $glue, array $pieces)- Join array elements with a glue string
+$glue - defaults to an empty string 
+$pieces - the array of strings to implode 
+Returns a string containing a string representation of all the array elements in the same order, with the glue string between each element.*/
+
+//split() DEPRECATED in PHP 5.3.0, and REMOVED in PHP 7.0.0
+
+/*preg_split(string $reg_exp,string $subject,int $limit,int $flag) - Split string by a regular expression
+Returns an array containing substrings of subject split along boundaries matched by pattern, or FALSE on failure.
+$flag: 
+	PREG_SPLIT_NO_EMPTY - only non-empty pieces will be returned
+	PREG_SPLIT_DELIM_CAPTURE - parenthesized expression in the delimiter pattern will be captured and returned as well
+	PREG_SPLIT_OFFSET_CAPTURE - for every occurring match the string offset will also be returned as an array of arrays Array(0=>Array(0=>chunk1,0),1=>Array(0=>chunk2,10)) */
+
+//unset()
+
+//array()	Creates an array
+$cars=array("Volvo","BMW","Toyota");
+
+//array_change_key_case(array,CASE_UPPER|CASE_LOWER) - Changes all keys in an array to lowercase or uppercase
+//Returns an array with its keys in lowercase or uppercase, or FALSE if array is not an array
+$age=array("Peter"=>"35","Ben"=>"37","Joe"=>"43");
+print_r(array_change_key_case($age,CASE_UPPER));
+
+//array_chunk(array,int $size,bool $preserve_keys=false) - Splits an array into chunks of arrays
+//$size - size of each chunk 
+//$preserve_keys - when set to true, original keys will be kept 
+$input_array = array('a', 'b', 'c', 'd', 'e');
+print_r(array_chunk($input_array, 2));
+print_r(array_chunk($input_array, 2, true));
+/*
+Array(0=>Array(0=>a,1=>b),1=>Array(0=>c,1=>d),2=>Array(0=>e))
+Array(0=>Array(0=>a,1=>b),1=>Array(2=>c,3=>d),2=>Array(4=>e))
+*/
+
+//array_column(array,column_key[index_key])	Returns the values from a single column in the input array
+//Returns an array of values representing a single column from the input array.
+$records = array(array('id' => 2135,'first_name' => 'John','last_name' => 'Doe',),
+    array('id' => 3245,'first_name' => 'Sally','last_name' => 'Smith',),
+    array('id' => 5342,'first_name' => 'Jane','last_name' => 'Jones',),
+    array('id' => 5623,'first_name' => 'Peter','last_name' => 'Doe',));
+$first_names = array_column($records, 'first_name');
+print_r($first_names);
+/*
+Array(0=>'John',1=>'Sally',2=>'Jane',3=>'Peter')
+*/
+
+//array_combine(array $keys,array $values) - Creates an array by using the elements from one "keys" array and one "values" array
+//Returns the combined array, FALSE if the number of elements for each array isn't equal.
+
+//array_count_values(array)	Counts all the values of an array
+//returns an associative array using the values of array as keys and their frequency in array as values.
+
+//array_diff(array,array,array...) - Compare arrays, and returns the differences (compare values only)
+//Returns an array containing the entries from array1 that are not present in any of the other arrays
+
+//array_diff_assoc(array,array,array...) - Compare arrays, and returns the differences (compare keys and values)
+
+//array_diff_key(array,array,array...) - Compare arrays, and returns the differences (compare keys only)
+//This function is like array_diff() except the comparison is done on the keys instead of the values.
+
+
+//array_diff_uassoc(array,array,comparison_function)	Compare arrays, and returns the differences (compare keys and values, using a user-defined key comparison function)
+function key_compare_func($a, $b){
+    if ($a === $b) {
+        return 0;
+    }
+    return ($a > $b)?1:-1;
+}
+$array1 = array("a" => "green", "b" => "brown", "c" => "blue", "red");
+$array2 = array("a" => "green", "yellow", "red");
+$result = array_diff_uassoc($array1, $array2, "key_compare_func");
+print_r($result);
+/*
+Array( "b"=>"brown","c"=>"blue",0=>"red")
+*/
+
+//array_diff_ukey(array,array,array...)	Compare arrays, and returns the differences (compare keys only, using a user-defined key comparison function)
+
+//array_fill(int $start_index,int $num,$value) - Fills an array with values
+//Fills an array with num entries of the value of the value parameter, keys starting at the start_index parameter.
+
+//array_fill_keys(array $keys,$value)	Fills an array with values, specifying keys
+//Fills an array with the value of the value parameter, using the values of the keys array as keys
+
+
+//array_filter(array,callback,int $flag=0) - Filters the values of an array using a callback function
+/*$flag:
+	ARRAY_FILTER_USE_KEY - pass key as the only argument to callback instead of the value
+	ARRAY_FILTER_USE_BOTH - pass both value and key as arguments to callback instead of the value
+Returns the filtered array.*/
+//function odd($var){return($var & 1)}
+$odds = array_filter($array1, "odd");
+
+//array_flip(array)	Flips/Exchanges all keys with their associated values in an array
+/*returns an array in flip order, i.e. keys from array become values and values from array become keys.
+values need to be either integer or string. A warning will be emitted if a value has the wrong type, and the key/value pair in question will not be included in the result. If a value has several occurrences, the latest key will be used as its value, and all others will be lost.*/
+
+//array_intersect(array,array,array...)	Compare arrays, and returns the matches (compare values only)
+
+//array_intersect_assoc(array,array,array...)	Compare arrays and returns the matches (compare keys and values)
+
+//array_intersect_key(array,array,array...)	Compare arrays, and returns the matches (compare keys only)
+
+//array_intersect_uassoc(array,array,array...)	Compare arrays, and returns the matches (compare keys and values, using a user-defined key comparison function)
+
+//array_intersect_ukey(array,array,[array...])	Compare arrays, and returns the matches (compare keys only, using a user-defined key comparison function)
+
+//array_key_exists($key,array)	Checks if the specified key exists in the array
+
+//array_keys(array,[$search_value,bool $strict=false])	Returns all the keys of an array
+/*Returns an array of all the keys, numeric and string in array.
+If the optional $search_value is specified, then only the keys for that value are returned. Otherwise, all the keys from the array are returned.
+$strict - Determines if strict comparison (===) should be used during the search*/
+$array = array("blue", "red", "green", "blue", "blue");
+print_r(array_keys($array, "blue"));
+//Array(0=>0,1=>3,2=>4)
+
+//array_map(callback,array,[array...])	Sends each value of an array to a user-made function, which returns new values
+/*callback - function to run for each element in each array
+Returns an array containing all the elements of array1 after applying the callback function to each one.*/
+function cube($n){return($n * $n * $n);}
+$a = array(1,2,3,4,5);
+$b = array_map("cube",$a);
+//Array(0=>1,1=>8,2=>27,3=>64,4=>125)
+
+//array_merge(array,[array...])	Merges one or more arrays into one array
+/*Merges the elements of one or more arrays together so that the values of one are appended to the end of the previous one. It returns the resulting array.
+If the input arrays have the same string keys, then the later value for that key will overwrite the previous one. If, however, the arrays contain numeric keys, the later value will not overwrite the original value, but will be appended.
+Values in the input array with numeric keys will be renumbered with incrementing keys starting from zero in the result array.
+If you want to append array elements from the second array to the first array while not overwriting the elements from the first array and not re-indexing, use the + array union operator. The keys from the first array will be preserved. If an array key exists in both arrays, then the element from the first array will be used and the matching key's element from the second array will be ignored*/
+
+
+//array_merge_recursive(array,array...)	Merges one or more arrays into one array recursively
+/*If the input arrays have the same string keys, then the values for these keys are merged together into an array, and this is done recursively, so that if one of the values is an array itself, the function will merge it with a corresponding entry in another array too. If, however, the arrays have the same numeric key, the later value will not overwrite the original value, but will be appended.*/
+
+//array_multisort(array,array_sort_order=SORT_ASC|SORT_DESC,array_sort_flag=SORT_REGULAR)	Sorts multiple or multi-dimensional arrays
+/*Associative (string) keys will be maintained, but numeric keys will be re-indexed.
+array_sort_flag:
+	SORT_REGULAR - compare normally
+	SORT_NUMERIC - compare numerically
+	SORT_STRING - compare items as string 
+	SORT_LOCALE_STRING - compare items as strings, based on the current locale. It uses the locale, which can be changed using setlocale()
+	SORT_NATURAL - compare items as strings using "natural ordering" like natsort()
+	SORT_FLAG_CASE - can be combined (bitwise OR) with SORT_STRING or SORT_NATURAL to sort strings case-insensitively*/
+
+//array_pad()	Inserts a specified number of items, with a specified value, to an array
+
+//array_pop()	Deletes the last element of an array
+
+//array_product()	Calculates the product of the values in an array
+
+//array_push()	Inserts one or more elements to the end of an array
+
+//array_rand()	Returns one or more random keys from an array
+
+//array_reduce()	Returns an array as a string, using a user-defined function
+
+//array_replace()	Replaces the values of the first array with the values from following arrays
+
+//array_replace_recursive()	Replaces the values of the first array with the values from following arrays recursively
+
+//array_reverse()	Returns an array in the reverse order
+
+//array_search()	Searches an array for a given value and returns the key
+
+//array_shift()	Removes the first element from an array, and returns the value of the removed element
+
+//array_slice()	Returns selected parts of an array
+
+//array_splice()	Removes and replaces specified elements of an array
+
+//array_sum()	Returns the sum of the values in an array
+
+//array_udiff()	Compare arrays, and returns the differences (compare values only, using a user-defined key comparison function)
+
+//array_udiff_assoc()	Compare arrays, and returns the differences (compare keys and values, using a built-in function to compare the keys and a user-defined function to compare the values)
+
+//array_udiff_uassoc()	Compare arrays, and returns the differences (compare keys and values, using two user-defined key comparison functions)
+
+//array_uintersect()	Compare arrays, and returns the matches (compare values only, using a user-defined key comparison function)
+
+//array_uintersect_assoc()	Compare arrays, and returns the matches (compare keys and values, using a built-in function to compare the keys and a user-defined function to compare the values)
+
+//array_uintersect_uassoc()	Compare arrays, and returns the matches (compare keys and values, using two user-defined key comparison functions)
+
+//array_unique()	Removes duplicate values from an array
+
+//array_unshift()	Adds one or more elements to the beginning of an array
+
+//array_values()	Returns all the values of an array
+
+//array_walk()	Applies a user function to every member of an array
+
+//array_walk_recursive()	Applies a user function recursively to every member of an array
+// This function will recurse into deeper arrays.
+
+//arsort()	Sorts an associative array in descending order, according to the value
+
+//asort()	Sorts an associative array in ascending order, according to the value
+
+//compact($varname,[$...])	Create array containing variables and their values
+$city  = "San Francisco";
+$state = "CA";
+$event = "SIGGRAPH";
+$location_vars = array("city", "state");
+$result = compact("event", "nothing_here", $location_vars);
+//Array("event"=>"SIGGRAPH","city"=>"CA","state"=>"CA")
+
+//count()	Returns the number of elements in an array
+
+//current()	Returns the current element in an array
+
+//each()	Returns the current key and value pair from an array
+//typically used in conjunction with list() to traverse an array
+$fruit = array('a' => 'apple', 'b' => 'banana', 'c' => 'cranberry');
+reset($fruit);
+while (list($key, $val) = each($fruit)) {
+    echo "$key => $val\n";
+}
+/*
+a => apple
+b => banana
+c => cranberry
+*/
+
+//end()	Sets the internal pointer of an array to its last element
+
+//extract()	Imports variables into the current symbol table from an array
+
+//in_array()	Checks if a specified value exists in an array
+
+//key()	Fetches a key from an array
+
+//krsort()	Sorts an associative array in descending order, according to the key
+
+//ksort()	Sorts an associative array in ascending order, according to the key
+
+//list()	Assigns variables as if they were an array
+//ex1
+$info = array('coffee', 'brown', 'caffeine');
+
+// Listing all the variables
+list($drink, $color, $power) = $info;
+echo "$drink is $color and $power makes it special.\n";
+//coffee is brown and caffeine makes it special.
+
+// Listing some of them
+list($drink, , $power) = $info;
+echo "$drink has $power.\n";
+//coffee has caffeine 
+
+// Or let's skip to only the third one
+list( , , $power) = $info;
+echo "I need $power!\n";
+//I need caffeine 
+
+//ex2 
+$result = $pdo->query("SELECT id, name, salary FROM employees");
+while (list($id, $name, $salary) = $result->fetch(PDO::FETCH_NUM)) {
+	//use $id, $name, and $salary 
+}
+
+//natcasesort()	Sorts an array using a case insensitive "natural order" algorithm
+
+//natsort()	Sorts an array using a "natural order" algorithm
+
+//next()	Advance the internal array pointer of an array
+
+//pos()	Alias of current()
+
+//prev()	Rewinds the internal array pointer
+
+//range()	Creates an array containing a range of elements
+
+//reset()	Sets the internal pointer of an array to its first element
+
+//rsort()	Sorts an indexed array in descending order
+
+//shuffle()	Shuffles an array
+
+//sizeof()	Alias of count()
+
+//sort()	Sorts an indexed array in ascending order
+
+//uasort()	Sorts an array by values using a user-defined comparison function
+
+//uksort()	Sorts an array by keys using a user-defined comparison function
+
+//usort()	Sorts an array using a user-defined comparison function
+
+
 /* INTERFACES */
 
 //interfaces/interface.php 
@@ -51,8 +383,17 @@ class Table implements TableInterface, LogInterface, Countable {
 echo ( new Table() )->count(); //10
 
 /* TRAITS 
-provide implementation
-horzontal code sharing 
+If you can copy and paste the code from one class to another (and we've all done this, even though we try not to because its code duplication) then you have a candidate for a trait.
+provide implementation.
+horizontal code sharing. 
+intended to group functionality.
+cannot instantiate a trait on its own. 
+An inherited member from a base class is overridden by a member inserted by a Trait. 
+members from the current class override Trait methods, which in turn override inherited methods.
+Multiple Traits can be inserted into a class by listing them in the use statement, separated by commas.
+The magic constant __TRAIT__ will give you the name of the trait.
+Traits vs inheritance is that methods defined in traits can access methods and properties of the class they're used in, including private ones.
+A trait is not inherited from, but rather included or mixed-in, thus becoming part of "this class".   Traits also provide a more controlled means of resolving conflicts that inevitably arise when using multiple inheritance in the few languages that support them (C++).  Most modern languages are going the approach of a "traits" or "mixin" style system as opposed to multiple-inheritance, largely due to the ability to control ambiguities if a method is declared in multiple "mixed-in" classes.
 */
 //traits/trait.php 
 trait Log {
@@ -68,23 +409,200 @@ class Table {
 	}
 }
 (new Table() )->save();
+/* TRAITS CONFLICT RESOLUTION
+If two Traits insert a method with the same name, a fatal error is produced, if the conflict is not explicitly resolved. To resolve naming conflicts between Traits used in the same class, the insteadof operator needs to be used to choose exactly one of the conflicting methods. Since this only allows one to exclude methods, the as operator can be used to add an alias to one of the methods. Note the as operator does not rename the method and it does not affect any other method either.*/
+trait A {
+    public function smallTalk() {
+        echo 'a';
+    }
+    public function bigTalk() {
+        echo 'A';
+    }
+}
+trait B {
+    public function smallTalk() {
+        echo 'b';
+    }
+    public function bigTalk() {
+        echo 'B';
+    }
+}
+
+class Talker {
+    use A, B {
+        B::smallTalk insteadof A;
+        A::bigTalk insteadof B;
+    }
+}
+/* TRAITS METHOD VISIBILITY and Alias */
+trait HelloWorld {
+    public function sayHello() {
+        echo 'Hello World!';
+    }
+}
+// Change visibility of sayHello
+class MyClass1 {
+    use HelloWorld { sayHello as protected; }
+}
+// Alias method with changed visibility
+// sayHello visibility not changed
+class MyClass2 {
+    use HelloWorld { sayHello as private myPrivateHello; }
+}
+// TRAITS from Other Traits 
+trait Hello {
+    public function sayHello() {
+        echo 'Hello ';
+    }
+}
+
+trait World {
+    public function sayWorld() {
+        echo 'World!';
+    }
+}
+
+trait HelloWorld {
+    use Hello, World;
+}
+//Traits support the use of abstract methods in order to impose requirements upon the exhibiting class
+trait Hello {
+    public function sayHelloWorld() {
+        echo 'Hello'.$this->getWorld();
+    }
+    abstract public function getWorld();
+}
+//Traits can define both static members and static methods
+trait StaticExample {
+    public static function doSomething() {
+        return 'Doing something';
+    }
+}
+class Example {
+    use StaticExample;
+}
+Example::doSomething();
+/* Unlike inheritance; 
+if a trait has static properties, each class using that trait has independent instances of those properties.*/
+
 
 /* MAGIC METHODS 
 __ (double underscore)
-do work for free
-__sleep - when you searilize object serialize( $Object )
-__wakeup - when object is unserialized unserialize( ObjectSerialized )
-__invoke - create invocable classes. A Class with one method that runs automatically when 
-	instantiating the class and passing the arguments
-__debuginfo - runs at var_dump( $object )
-__toString - string representation of the object
-__set - set a property 
-__get - get a property 
-__isset - called when attempt to call empty or isset on property that doesn't exist 
-__unset - called when attempt to call unset on a property that doesn't exist 
-_call - called when attempt to call a method 
-__callStatic - called when attempt to call a method under a static context
+do work for free*/
+// __construct, __destruct
+class test {
+	function __construct(){
+		echo 1;
+	}
+	function __destruct(){
+		echo 2;
+	}
+}
+//__construct automatically executes and prints 1 
+$objA = new test(); 
+//__destruct triggers and prints 2
+unset( $objA );
+
+//__sleep - when you serialize( $Object )
+/*serialize() checks if your class has a function with the magic name __sleep(). If so, that function is executed prior to any serialization. It can clean up the object and is supposed to return an array with the names of all variables of that object that should be serialized. If the method doesn't return anything then NULL is serialized and E_NOTICE is issued.*/
+
+//__wakeup - when object is unserialize( ObjectSerialized )
+/* unserialize() checks for the presence of a function with the magic name __wakeup(). If present, this function can reconstruct any resources that the object may have. The intended use of __wakeup() is to reestablish any database connections that may have been lost during serialization and perform other reinitialization tasks.*/
+class Connection{
+    protected $link;
+    private $dsn, $username, $password;
+    public function __construct($dsn, $username, $password){
+        $this->dsn = $dsn;
+        $this->username = $username;
+        $this->password = $password;
+        $this->connect();
+    }
+    private function connect(){
+        $this->link = new PDO($this->dsn, $this->username, $this->password);
+    }
+    public function __sleep(){
+        return array('dsn', 'username', 'password');
+    }
+    public function __wakeup(){
+        $this->connect();
+    }
+}
+
+//__invoke - called when a script tries to call an object as a function
+class CallableClass{
+    public function __invoke($x){
+        var_dump($x);
+    }
+}
+$obj = new CallableClass;
+$obj(5);
+var_dump(is_callable($obj)); 
+/*
+int(5)
+bool(true)
 */
+
+//__debuginfo - runs at var_dump( $object )
+
+//__toString - string representation of the object
+/*allows a class to decide how it will react when it is treated like a string.*/
+class TestClass{
+    public $foo;
+    public function __construct($foo){
+        $this->foo = $foo;
+    }
+    public function __toString(){
+        return $this->foo;
+    }
+}
+$class = new TestClass('Hello');
+echo $class; //Hello 
+
+//__set - set a property, 
+//__get - get a property 
+//_call - called when attempt to call a method 
+//__callStatic - called when attempt to call a method under a static context
+class test{
+	function __get($name){
+		echo "__get exectued with name $name";
+	}
+	function __set( $name, $value ){
+		echo "__set executed with name $name, value $value";
+	}
+	function __call($name, $parameter){
+		//taking recursive array in string 
+		$a=print_r($parameter,true);
+	}
+	static function __callStatic($name,$parameter){
+		$a=print_r($parameter,true);
+		echo "__callStatic executed with name $name, paramter $a";
+	}
+}
+$a = new test();
+//__set will execute 
+$a->abc = 3;
+//__get will execute 
+$app = $a->pgr;
+//__call will execute 
+$a->getMyName('Mario','Carrizales','etc')
+//__callStatic will execute 
+test::xyz('1','qpc','test');
+//__isset - called when attempt to call empty or isset on property that doesn't exist 
+//__unset - called when attempt to call unset on a property that doesn't exist 
+class test{
+	function __isset($name){
+		echo "__isset is called for $name";
+	}
+	function __unset($name){
+		echo "__unset is called for $name";
+	}
+}
+$a = new test();
+//__isset will execute 
+isset($a->x);
+//__unset will execute 
+unset($a->x);
+
 //__invoke 
 class Compare {
 	public function __invoke( $a, $b ){
@@ -140,7 +658,7 @@ print_r( $array );
 			return ( ( int )$save == $value && $value > 0 );
 		}
 	}
-	$invoke - new IsPositiveInt();
+	$invoke = new IsPositiveInt();
 	var_dump( $invoke( 5 ) ); //true 
 	
 /* Exceptions */
@@ -181,7 +699,7 @@ arraySum( [1,2,3], [4,5,6], [7,8,9] );
 Array( [0] => 6, [1] => 15, [2] => 24 )
 */
 
-//Null coalescing operator ?? 
+//Null coalescing operator ?? is a shorter way to write a ternary if statement 
 /* fetches the value of $_GET['user'] and returns 'nobody' if
 it does not exist */
 $username = $_GET['user'] ?? 'nobody';
@@ -260,7 +778,7 @@ function gen(){
 	yield 2;
 	yield from gen2();
 }
-function get2(){
+function gen2(){
 	yield 3;
 	yield 4;
 }

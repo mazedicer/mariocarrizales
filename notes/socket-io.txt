@@ -1,0 +1,39 @@
+//middleware
+npm install socket.io
+//index.js
+const express = require('express');
+const http = require('http');
+let app=express();
+let server=http.createServer(app);
+let io=require('socket.io')(server);
+app.use(express.static(__dirname+'/public'));
+io.on('connection',function(socket){
+	console.log('socket connected');
+	socket.on('message', function(message){
+		console.log(message);
+		//emit to every connected socket 
+		io.emit('message', message);
+	});
+});
+server.listen(3000, function(){
+	console.log('server running');
+});
+//index.html
+<ul id="message"></ul>
+<input id="chat" type="text" name="">
+<button id="send">send</button>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+	var socket=io();
+	$('#send').on('click', function(){
+		socket.emit('message', $('#chat').val());
+		$('#chat').val("");
+	});
+	socket.on('message', function(message){
+		var $li=$('<li>').text(message);
+		$('#messages').append($li);
+	});
+</script>
+//public addressable url using ngrok 
+ngrok http 3000 --subdomain=mysubdomain
+http://mysubdomain.ngrok.io 

@@ -14,13 +14,14 @@ When a model changes, it automatically updates the HTML of your application. */
 
 var AppView = Backbone.View.extend({
 	//el - stands for element. Every view has an element associated with HTML content
-	//will be rendered.
+	//will be rendered in this case el returns <div id="container"></div>
 	el: '#container',
 	//first function call when this view is instantiated.
 	initialize: function(){
 		this.render();
 	},
 	// $el - cached jQuery object(el), in which you can use jQuery functions
+	// It still references the same el DOM object el 
 	// to push content
 	render: function(){
 		this.$el.html( "<h1>Hello Man!</h1>" );
@@ -65,6 +66,17 @@ When creating a collection, we can define what type of model that colleciton is 
 along with the instance of properties. Any event triggered on a model will also trigger on the colleciton in the model.
 
 It also takes the request from the view, bind events and synchronizes the data with the requested data and sends the response back to the HTTP client.*/
+StudentModel = Backbone.Model.extend({
+	default: {
+		name: "unknown"
+	}
+});
+StudentCollection = Backbone.Collection.extend({
+	model: StudentModel
+});
+var jon = new StudentModel();
+var vick = new StudentModel();
+var math_class_students = new StudentCollection( [ jon, vick ] );
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /*Events 
@@ -168,6 +180,15 @@ causes the listenTo occur only once before the callback function is being remove
 //The object 'myVal1' listen once for the 'listenMe' event triggered on object 'myVal'
 myVal1.listenToOnce(myVal, 'listenMe', listenMe);
 
+//________________________________________________________________________________________
+/* events property */
+events: {
+	"click #DOM_ELEMENT_ID" : "callThisFunction",
+	"mouseover .class_name" : "callThisOtherFunction"
+},
+callThisFunction : function(){
+	//fire this code when <element id="DOM_ELEMENT_ID"> is clicked 
+}
 
 //Built-in Events 
 //adding model to a collection 
@@ -292,8 +313,14 @@ app.singleXView = Backbone.View.extend({
 var app = app || {};
 //the view for all the Xs 
 app.allXView = Backbone.View.extend({
+	//optional properties will automatically create the el, $el properties by calling 
+	// this.el, this.$el 
+	//can be a div, span, etc.. 
+	// e.g. <span class="cake" id="span1"></span>
+	// tagName: "span",
+	// className: "cake",
+	// id: "span1"
 	tagName: "section",
-	//
 	render: function(){
 		this.collection.each( this.addX, this );
 		// returning this allows chaining with other render methods 
@@ -847,6 +874,52 @@ reflect "how your data model looks like". They represent the model's data to the
 //template - While rendering the view, template creates reusable copies of markup and provides access to instance data.
 
 //render - contains the logic for rendering a template.
+//'ViewDemo' is a name of the view class
+ var ViewDemo = Backbone.View.extend ({
+	//'el' uses '#mydiv' as the view reference
+	el: $('#mydiv'),
+	//'template' provides access to instance property data when rendering the view
+	template: _.template("Welcome to <%= name %>"),
+	//This function is called when the view is instantiated
+	initialize: function() {
+	   this.render();
+	},
+	//'render' provides the logic required to construct the view
+	render: function() {
+	   //'$el' is cached object that push the content defined within it and
+	   //display the value of 'name' when 'template' access the data
+	   this.$el.html(this.template({name: 'Tutorial'}));
+	}
+ });
+ //'myview' is an instance of the 'ViewDemo' class
+ var myview = new ViewDemo();
+ // example 2
+//there are different styles to create the same functionality 
+//define a template 
+<script type="text/template" id="ourTemplate">
+	<span>Hello</span>
+</script>
+//define el 
+<div id="unique"></div>
+//create the view 
+TheView = Backbone.View.extend({
+	initialize: function(){
+		this.render();
+	},
+	render: function(){
+		//using _.template function to compile it into template, then feed it into el
+		var template = _.template( $("#outTemplate").html(), {} );
+		this.$el.html( template );
+	}
+});
+$( document ).ready( function(){
+	var aView = new TheView( { el: $("#unique") } );
+});
+/*result 
+<div id="unique">
+	<span>Hello</span>
+</div>
+*/
 
 //remove - Removes a view from the DOM.
 
