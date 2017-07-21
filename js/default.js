@@ -168,7 +168,7 @@
 	function displayNotes( notes_array ){
 		var template = `<div class="row">`;
 		for( var i = 1; i < notes_array.length; i++ ){
-			var title = notes_array[i].replace( /notes\//g, " " );
+			var title = notes_array[i].replace( /(notes\/|-)/g, " " );
 			template += `<div class="col-xs-6 col-sm-4 col-md-2">
 						<div class="thumbnail">
 							<img src="images/notes-icon.png" alt="${title}">
