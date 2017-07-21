@@ -106,7 +106,46 @@
 		};
 	}
 	changeImage();
-
+//get certificates
+	fetch( "notes.php", {
+		method: 'post',
+		headers: {
+			"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+		},
+		body: 'get_cert=getcert'
+	} )
+	.then( function( response ){
+		if( response.status === 500 || response.status === 200 ){
+			return response.json()
+			.then( function( data ){
+				displayCerts( data );
+			} );
+		}
+	} )
+	.catch( function( error ){
+		console.log( 'Request failed', error );
+	} );
+	function displayCerts( certs_array ){
+		var template = `<div class="row">`;
+		for( var i = 1; i < certs_array.length; i++ ){
+			var title = certs_array[i].replace( /(certificates\/|-)/g, " " );
+			template += `<div class="col-xs-6 col-sm-4 col-md-2">
+						<div class="thumbnail">
+							<img src="images/certificate-icon.png" alt="${title}">
+							<div class="caption">
+								<h3>${title}</h3>
+								<p><a href="${certs_array[i]}" class="btn btn-primary" target="_blank" role="button">Open</a></p>
+							</div>
+						</div>
+					</div>`;
+			if( i >= 6 && i % 6 === 0 ){
+				template += `</div><div class="row">`;
+			}
+		}
+		template += `</div>`;
+		document.getElementById( "certs_content_div" ).innerHTML = template;
+	}
+	
 //get notes
 	fetch( "notes.php", {
 		method: 'post',

@@ -19,6 +19,358 @@ $a=5;
 function foo(&$var){return $var-1;}
 foo($a) // $a is now equal to 4 
 
+// STRINGS 
+//addcslashes()	Returns a string with backslashes in front of the specified characters
+//addslashes()	Returns a string with backslashes in front of predefined characters
+//bin2hex()	Converts a string of ASCII characters to hexadecimal values
+//chop()	Removes whitespace or other characters from the right end of a string
+//chr()	Returns a character from a specified ASCII value
+//chunk_split()	Splits a string into a series of smaller parts
+//convert_cyr_string()	Converts a string from one Cyrillic character-set to another
+//convert_uudecode()	Decodes a uuencoded string
+//convert_uuencode()	Encodes a string using the uuencode algorithm
+//count_chars()	Returns information about characters used in a string
+//crc32()	Calculates a 32-bit CRC for a string
+//crypt()	One-way string hashing
+//echo()	Outputs one or more strings
+//explode()	Breaks a string into an array
+//fprintf()	Writes a formatted string to a specified output stream
+//get_html_translation_table()	Returns the translation table used by htmlspecialchars() and htmlentities()
+//hebrev()	Converts Hebrew text to visual text
+//hebrevc()	Converts Hebrew text to visual text and new lines (\n) into <br>
+//hex2bin()	Converts a string of hexadecimal values to ASCII characters
+//html_entity_decode()	Converts HTML entities to characters
+//htmlentities()	Converts characters to HTML entities
+//htmlspecialchars_decode()	Converts some predefined HTML entities to characters
+//htmlspecialchars()	Converts some predefined characters to HTML entities
+//implode()	Returns a string from the elements of an array
+//join()	Alias of implode()
+//lcfirst()	Converts the first character of a string to lowercase
+//levenshtein()	Returns the Levenshtein distance between two strings
+//localeconv()	Returns locale numeric and monetary formatting information
+//ltrim()	Removes whitespace or other characters from the left side of a string
+//md5()	Calculates the MD5 hash of a string
+//md5_file()	Calculates the MD5 hash of a file
+//metaphone()	Calculates the metaphone key of a string
+//money_format()	Returns a string formatted as a currency string
+//nl_langinfo()	Returns specific local information
+//nl2br()	Inserts HTML line breaks in front of each newline in a string
+//number_format()	Formats a number with grouped thousands
+//ord()	Returns the ASCII value of the first character of a string
+//parse_str()	Parses a query string into variables
+//print()	Outputs one or more strings
+//printf()	Outputs a formatted string
+//quoted_printable_decode()	Converts a quoted-printable string to an 8-bit string
+//quoted_printable_encode()	Converts an 8-bit string to a quoted printable string
+//quotemeta()	Quotes meta characters
+//rtrim()	Removes whitespace or other characters from the right side of a string
+//setlocale()	Sets locale information
+//sha1()	Calculates the SHA-1 hash of a string
+//sha1_file()	Calculates the SHA-1 hash of a file
+//similar_text()	Calculates the similarity between two strings
+//soundex()	Calculates the soundex key of a string
+//sprintf()	Writes a formatted string to a variable
+//sscanf()	Parses input from a string according to a format
+//str_getcsv()	Parses a CSV string into an array
+//str_ireplace()	Replaces some characters in a string (case-insensitive)
+//str_pad()	Pads a string to a new length
+//str_repeat()	Repeats a string a specified number of times
+//str_replace()	Replaces some characters in a string (case-sensitive)
+//str_rot13()	Performs the ROT13 encoding on a string
+//str_shuffle()	Randomly shuffles all characters in a string
+//str_split()	Splits a string into an array
+//str_word_count()	Count the number of words in a string
+//strcasecmp()	Compares two strings (case-insensitive)
+//strchr()	Finds the first occurrence of a string inside another string (alias of strstr())
+//strcmp()	Compares two strings (case-sensitive)
+//strcoll()	Compares two strings (locale based string comparison)
+//strcspn()	Returns the number of characters found in a string before any part of some specified characters are found
+//strip_tags()	Strips HTML and PHP tags from a string
+//stripcslashes()	Unquotes a string quoted with addcslashes()
+//stripslashes()	Unquotes a string quoted with addslashes()
+//stripos()	Returns the position of the first occurrence of a string inside another string (case-insensitive)
+//stristr()	Finds the first occurrence of a string inside another string (case-insensitive)
+//strlen()	Returns the length of a string
+//strnatcasecmp()	Compares two strings using a "natural order" algorithm (case-insensitive)
+//strnatcmp()	Compares two strings using a "natural order" algorithm (case-sensitive)
+//strncasecmp()	String comparison of the first n characters (case-insensitive)
+//strncmp()	String comparison of the first n characters (case-sensitive)
+//strpbrk()	Searches a string for any of a set of characters
+//strpos()	Returns the position of the first occurrence of a string inside another string (case-sensitive)
+//strrchr()	Finds the last occurrence of a string inside another string
+//strrev()	Reverses a string
+//strripos()	Finds the position of the last occurrence of a string inside another string (case-insensitive)
+//strrpos()	Finds the position of the last occurrence of a string inside another string (case-sensitive)
+//strspn()	Returns the number of characters found in a string that contains only characters from a specified charlist
+//strstr()	Finds the first occurrence of a string inside another string (case-sensitive)
+//strtok()	Splits a string into smaller strings
+//strtolower()	Converts a string to lowercase letters
+//strtoupper()	Converts a string to uppercase letters
+//strtr()	Translates certain characters in a string
+//substr()	Returns a part of a string
+//substr_compare()	Compares two strings from a specified start position (binary safe and optionally case-sensitive)
+//substr_count()	Counts the number of times a substring occurs in a string
+//substr_replace()	Replaces a part of a string with another string
+//trim()	Removes whitespace or other characters from both sides of a string
+//ucfirst()	Converts the first character of a string to uppercase
+//ucwords()	Converts the first character of each word in a string to uppercase
+//vfprintf()	Writes a formatted string to a specified output stream
+//vprintf()	Outputs a formatted string
+//vsprintf()	Writes a formatted string to a variable
+//wordwrap()	Wraps a string to a given number of characters
+
+//FILTERS
+//filter_has_var()	Checks if a variable of a specified input type exist
+//filter_id()	Returns the filter ID of a specified filter name
+//filter_input()	Gets an external variable (e.g. from form input) and optionally filters it
+//filter_input_array()	Gets external variables (e.g. from form input) and optionally filters them
+//filter_list()	Returns a list of all supported filters
+//filter_var_array()	Gets multiple variables and filter them
+//filter_var()	Filters a variable with a specified filter
+
+//HTTP
+//header()	Sends a raw HTTP header to a client
+//headers_list()	Returns a list of response headers sent (or ready to send)
+//headers_sent()	Checks if / where the HTTP headers have been sent
+//setcookie()	Defines a cookie to be sent along with the rest of the HTTP headers
+//setrawcookie()	Defines a cookie (without URL encoding) to be sent along with the rest of the HTTP headers
+
+//FTP
+//ftp_alloc()	Allocates space for a file to be uploaded to the FTP server
+//ftp_cdup()	Changes to the parent directory on the FTP server
+//ftp_chdir()	Changes the current directory on the FTP server
+//ftp_chmod()	Sets permissions on a file via FTP
+//ftp_close()	Closes an FTP connection
+//ftp_connect()	Opens an FTP connection
+//ftp_delete()	Deletes a file on the FTP server
+//ftp_exec()	Executes a command on the FTP server
+//ftp_fget()	Downloads a file from the FTP server and saves it into an open local file
+//ftp_fput()	Uploads from an open file and saves it to a file on the FTP server
+//ftp_get_option()	Returns runtime options of the FTP connection
+//ftp_get()	Downloads a file from the FTP server
+//ftp_login()	Logs in to the FTP connection
+//ftp_mdtm()	Returns the last modified time of a specified file
+//ftp_mkdir()	Creates a new directory on the FTP server
+//ftp_nb_continue()	Continues retrieving/sending a file (non-blocking)
+//ftp_nb_fget()	Downloads a file from the FTP server and saves it into an open file (non-blocking)
+//ftp_nb_fput()	Uploads from an open file and saves it to a file on the FTP server (non-blocking)
+//ftp_nb_get()	Downloads a file from the FTP server (non-blocking)
+//ftp_nb_put()	Uploads a file to the FTP server (non-blocking)
+//ftp_nlist()	Returns a list of files in the specified directory on the FTP server
+//ftp_pasv()	Turns passive mode on or off
+//ftp_put()	Uploads a file to the FTP server
+//ftp_pwd()	Returns the current directory name
+//ftp_quit()	An alias of ftp_close()
+//ftp_raw()	Sends a raw command to the FTP server
+//ftp_rawlist()	Returns a list of files with file information from a specified directory
+//ftp_rename()	Renames a file or directory on the FTP server
+//ftp_rmdir()	Deletes an empty directory on the FTP server
+//ftp_set_option()	Sets runtime options for the FTP connection
+//ftp_site()	Sends an FTP SITE command to the FTP server
+//ftp_size()	Returns the size of the specified file
+//ftp_ssl_connect()	Opens a secure SSL-FTP connection
+//ftp_systype()	Returns the system type identifier of the FTP server
+
+//FTP constants 
+//FTP_ASCII	Integer	PHP 3
+//FTP_TEXT	Integer	PHP 3
+//FTP_BINARY	Integer	PHP 3
+//FTP_IMAGE	Integer	PHP 3
+//FTP_TIMEOUT_SEC	Integer	PHP 3
+//FTP_AUTOSEEK	Integer	PHP 4.3
+//FTP_AUTORESUME	Integer	PHP 4.3
+//FTP_FAILED	Integer	PHP 4.3
+//FTP_FINISHED	Integer	PHP 4.3
+//FTP_MOREDATA	Integer	PHP 4.3
+
+//FILESYSTEM
+//basename()	Returns the filename component of a path
+//chgrp()	Changes the file group
+//chmod()	Changes the file mode
+//chown()	Changes the file owner
+//clearstatcache()	Clears the file status cache
+//copy()	Copies a file
+//delete()	See unlink() or unset()
+//dirname()	Returns the directory name component of a path
+//disk_free_space()	Returns the free space of a directory
+//disk_total_space()	Returns the total size of a directory
+//diskfreespace()	Alias of disk_free_space()
+//fclose()	Closes an open file
+//feof()	Tests for end-of-file on an open file
+//fflush()	Flushes buffered output to an open file
+//fgetc()	Returns a character from an open file
+//fgetcsv()	Parses a line from an open file, checking for CSV fields
+//fgets()	Returns a line from an open file
+//fgetss()	Returns a line, with HTML and PHP tags removed, from an open file
+//file()	Reads a file into an array
+//file_exists()	Checks whether or not a file or directory exists
+//file_get_contents()	Reads a file into a string
+//file_put_contents()	Writes a string to a file
+//fileatime()	Returns the last access time of a file
+//filectime()	Returns the last change time of a file
+//filegroup()	Returns the group ID of a file
+//fileinode()	Returns the inode number of a file
+//filemtime()	Returns the last modification time of a file
+//fileowner()	Returns the user ID (owner) of a file
+//fileperms()	Returns the permissions of a file
+//filesize()	Returns the file size
+//filetype()	Returns the file type
+//flock()	Locks or releases a file
+//fnmatch()	Matches a filename or string against a specified pattern
+//fopen()	Opens a file or URL
+//fpassthru()	Reads from an open file, until EOF, and writes the result to the output buffer
+//fputcsv()	Formats a line as CSV and writes it to an open file
+//fputs()	Alias of fwrite()
+//fread()	Reads from an open file
+//fscanf()	Parses input from an open file according to a specified format
+//fseek()	Seeks in an open file
+//fstat()	Returns information about an open file
+//ftell()	Returns the current position in an open file
+//ftruncate()	Truncates an open file to a specified length
+//fwrite()	Writes to an open file
+//glob()	Returns an array of filenames / directories matching a specified pattern
+//is_dir()	Checks whether a file is a directory
+//is_executable()	Checks whether a file is executable
+//is_file()	Checks whether a file is a regular file
+//is_link()	Checks whether a file is a link
+//is_readable()	Checks whether a file is readable
+//is_uploaded_file()	Checks whether a file was uploaded via HTTP POST
+//is_writable()	Checks whether a file is writeable
+//is_writeable()	Alias of is_writable()
+//lchgrp()	Changes group ownership of symlink
+//lchown()	Changes user ownership of symlink
+//link()	Creates a hard link
+//linkinfo()	Returns information about a hard link
+//lstat()	Returns information about a file or symbolic link
+//mkdir()	Creates a directory
+//move_uploaded_file()	Moves an uploaded file to a new location
+//parse_ini_file()	Parses a configuration file
+//parse_ini_string()	Parses a configuration string
+//pathinfo()	Returns information about a file path
+//pclose()	Closes a pipe opened by popen()
+//popen()	Opens a pipe
+//readfile()	Reads a file and writes it to the output buffer
+//readlink()	Returns the target of a symbolic link
+//realpath()	Returns the absolute pathname
+//realpath_cache_get()	Returns realpath cache entries
+//realpath_cache_size()	Returns realpath cache size
+//rename()	Renames a file or directory
+//rewind()	Rewinds a file pointer
+//rmdir()	Removes an empty directory
+//set_file_buffer()	Sets the buffer size of an open file
+//stat()	Returns information about a file
+//symlink()	Creates a symbolic link
+//tempnam()	Creates a unique temporary file
+//tmpfile()	Creates a unique temporary file
+//touch()	Sets access and modification time of a file
+//umask()	Changes file permissions for files
+//unlink()	Deletes a file
+
+//DIRECTORY
+//chdir()	Changes the current directory
+//chroot()	Changes the root directory
+//closedir()	Closes a directory handle
+//dir()	Returns an instance of the Directory class
+//getcwd()	Returns the current working directory
+//opendir()	Opens a directory handle
+//readdir()	Returns an entry from a directory handle
+//rewinddir()	Resets a directory handle
+//scandir()	Returns an array of files and directories of a specified directory
+
+//ERROR 
+//debug_backtrace()	Generates a backtrace
+//debug_print_backtrace()	Prints a backtrace
+//error_get_last()	Returns the last error that occurred
+//error_log()	Sends an error message to a log, to a file, or to a mail account
+//error_reporting()	Specifies which errors are reported
+//restore_error_handler()	Restores the previous error handler
+//restore_exception_handler()	Restores the previous exception handler
+//set_error_handler()	Sets a user-defined error handler function
+//set_exception_handler()	Sets a user-defined exception handler function
+//trigger_error()	Creates a user-level error message
+//user_error()	Alias of trigger_error()
+
+//Error logging constants 
+//1	E_ERROR	Fatal run-time errors. Errors that cannot be recovered from. Execution of the script is halted
+//2	E_WARNING	Run-time warnings (non-fatal errors). Execution of the script is not halted
+//4	E_PARSE	Compile-time parse errors. Parse errors should only be generated by the parser
+//8	E_NOTICE	Run-time notices. The script found something that might be an error, but could also happen when running a script normally
+//16	E_CORE_ERROR	Fatal errors at PHP startup. This is like E_ERROR, except it is generated by the core of PHP
+//32	E_CORE_WARNING	Non-fatal errors at PHP startup. This is like E_WARNING, except it is generated by the core of PHP
+//64	E_COMPILE_ERROR	Fatal compile-time errors. This is like E_ERROR, except it is generated by by the Zend Scripting Engine
+//128	E_COMPILE_WARNING	Non-fatal compile-time errors. This is like E_WARNING, except it is generated by by the Zend Scripting Engine
+//256	E_USER_ERROR	Fatal user-generated error. This is like E_ERROR, except it is generated in PHP code by using the PHP function trigger_error()
+//512	E_USER_WARNING	Non-fatal user-generated warning. This is like E_WARNING, except it is generated in PHP code by using the PHP function trigger_error()
+//1024	E_USER_NOTICE	User-generated notice. This is like E_NOTICE, except it is generated in PHP code by using the PHP function trigger_error()
+//2048	E_STRICT	Enable to have PHP suggest changes to your code which will ensure the best interoperability and forward compatibility of your code (Since PHP 5 but not included in E_ALL until PHP 5.4)
+//4096	E_RECOVERABLE_ERROR	Catchable fatal error. Indicates that a probably dangerous error occurred, but did not leave the Engine in an unstable state. If the error is not caught by a user defined handle, the application aborts as it was an E_ERROR (Since PHP 5.2)
+//8192	E_DEPRECATED	Run-time notices. Enable this to receive warnings about code that will not work in future versions (Since PHP 5.3)
+//16384	E_USER_DEPRECATED	User-generated warning message. This is like E_DEPRECATED, except it is generated in PHP code by using the PHP function trigger_error() (Since PHP 5.3)
+//32767	E_ALL	Enable all PHP errors and warnings (except E_STRICT in versions < 5.4)
+
+//DATE 
+//checkdate()	Validates a Gregorian date
+//date_add()	Adds days, months, years, hours, minutes, and seconds to a date
+//date_create_from_format()	Returns a new DateTime object formatted according to a specified format
+//date_create()	Returns a new DateTime object
+//date_date_set()	Sets a new date
+//date_default_timezone_get()	Returns the default timezone used by all date/time functions
+//date_default_timezone_set()	Sets the default timezone used by all date/time functions
+//date_diff()	Returns the difference between two dates
+//date_format()	Returns a date formatted according to a specified format
+//date_get_last_errors()	Returns the warnings/errors found in a date string
+//date_interval_create_from_date_string()	Sets up a DateInterval from the relative parts of the string
+//date_interval_format()	Formats the interval
+//date_isodate_set()	Sets the ISO date
+//date_modify()	Modifies the timestamp
+//date_offset_get()	Returns the timezone offset
+//date_parse_from_format()	Returns an associative array with detailed info about a specified date, according to a specified format
+//date_parse()	Returns an associative array with detailed info about a specified date
+//date_sub()	Subtracts days, months, years, hours, minutes, and seconds from a date
+//date_sun_info()	Returns an array containing info about sunset/sunrise and twilight begin/end, for a specified day and location
+//date_sunrise()	Returns the sunrise time for a specified day and location
+//date_sunset()	Returns the sunset time for a specified day and location
+//date_time_set()	Sets the time
+//date_timestamp_get()	Returns the Unix timestamp
+//date_timestamp_set()	Sets the date and time based on a Unix timestamp
+//date_timezone_get()	Returns the time zone of the given DateTime object
+//date_timezone_set()	Sets the time zone for the DateTime object
+//date()	Formats a local date and time
+//getdate()	Returns date/time information of a timestamp or the current local date/time
+//gettimeofday()	Returns the current time
+//gmdate()	Formats a GMT/UTC date and time
+//gmmktime()	Returns the Unix timestamp for a GMT date
+//gmstrftime()	Formats a GMT/UTC date and time according to locale settings
+//idate()	Formats a local time/date as integer
+//localtime()	Returns the local time
+//microtime()	Returns the current Unix timestamp with microseconds
+//mktime()	Returns the Unix timestamp for a date
+//strftime()	Formats a local time and/or date according to locale settings
+//strptime()	Parses a time/date generated with strftime()
+//strtotime()	Parses an English textual datetime into a Unix timestamp
+//time()	Returns the current time as a Unix timestamp
+//timezone_abbreviations_list()	Returns an associative array containing dst, offset, and the timezone name
+//timezone_identifiers_list()	Returns an indexed array with all timezone identifiers
+//timezone_location_get()	Returns location information for a specified timezone
+//timezone_name_from_ abbr()	Returns the timezone name from abbreviation
+//timezone_name_get()	Returns the name of the timezone
+//timezone_offset_get()	Returns the timezone offset from GMT
+//timezone_open()	Creates new DateTimeZone object
+//timezone_transitions_get()	Returns all transitions for the timezone
+//timezone_version_get()	Returns the version of the timezone db
+
+//DATE constants 
+//DATE_ATOM	Atom (example: 2005-08-15T16:13:03+0000)
+//DATE_COOKIE	HTTP Cookies (example: Sun, 14 Aug 2005 16:13:03 UTC)
+//DATE_ISO8601	ISO-8601 (example: 2005-08-14T16:13:03+0000)
+//DATE_RFC822	RFC 822 (example: Sun, 14 Aug 2005 16:13:03 UTC)
+//DATE_RFC850	RFC 850 (example: Sunday, 14-Aug-05 16:13:03 UTC)
+//DATE_RFC1036	RFC 1036 (example: Sunday, 14-Aug-05 16:13:03 UTC)
+//DATE_RFC1123	RFC 1123 (example: Sun, 14 Aug 2005 16:13:03 UTC)
+//DATE_RFC2822	RFC 2822 (Sun, 14 Aug 2005 16:13:03 +0000)
+//DATE_RSS	RSS (Sun, 14 Aug 2005 16:13:03 UTC)
+//DATE_W3C	World Wide Web Consortium (example: 2005-08-14T16:13:03+0000)
+
 // ARRAYS
 //is_array($var) Finds whether a variable is an array
 
@@ -159,7 +511,7 @@ print_r(array_keys($array, "blue"));
 
 //array_map(callback,array,[array...])	Sends each value of an array to a user-made function, which returns new values
 /*callback - function to run for each element in each array
-Returns an array containing all the elements of array1 after applying the callback function to each one.*/
+Returns an array containing all the elements of array after applying the callback function to each one.*/
 function cube($n){return($n * $n * $n);}
 $a = array(1,2,3,4,5);
 $b = array_map("cube",$a);
@@ -231,7 +583,18 @@ array_sort_flag:
 
 //array_values()	Returns all the values of an array
 
-//array_walk()	Applies a user function to every member of an array
+//array_walk(array,function,[parameter...])	Applies a user function to every member of an array
+/*You can change an array element's value in the user-defined function by specifying the first parameter as a reference: &$value*/
+function myfunction($value,$key,$p){
+echo "$key $p $value<br>";
+}
+$a=array("a"=>"red","b"=>"green","c"=>"blue");
+array_walk($a,"myfunction","has the value");
+/*
+a has the value red
+b has the value green
+c has the value blue
+*/
 
 //array_walk_recursive()	Applies a user function recursively to every member of an array
 // This function will recurse into deeper arrays.
@@ -267,7 +630,14 @@ c => cranberry
 
 //end()	Sets the internal pointer of an array to its last element
 
-//extract()	Imports variables into the current symbol table from an array
+//extract(array,extract_rules,prefix)	Imports variables into the current symbol table from an array
+$a = "Original";
+$my_array = array("a" => "Cat", "b" => "Dog", "c" => "Horse");
+extract($my_array, EXTR_PREFIX_SAME, "dup");
+echo "\$a = $a; \$b = $b; \$c = $c; \$dup_a = $dup_a";
+/*
+$a = Original; $b = Dog; $c = Horse; $dup_a = Cat
+*/
 
 //in_array()	Checks if a specified value exists in an array
 
@@ -330,6 +700,135 @@ while (list($id, $name, $salary) = $result->fetch(PDO::FETCH_NUM)) {
 
 //usort()	Sorts an array using a user-defined comparison function
 
+
+//MATH 
+//abs()	Returns the absolute (positive) value of a number
+//acos()	Returns the arc cosine of a number
+//acosh()	Returns the inverse hyperbolic cosine of a number
+//asin()	Returns the arc sine of a number
+//asinh()	Returns the inverse hyperbolic sine of a number
+//atan()	Returns the arc tangent of a number in radians
+//atan2()	Returns the arc tangent of two variables x and y
+//atanh()	Returns the inverse hyperbolic tangent of a number
+//base_convert()	Converts a number from one number base to another
+//bindec()	Converts a binary number to a decimal number
+//ceil()	Rounds a number up to the nearest integer
+//cos()	Returns the cosine of a number
+//cosh()	Returns the hyperbolic cosine of a number
+//decbin()	Converts a decimal number to a binary number
+//dechex()	Converts a decimal number to a hexadecimal number
+//decoct()	Converts a decimal number to an octal number
+//deg2rad()	Converts a degree value to a radian value
+//exp()	Calculates the exponent of e
+//expm1()	Returns exp(x) - 1
+//floor()	Rounds a number down to the nearest integer
+//fmod()	Returns the remainder of x/y
+//getrandmax()	Returns the largest possible value returned by rand()
+//hexdec()	Converts a hexadecimal number to a decimal number
+//hypot()	Calculates the hypotenuse of a right-angle triangle
+//is_finite()	Checks whether a value is finite or not
+//is_infinite()	Checks whether a value is infinite or not
+//is_nan()	Checks whether a value is 'not-a-number'
+//lcg_value()	Returns a pseudo random number in a range between 0 and 1
+//log()	Returns the natural logarithm of a number
+//log10()	Returns the base-10 logarithm of a number
+//log1p()	Returns log(1+number)
+//max()	Returns the highest value in an array, or the highest value of several specified values
+//min()	Returns the lowest value in an array, or the lowest value of several specified values
+//mt_getrandmax()	Returns the largest possible value returned by mt_rand()
+//mt_rand()	Generates a random integer using Mersenne Twister algorithm
+//mt_srand()	Seeds the Mersenne Twister random number generator
+//octdec()	Converts an octal number to a decimal number
+//pi()	Returns the value of PI
+//pow()	Returns x raised to the power of y
+//rad2deg()	Converts a radian value to a degree value
+//rand()	Generates a random integer
+//round()	Rounds a floating-point number
+//sin()	Returns the sine of a number
+//sinh()	Returns the hyperbolic sine of a number
+//sqrt()	Returns the square root of a number
+//srand()	Seeds the random number generator
+//tan()	Returns the tangent of a number
+//tanh()	Returns the hyperbolic tangent of a number
+
+//MATH constants 
+//INF	INF	The infinite	PHP 4
+//M_E	2.7182818284590452354	Returns e	PHP 4
+//M_EULER	0.57721566490153286061	Returns Euler constant	PHP 4
+//M_LNPI	1.14472988584940017414	Returns the natural logarithm of PI: log_e(pi)	PHP 5.2
+//M_LN2	0.69314718055994530942	Returns the natural logarithm of 2: log_e 2	PHP 4
+//M_LN10	2.30258509299404568402	Returns the natural logarithm of 10: log_e 10	PHP 4
+//M_LOG2E	1.4426950408889634074	Returns the base-2 logarithm of E: log_2 e	PHP 4
+//M_LOG10E	0.43429448190325182765	Returns the base-10 logarithm of E: log_10 e	PHP 4
+//M_PI	3.14159265358979323846	Returns Pi	PHP 4
+//M_PI_2	1.57079632679489661923	Returns Pi/2	PHP 4
+//M_PI_4	0.78539816339744830962	Returns Pi/4	PHP 4
+//M_1_PI	0.31830988618379067154	Returns 1/Pi	PHP 4
+//M_2_PI	0.63661977236758134308	Returns 2/Pi	PHP 4
+//M_SQRTPI	1.77245385090551602729	Returns the square root of PI: sqrt(pi)	PHP 5.2
+//M_2_SQRTPI	1.12837916709551257390	Returns 2/square root of PI: 2/sqrt(pi)	PHP 4
+//M_SQRT1_2	0.70710678118654752440	Returns the square root of 1/2: 1/sqrt(2)	PHP 4
+//M_SQRT2	1.41421356237309504880	Returns the square root of 2: sqrt(2)	PHP 4
+//M_SQRT3	1.73205080756887729352	Returns the square root of 3: sqrt(3)	PHP 5.2
+//NAN	NAN	Not A Number	PHP 4
+//PHP_ROUND_HALF_UP	1	Round halves up	PHP 5.3
+//PHP_ROUND_HALF_DOWN	2	Round halves down	PHP 5.3
+//PHP_ROUND_HALF_EVEN	3	Round halves to even numbers	PHP 5.3
+//PHP_ROUND_HALF_ODD	4	Round halves to odd numbers	PHP 5.3
+
+//MISCELLANEOUS
+//connection_aborted()	Checks whether the client has disconnected
+//connection_status()	Returns the current connection status
+//connection_timeout()	Deprecated in PHP 4.0.5. Checks whether the script has timed out
+//constant()	Returns the value of a constant
+//define()	Defines a constant
+//defined()	Checks whether a constant exists
+//die()	Prints a message and exits the current script
+//eval()	Evaluates a string as PHP code
+//exit()	Prints a message and exits the current script
+//get_browser()	Returns the capabilities of the user's browser
+//__halt_compiler()	Halts the compiler execution
+//highlight_file()	Outputs a file with the PHP syntax highlighted
+//highlight_string()	Outputs a string with the PHP syntax highlighted
+//ignore_user_abort()	Sets whether a remote client can abort the running of a script
+//pack()	Packs data into a binary string
+//php_check_syntax()	Deprecated in PHP 5.0.5
+//php_strip_whitespace()	Returns the source code of a file with PHP comments and whitespace removed
+//show_source()	Alias of highlight_file()
+//sleep()	Delays code execution for a number of seconds
+//sys_getloadavg()	Gets system load average
+//time_nanosleep()	Delays code execution for a number of seconds and nanoseconds
+//time_sleep_until()	Delays code execution until a specified time
+//uniqid()	Generates a unique ID
+//unpack()	Unpacks data from a binary string
+//usleep()	Delays code execution for a number of microseconds
+
+//SimpleXML
+//__construct()	Creates a new SimpleXMLElement object
+//addAttribute()	Adds an attribute to the SimpleXML element
+//addChild()	Adds a child element the SimpleXML element
+//asXML()	Returns a well-formed XML string (XML version 1.0) from a SimpleXML object
+//attributes()	Returns the attributes/values of an element
+//children()	Returns the children of a specified node
+//count()	Counts the children of a specified node
+//getDocNamespaces()	Returns the namespaces DECLARED in document
+//getName()	Returns the name of the XML tag referenced by the SimpleXML element
+//getNamespaces()	Returns the namespaces USED in document
+//registerXPathNamespace()	Creates a namespace context for the next XPath query
+//saveXML()	Alias of asXML()
+//simplexml_import_dom()	Returns a SimpleXMLElement object from a DOM node
+//simplexml_load_file()	Converts an XML file into a SimpleXMLElement object
+//simplexml_load_string()	Converts an XML string into a SimpleXMLElement object
+//xpath()	Runs an XPath query on XML data
+
+//SimpleXML iteration
+//current()	Returns the current element
+//getChildren()	Returns the child elements of the current element
+//hasChildren()	Checks whether the current element has children
+//key()	Return the current key
+//next()	Moves to the next element
+//rewind()	Rewind to the first element
+//valid()	Check whether the current element is valid
 
 /* INTERFACES */
 
