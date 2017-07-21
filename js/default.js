@@ -118,34 +118,13 @@
 		if( response.status === 500 || response.status === 200 ){
 			return response.json()
 			.then( function( data ){
-				displayCerts( data );
+				displayElem( data, /(certificates\/|-)/g, "certificate-icon.png", "certs_content_div" );
 			} );
 		}
 	} )
 	.catch( function( error ){
 		console.log( 'Request failed', error );
 	} );
-	function displayCerts( certs_array ){
-		var template = `<div class="row">`;
-		for( var i = 1; i < certs_array.length; i++ ){
-			var title = certs_array[i].replace( /(certificates\/|-)/g, " " );
-			template += `<div class="col-xs-6 col-sm-4 col-md-2">
-						<div class="thumbnail">
-							<img src="images/certificate-icon.png" alt="${title}">
-							<div class="caption">
-								<h3>${title}</h3>
-								<p><a href="${certs_array[i]}" class="btn btn-primary" target="_blank" role="button">Open</a></p>
-							</div>
-						</div>
-					</div>`;
-			if( i >= 6 && i % 6 === 0 ){
-				template += `</div><div class="row">`;
-			}
-		}
-		template += `</div>`;
-		document.getElementById( "certs_content_div" ).innerHTML = template;
-	}
-	
 //get notes
 	fetch( "notes.php", {
 		method: 'post',
@@ -158,23 +137,24 @@
 		if( response.status === 500 || response.status === 200 ){
 			return response.json()
 			.then( function( data ){
-				displayNotes( data );
+				//displayNotes( data );
+				displayElem( data, /(notes\/|-)/g, "notes-icon.png", "notes_content_div" );
 			} );
 		}
 	} )
 	.catch( function( error ){
 		console.log( 'Request failed', error );
 	} );
-	function displayNotes( notes_array ){
+	function displayElem( elem_array, replace_dashes, icon, target_elem ){
 		var template = `<div class="row">`;
-		for( var i = 1; i < notes_array.length; i++ ){
-			var title = notes_array[i].replace( /(notes\/|-)/g, " " );
+		for( var i = 1; i < elem_array.length; i++ ){
+			var title = elem_array[i].replace( replace_dashes, " " );
 			template += `<div class="col-xs-6 col-sm-4 col-md-2">
 						<div class="thumbnail">
-							<img src="images/notes-icon.png" alt="${title}">
+							<img src="images/${icon}" alt="${title}">
 							<div class="caption">
 								<h3>${title}</h3>
-								<p><a href="${notes_array[i]}" class="btn btn-primary" target="_blank" role="button">Open</a></p>
+								<p><a href="${elem_array[i]}" class="btn btn-primary" target="_blank" role="button">Open</a></p>
 							</div>
 						</div>
 					</div>`;
@@ -183,6 +163,6 @@
 			}
 		}
 		template += `</div>`;
-		document.getElementById( "notes_content_div" ).innerHTML = template;
+		document.getElementById( target_elem ).innerHTML = template;
 	}
 } )();
