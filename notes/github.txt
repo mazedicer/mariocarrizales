@@ -35,6 +35,9 @@ git config --global user.email "pcdoctormario@gmail.com"
 //Lock commit
 hit [ESC] :(colon) wq [ENTER]
 
+////////////////////////////////////////////////////////////////////////
+//BRANCHES
+
 //show branches 
 	git branch
 
@@ -44,6 +47,9 @@ hit [ESC] :(colon) wq [ENTER]
 //add branch/create save point
 	git branch <branch name>
 
+//add branch and switch to it
+    git branch -b <branch name>
+
 //work with older commit points
 	>copy commit hash
 	git checkout <commit hash>
@@ -51,8 +57,9 @@ hit [ESC] :(colon) wq [ENTER]
 //save alternate version into a branch 
 	git branch <new-branch-name> commit hash 
 	
-//bring branch x changes into master branch 
-	git merge <branch-name>
+//merge branch x changes into master branch 
+    git checkout master
+	git merge <branch-name> e.g. hotfix
 
 //change branch name 
 	git branch -m <branch-name> <new-branch-name>
@@ -61,6 +68,51 @@ hit [ESC] :(colon) wq [ENTER]
 
 //delete branch 
 	git branch -D <branch>
+
+//merge error
+    //from same file on both branches
+    //modify both files with code you want,
+    git add <file>, then merge again
+    
+    
+////////////////////////////////////////////////////////////////////////
+//REMOTE
+
+git remote add <name> <url>
+
+git fetch <remote> <branch>
+
+git pull <remote>
+    //merge remote branch to local
+
+git push <remote> <branch>
+    //ommit <branch> to commit master
+
+////////////////////////////////////////////////////////////////////////
+//UNDO
+
+git revert | <commit>
+    //undoes all changes made
+
+git reset | <file>
+    //remove <file> from stage
+    
+git clean | -n | -f
+    //show wich files to remove from working directory
+    
+////////////////////////////////////////////////////////////////////////
+//REWRITE
+
+git commit --amend
+    //replace last commit with stage
+    //add new -m message
+
+git rebase | <base>
+    //rebase current branch onto <base>
+    //a commit ID, branch name, tag, or relative reference to HEAD
+
+git reflog | --all
+    //show log of changes to the local repo's HEAD
 
 /* If you already have any x folders in your git index which you no longer wish to track. Git won't stop tracking paths that are already being tracked just because the now match a new .gitignore pattern. Execute a folder remove (rm) from index only (--cached) recursivelly (-r). */
 git rm -r --cached <x-folder>
