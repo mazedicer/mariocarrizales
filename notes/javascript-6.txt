@@ -320,6 +320,7 @@ deferred.reject( new Error( "Someone fucked up!" ) );
 /* the most immediate benefit of promises is chaining
 A common need is to execute two or more asynchronous operations back to back, where each subsequent operation starts when the previous operation succeeds, with the result from the previous step. We accomplish this by creating a promise chain.
 Async operations. */
+
 doSomething()
 	.then( result => doSomethingElse( value ) )
 	//value = newResult 
@@ -327,14 +328,17 @@ doSomething()
 	//newResult = finalResult 
 	.then( finalResult => console.log( `Got the final result: ${finalResult}` ) )
 	.catch( failureCallback );
+    
 //example 2
 var p1 = Promise.resolve( "Resolve Me" );
 p1.then( ( res ) => document.write( '${res}<br>' ) );//Resolve Me 
+
 //example 3
 var p2 = new Promise( function( resolve, reject ){
 	setTimeout( () => resolve( "Resolve Me 2" ), 2000 );
 } );
 p2.then( ( res ) => document.write( '${res}<br>' ) );//Resolve Me 
+
 //example 4
 var p3 = new Promise( function( resolve, reject ){
 	let val = 18;
@@ -345,6 +349,7 @@ var p3 = new Promise( function( resolve, reject ){
 	}
 } );
 p3.then( ( val ) => document.write( '${val}<br>' ) , ( err ) => document.write( '${err}<br>' );//bad
+
 //example 5
 let doggyStyle = function(){
 	return new Promise( function( resolve, reject ){
@@ -381,7 +386,43 @@ Promise.race( [ doggyStyle(), missionary(), sixtyNine() ] )
 	.then( function(){
 		console.log( ', finished')
 	});
+    
 //example 6
+//time out promisable
+var promisable = function(resolve,reject){
+    setTimeout(function(){
+        resolve("hello");
+    }, 2000);
+}
+
+//new instance of Promise, pass promisable function
+var basic_promise = new Promise(promisable);
+
+//function to execute when done
+//parameter is the resolve parameter
+function firstThen(result){
+    console.log(result);
+}
+
+basic_promise.then(firstThen);
+
+//example 7 -- promise loop
+var count=0;
+function resetCount(result){
+    count=0;
+    return new Promise(promisable);
+}
+function thenLoop(result){
+    console.log('* ', ' - ', result);
+    count++;
+    if(count<6){
+        return new Promise(promisable).then(thenLoop);
+    }else{
+        console.log('done');
+    }
+}
+basic_promise.then(resetCount).then(thenLoop);
+
 //apiservice.js
 class APIService{
 	getData( endpoint ){
@@ -393,6 +434,7 @@ class APIService{
 			return deferred.promise;
 	}
 }	
+
 //domainlogic.js
 var APIService = require( "./APIService" )
 var loadData = function( endpoint ){
@@ -406,16 +448,21 @@ var loadData = function( endpoint ){
 }	
 loadData( endPoint )
 
+//////////////////////////////////////////////////////
 //fetch()
+//////////////////////////////////////////////////////
 
-
+//////////////////////////////////////////////////////
 //SWITCH
+//////////////////////////////////////////////////////
 
 let val1 = 1, val2 = 2;
 [ val1, val2] = [ val2, val1 ];
 ${val2}//1
 
+//////////////////////////////////////////////////////
 //ARROW FUNCTIONS
+//////////////////////////////////////////////////////
 //this in arrow functions come from parent scope 
 exports = { i: "am exports" }
 console.log( this ); // { i: "am exports" }
