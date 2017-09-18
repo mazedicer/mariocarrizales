@@ -1,4 +1,34 @@
+/////////////////////////////////////////////////////////////////////
+DAILY GIT WORKFLOW
+/////////////////////////////////////////////////////////////////////
+
+//pull all the changes from the remote repo
+git pull <remote repo>
+
+//create a new branch for your bug/feature/issue
+git checkout -b <new-branch-name>
+    /* WORK HERE
+        //add changes to stage
+        git add .
+        //see changes
+        git status | git diff
+
+//make the commit with "label details" e.g. "header added logo etc.."
+git commit -m "label detailed message here"
+
+//switch back to master branch
+git checkout master
+
+//update the master branch with all your changes
+git merge <working-branch-name>
+
+//send your changes up to the remote repo
+git push
+
+/////////////////////////////////////////////////////////////////////
 //config 
+/////////////////////////////////////////////////////////////////////
+
 git config --global user.name "Mario Carrizales"
 git config --global user.email "pcdoctormario@gmail.com"
 
