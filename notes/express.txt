@@ -1,4 +1,259 @@
+//create package.json file
+npm init
+
+//install express as dependency and next time just run npm install
+npm install --save | -S express
+
+//confirm
+ls node_modules #(dir node_module for windows)
+
+//install nodemon -g globally to restart server on every change
+npm install -g nodemon
+
 //index.js in node is the default entry 
+var express=require('express');
+var app=express();
+app.get('/',function(req,res){
+    res.send("Hello World");
+});
+//app.listen(port,[host],[backlog],[callback])
+app.listen(3000);
+
+//run it on localhost:3000
+nodemon index.js
+
+/* the res response object represents the HTTP response that the Express app sends when it receives an HTTP request. */
+//takes object as input and sends it to client.
+res.send()
+
+/* app.<method>(path, handler)
+    <method>=get,set,put,delete
+    path=route at which request will run
+    handler=callback function executes when a matching request type is found on the relevant route:
+        
+        app.get('/hello',function(req,res){
+            res.send("Hello World");
+        });
+
+        app.post('/hello', function(req,res){
+            res.send("POST request called");
+        });
+        app.listen(3000);
+        //test POST
+        curl -X POST "http://localhost:3000/hello"
+
+*/
+/* all, is provided by Express to handle all types of http methods at a particular route using the same function.
+Generally used for defining middleware*/
+app.all('/test', function(req,res){
+    res.send code..
+});
+
+////////////////////////////////////////////////////////////////////////////////////
+//ROUTES
+////////////////////////////////////////////////////////////////////////////////////
+//things.js
+var express=require('express');
+var routes=express.Router();
+router.get('/',function(req,res){
+    res.send("GET route");
+});
+router.post('/',function(req, res){
+   res.send('POST route on things.');
+});
+//export to use in index.js
+module.exports=router;
+
+//index.js
+var express=require('Express');
+var app=express();
+var things=require('./things.js');
+app.use('/things',things);
+app.listen(3000);
+
+/*The app.use function call on route '/things' attaches the things router with this route. Now whatever requests our app gets at the '/things', will be handled by our things.js router. The '/' route in things.js is actually a subroute of '/things'.*/
+
+////////////////////////////////////////////////////////////////////////////////////
+//DYNAMIC ROUTES req.params
+////////////////////////////////////////////////////////////////////////////////////
+var express = require('express');
+var app = express();
+
+app.get('/:id', function(req, res){
+   res.send('The id you specified is ' + req.params.id);
+});
+app.get('/things/:name/:id', function(req, res) {
+   res.send('id: ' + req.params.id + ' and name: ' + req.params.name);
+});
+app.listen(3000);
+
+//test
+http://localhost:3000/123
+//test
+http://localhost:3000/things/tutorial/12345
+
+////////////////////////////////////////////////////////////////////////////////////
+//PATTERN MATCHING ROUTES regex
+////////////////////////////////////////////////////////////////////////////////////
+/*Express matches routes from start to end of the index.js file, including the external routers you required */
+var express = require('express');
+var app = express();
+//id a 5 digit long number
+app.get('/things/:id([0-9]{5})', function(req, res){
+   res.send('id: ' + req.params.id);
+});
+
+app.listen(3000);
+
+////////////////////////////////////////////////////////////////////////////////////
+//MIDDLEWARE
+////////////////////////////////////////////////////////////////////////////////////
+/*Middleware functions are functions that have access to the request object (req), the response object (res), and the next middleware function in the application’s request-response cycle. These functions are used to modify req and res objects for tasks like parsing request bodies, adding response headers, etc.*/
+var express = require('express');
+var app = express();
+
+//Simple request time logger
+app.use(function(req, res, next){
+   console.log("A new request received at " + Date.now());
+   
+   //This function call is very important. It tells that more processing is
+   //required for the current request and is in the next middleware
+   function/route handler.
+   next();
+});
+
+app.listen(3000);
+
+//When we visit '/' after running this code, we receive the response as Middle and on our console
+
+var express = require('express');
+var app = express();
+
+//First middleware before response is sent
+app.use(function(req, res, next){
+   console.log("Start");
+   next();
+});
+
+//Route handler
+app.get('/', function(req, res, next){
+   res.send("Middle");
+   next();
+});
+
+app.use('/', function(req, res){
+   console.log('End');
+});
+
+app.listen(3000);
+
+////////////////////////////////////////////////////////////////////////////////////
+//body-parser, cookie-parser
+////////////////////////////////////////////////////////////////////////////////////
+//used to parse the body of requests which have payloads attached to them
+npm install --save body-parser
+
+//index.js
+var body_parser = require('body-parser');
+//parse url encoded data
+app.use(body_parser.urlencoded({extended:false}))
+
+//pase json data
+app.use(body_parser.json())
+
+////////////////////////////////////////////////////////////////////////////////////
+//Pug - Templating html markup
+////////////////////////////////////////////////////////////////////////////////////
+npm install --save pug
+
+//index.js
+app.set('view engine','pug');
+app.set('views','/views');
+
+//views/first_view.pug
+doctype html
+html
+    head
+        title="Hello pug"
+    body
+        p.greeting=#people Hello World!
+
+//add route to app
+app.get('/first_template',function(req,res){
+    res.render('first_view);
+});
+
+////////////////////////////////////////////////////////////////////////////////////
+//Passing values to templates
+////////////////////////////////////////////////////////////////////////////////////
+var express = require('express');
+var app = express();
+
+app.get('/dynamic_view', function(req, res){
+   res.render('dynamic', {
+      name: "TutorialsPoint", 
+      url:"http://www.tutorialspoint.com"
+   });
+});
+
+app.listen(3000);
+
+//views/dynamic.pug
+html
+    head
+        title=name
+    body
+        h1=name
+        a(href=url) URL
+
+////////////////////////////////////////////////////////////////////////////////////
+//interpolation
+////////////////////////////////////////////////////////////////////////////////////
+#{variable_name}
+
+res.render('/dynamic',{
+    user:{
+        name: "Mario",
+        age: "39"
+    }
+});
+
+#{user.name} is #{user.age} years old
+
+////////////////////////////////////////////////////////////////////////////////////
+//static files/assets on the server
+////////////////////////////////////////////////////////////////////////////////////
+var express = require('express');
+var app = express();
+
+app.use(express.static('public'));
+app.use(express.static('images'));
+
+app.listen(3000);
+
+//in the template
+html
+    head
+        body
+            h3 testing static file serving:
+            img(src="/test-img.jpg,alt="testing image")
+
+//with path prefix
+/*This technique can come in handy when providing multiple directories as static files. These prefixes can help distinguish between multiple directories.*/
+var express = require('express');
+var app = express();
+app.use('/static', express.static('public'));
+
+app.listen(3000);
+
+
+continue: https://www.tutorialspoint.com/expressjs/expressjs_form_data.htm
+
+
+
+
+
+
 /* organizing a project into services style
 config/
 api/
