@@ -567,6 +567,21 @@ var el = document.getElementById("foo");
     //Iterate over an element's children, performing an action on each one
 });
 
+/* bind() allows you to pass functions around, return them, borrow them, etc.
+var cars = {
+                data:[
+                    {name:"Honda Accord", age:14},
+                    {name:"Tesla Model S", age:2}
+                ]
+
+            }
+cars.showData = user.showData.bind (cars);
+cars.showData (); // Honda Accord 14
+One problem with this example is that we are adding a new method (showData) on the cars object and we might not want to do that just to borrow a method because the cars object might already have a property or method name showData. We don’t want to overwrite it accidentally. As we will see in our discussion of Apply and Call below, it is best to borrow a method using either the Apply or Call method.*/
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // STRINGS
 ////////////////////////////////////////////////////////////////////////////////
+
+
