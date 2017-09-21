@@ -55,8 +55,20 @@ post-template : single post*/
 {{ghost_foot}}
 </body>
 
+//////////////////////////////////////////////////////
+//TEMPLATING
+//////////////////////////////////////////////////////
+
 //to use the default template into index.hbs and post.hbs
 {{!< default}}
+
+//to use template files from partials
+
+//header.hbs
+{{> header}}
+
+//footer.hbs
+{{> footer}}
 
 //////////////////////////////////////////////////////
 //ITERATE POSTS
