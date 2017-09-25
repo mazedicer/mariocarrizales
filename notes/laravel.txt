@@ -1,4 +1,139 @@
-routes
+<?php 
+////////////////////////////////////////////////////////////
+//SECURITY CSRF Cross Site Request Forgery
+////////////////////////////////////////////////////////////
+/* route > controller > template */
+//routes 
+Route::get('/',[
+	'as'=>'home',
+	'uses'=>'HomeController@index',
+]);
+Route::post('/mailing',[
+	'as'=>'mailing.create',
+	'uses'=>'MailingController@create',
+]);
+/*controller class HomeController @ method index() in Http/Controllers/HomeController.php 
+controller class MailingController @ method create() in ...*/
+class HomeController extends Controller {
+	public function index(Request $request){
+		//returns blade template file resources/views/home/index.blade.php 
+		return view('home.index');
+	}
+}
+class MailingController extends Controller {
+	public function create(Request $request){
+		dd($request->email); //data dump on screen
+	}
+}
+//template 
+<form action="{{route('mailing.create')}}" method="post">
+	//reuse previously entered values with old('input-name')
+	<input type="text"> name="email" value="{{old('email')}}">
+	@if ($errors->has('email'))
+		<div>{{$errors->first('email')}}</div> //first error 
+	@endif
+	<input type="submit">
+	//<input type="hidden" name="_token" value="{{csrf_token()}}">
+	//{{csrf_field()}} will output the above line
+</form>
+
+////////////////////////////////////////////////////////////
+//VALIDATION
+////////////////////////////////////////////////////////////
+/*input validation rules in the create method of MailingController
+app/Http/Kernel.php framework middleware 
+in the $middleWareGroups web ShareErrorsFromSession*/
+$this->validate($request,[
+	'email'=>'required|email',
+], 
+[
+	//custom message :attribute in this case is email
+	//not necessary if customized global under resources/lang/en/validation.php 
+	'email.required'=>'We need your :attribute.', 
+]);
+//default for localization english resources/lang/en/validation.php 
+'custom'=>[
+	'attribute-name'=>[
+		'rule-name'=>'custom-message',
+	],
+],
+//change to:
+'custom'=>[
+	'email'=>[
+		'required'=>'We need your email address.',
+	],
+],
+
+////////////////////////////////////////////////////////////
+//FORM REQUEST
+////////////////////////////////////////////////////////////
+cmd>php artisan make:request CreateSubscriptionFormRequest
+//Http/Requests/CreateSubscriptionFormRequest.php 
+//move into Http/Requests/Newsletter/CreateSubscriptionFormRequest.php 
+namespace App\Http\Request\Newsletter;
+use App\Http\Requests\Request;
+class CreateSubscriptionFormRequest extends Request {
+	//is user authorized, return bool
+	public function authorize(){
+		//return Auth::check();
+		return true;
+	}
+	//validation rules that apply to the request 
+	public function rules(){
+		return [
+			'email'=>'required|email',
+		];
+	}
+}
+//how to use on HomeController.php 
+use App\Http\Requests\Newsletter\CreateSubscriptionFormRequest;
+class HomeController extends Controller {
+	public function index(){
+		return view('home.index');
+	}
+	//replace normal Request type-hint with created one 
+	public function create(CreateSubscriptionFormRequest $request){
+		dd('Subscribe user');
+	}
+}
+
+////////////////////////////////////////////////////////////
+//REDIRECT to named routes, urls, back, etc.
+////////////////////////////////////////////////////////////
+Route::get('/second',[
+	'as'=>'second',
+	'uses'=>'HomeController@second',
+]);
+//inside second() method 
+return redirect()->to('/second');
+//or using route name 
+return redirect()->route('second')
+//or facade 
+return Redirect::
+//or validate, insert a post, and then go back 
+return redirect()->back();
+
+////////////////////////////////////////////////////////////
+//JSON RESPONSES
+////////////////////////////////////////////////////////////
+//from a post request 
+return response()->json([
+	'post'=>[
+		['id'=>1,'title'=>'abc'],
+		['id'=>2,'title'=>'def'],
+		['id'=>3,'title'=>'ghi'],
+	]
+]);
+
+////////////////////////////////////////////////////////////
+//EMAIL
+////////////////////////////////////////////////////////////
+//.env, config/mail.php , config/services.php 
+
+
+////////////////////////////////////////////////////////////
+//routes
+////////////////////////////////////////////////////////////
 	web.php
 		routes setup
 			returns a view 
