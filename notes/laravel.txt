@@ -129,10 +129,167 @@ return response()->json([
 //EMAIL
 ////////////////////////////////////////////////////////////
 //.env, config/mail.php , config/services.php 
+//mail facade in config/app.php 
+//welcome.blade.php 
+//pass to welcome.blade.php view and send 
+$name="Mario";
+Mail::send('emails.auth.welcome',['name'=>$name],function($m){
+	$m->to('mail@email.com', 'Me')
+		->subject('my mail');
+});
+//mail with Mailer 
+use Illuminate\Mail\Mailer;
+//in class method 
+public function index(Mailer $mail){
+	$mail->send('emails.auth.welcome',['name'=>$name],function($m){
+	$m->to('mail@email.com', 'Me')
+		->subject('my mail');
+}
+//in constructor for different mails 
+protected $mailer;
+public function __construct(Mailer $mail){
+	$this->mailer = $mail;
+}
+//then use $this->mailer->send()
+
+////////////////////////////////////////////////////////////
+//MIGRATION
+////////////////////////////////////////////////////////////
+/*.env, database/migrations/ DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD
+everytime you add columns, tables, etc. you need to do the opposite under down()
+migration files are created with timestamps so when php artisan migrate command is ran 
+they will run from oldest to new */
+php artisan make:migration create_users_table --create=users 
+//use methods for building schema
+php artisan migrate
+//for future modifications, create a new migration
+php artisan make:migration add_password_column_to_user_table --table=users
+//you would add inside up() method Schema::table('users',function(Blueprint $table)
+$table->string('password');
+//and in down() method Schema::table('users',function(Blueprint $table)
+$table->dropColumn('password');
+php artisan migrate 
+//to rollback a migration 
+php artisan migrate:rollback 
+//to reset 
+php artisan migrate:reset 
+//changes to columns, create a migration and choose the table to modify 
+php artisan make:migration update_users_set_bio_nullable --table=users 
+//inside up() method 
+$table->text('bio')->nullable()->change();
+//inside down() method 
+$table->text('bio')->nullable(false)->change();
+//if error 
+comoser require doctrine/dbal 
+//change column name 
+php artisan make:migration rename_bio_to_about_on_users_table --table=users
+$table->renameColumn('bio', 'about'); //up 
+$table->renameColumn('about', 'bio'); //down to rollback  
+
+////////////////////////////////////////////////////////////
+//MODELS
+////////////////////////////////////////////////////////////
+php artisan make:migration create_posts_table --create=posts
+//design your table 
+php arstisan migrate 
+//model names are singular 
+php artisan make:model Post 
+//app/Post.php 
+use Illuminate\Database\Eloquent\Model;
+class Post extends Model {
+	protected $table = 'posts';
+	protected $fillable = [
+		'title',
+		'body',
+	];
+}
+//to populate with data use faker in routes.php and go to that location on browser
+Route::group(['middleware'=>['web']], function(){
+	Route::get('/seed', function(\Appname\Post $post){
+		//using faker will populate database with random data 
+		$f = \Faker\Factory::create();
+		foreach(range(1, 1000) as $x){
+			$post->create([
+				'title'=>$f->sentence(10),
+				'body'=>$f->sentence(100),
+			])
+		}
+	});
+});
+//how to get records 
+use Appname\Post;
+class HomeController extends Controller {
+	public function index(Post $post){
+		//returns a collection 
+		$post=$post->get();
+		//returns 10 records 
+		$post=$post->take(10)->get();
+		dd($post);
+		//pass to a view 
+		return view('home.index')->with('posts',$posts);
+	}
+}
+//index.blade.php 
+@if($posts->count())
+	@foreach($posts as $post)
+	{{$post->title}}
+		{{str_limit($post->body, 100)}}
+@else
+	no posts 
+@endif 
+
+//CRUD
+//create 
+public function index(Post $post){
+	$post->create([
+		'title'=>'Test',
+		'body'=>'Test body',
+	]);
+	//better way in case of conditions, insert individually 
+	$newPost = new Post;
+	$newPost->title="A new title";
+	//if body, etc..
+	$newPost->body="A new post body";
+	$newPost->save();
+}
+//update 
+public function index(Request $request, Post $post){
+	$postToUpdate=$post->find($request->id);
+	//$postToUpdate=$post->findOrFail($request->id);
+	$postToUpdate=$post->where('id', $request->id);
+	//or $postToUpdate=$post->find($request->id);
+	//dd($postToUpdate);
+	$postToUpdate->update([
+		'title'=>'This is an updated title',
+	])
+	//or 
+	$postToUpdate->title="Abc";
+	$postToUpdate->body="More abc";
+	$postToUpdate->save();
+}
+//delete
+$postToUpdate->delete();
+
+////////////////////////////////////////////////////////////
+//QUERY BUILDER
+////////////////////////////////////////////////////////////
+$p=$post->where('id','=',1);
+$p=$post->where('id','=',1)->get();
+//boolean 
+$p=$post->where('live',true); //tiny int value 1 
+//return in decending order 
+$p=$posts->orderBy('created_at','desc')->get();
+//limit to 5 results 
+$p=$posts->orderBy('created_at','desc')->limit(5)->get();
+
+////////////////////////////////////////////////////////////
+//Carbon data time 
+////////////////////////////////////////////////////////////
+
 
 
 ////////////////////////////////////////////////////////////
-//routes
+//ROUTES
 ////////////////////////////////////////////////////////////
 	web.php
 		routes setup

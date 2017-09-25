@@ -1,7 +1,3 @@
-bitnamiconsole
-access key AKIAJ4QKUVQDPBOM4MBQ
-secret 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
-
 //Design for failure
 /* Eliminate single points of failure such as RDS (Relational Database Service) failover. */
 
