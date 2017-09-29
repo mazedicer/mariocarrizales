@@ -168,6 +168,7 @@ function listAllShrimp(){
 }
 
 /* CUSTOM POST TYPES
+/plugins/customposttype.php
 register_post_type( string $name_of_post_type, array of arguments ) */
 function myCustomPostType(){
 	register_post_type( 'recipes', $args );
