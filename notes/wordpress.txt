@@ -168,14 +168,26 @@ function listAllShrimp(){
 }
 
 /* CUSTOM POST TYPES
-/plugins/customposttype.php
+/plugins/customposttypes.php
 register_post_type( string $name_of_post_type, array of arguments ) */
-function myCustomPostType(){
+function myCustomPostTypes(){
+     $args=array(
+          /*support is the editable fields available for the user
+          on the admin cms side*/
+          'supports' =>array('title','editor','thumbnail'
+          ,'author','excerpt','comments','custom_fields'),
+          /*editable classification fields available for the user
+           category allows for hirearchical*/
+          'taxonomies'=>array('category','post_tag'),
+          ...);
 	register_post_type( 'recipes', $args );
+	//add as many post types as you need
+	register_post_type('coupons',$args);
 }
-add_action( 'init', 'myCustomPostType' );
+add_action( 'init', 'myCustomPostTypes' );
 
 /* TAXONAMIES
+on same file /plugins/customposttypes.php
 classify and organize data such as Category and Tag 
 register_taxonamy( $name_of_taxonamy, $name_of_post_type_to_use_this_taxonamy_on, array of arguments )
 */
