@@ -1,0 +1,11 @@
+/* Projects
+library JAR, web app, made up of different tasks(pieces of work) compiling classes, creating JAR, generating javadoc,publishing archives to repo.
+Uses Groovy language
+*/
+
+/* build.gradle
+task hello{
+    doLast{
+        println 'hello'
+    }
+}
