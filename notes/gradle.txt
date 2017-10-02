@@ -21,7 +21,28 @@ sourceSets {
 Such builds come in all shapes and sizes, but they do have some common characteristics 
 A settings.gradle file in the root or master directory of the project.
 A build.gradle file in the root or master directory.
-Child directories that have their own *.gradle build files (some multi-project builds may omit child project build scripts).*/
+Child directories that have their own *.gradle build files (some multi-project builds may omit child project build scripts).
+Gradle provides maven-publish plugin by default. It is used to publish the gradle script.*/
+
+/*Depoloyment
+Gradle offers several ways to deploy build artifacts repositories. When deploying signatures for your artifacts to a Maven repository, you will also want to sign the published POM file.*/
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+publishing {
+   publications {
+      mavenJava(MavenPublication) {
+         from components.java
+      }
+   }
+
+   repositories {
+      maven {
+         url "$buildDir/repo"
+      }
+   }
+}
 
 
 /* Projects
