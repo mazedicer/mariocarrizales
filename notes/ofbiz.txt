@@ -17,3 +17,30 @@ https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=68718605
 http://ofbiz.135035.n4.nabble.com/Theme-bootstrap-td4656663.html
 https://apache.googlesource.com/ofbiz/+/boostrap_theme/themes/
 
+
+////////////////////////////////////////////////////////////////////////////
+//DIRECTORY STRUCTURE
+///////////////////////////////////////////////////////////////////////////
+/*
+framework/
+    components that run ofbiz
+    components depend on each other
+    loaded first
+
+application/
+    business related components
+    management of content, orders, etc
+
+specialpurpose/
+    more components
+    
+themes/
+    facades
+    
+hot-deploy/
+    for add-on components and apps
+*/
+
+////////////////////////////////////////////////////////////////////////////
+//CONFIG FILES
+///////////////////////////////////////////////////////////////////////////
