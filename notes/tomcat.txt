@@ -1,0 +1,119 @@
+How To Install Apache Tomcat 8
+
+//update apt-get package
+sudo apt-get update
+
+//install JDK
+sudo apt-get install default-jdk
+
+//create tomcat group
+sudo groupadd tomcat
+
+//create tomcat user, member of tomcat group, home dir of /opt/tomcat
+//shell of /bin/false (nobody can log into the account)
+sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+
+//install tomcat
+//download and unzip/unpack apache-tomcat<version>.tar.gz into /opt/tomcat
+sudo mkdir/opt/tomcat
+sudo tar xzvf apache-tomcat-9.0.1.tar.gz -C /opt/tomcat --strip-comonents=1
+
+//update permissions and ownership of directories
+sudo chgrp -R tomcat /opt/tomcat
+sudo chmod -R g+r conf
+sudo chmod g+x conf
+sudo chown -R tomcat webapps/ work/ temp/ logs/
+
+//to run tomcat as service, create a systemd service file
+//find JAVA_HOME system variable
+sudo update-java-alternatives -l
+//create tomcat.service file
+sudo gedit /etc/systemd/system/tomcat.service
+
+//paste the following content into tomcat.service file
+//make sure Environment variables point to the right directories
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=network.target
+
+[Service]
+Type=forking
+
+Environment=JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64/jre
+Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid
+Environment=CATALINA_HOME=/opt/tomcat
+Environment=CATALINA_BASE=/opt/tomcat
+Environment='CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC'
+Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
+
+ExecStart=/opt/tomcat/bin/startup.sh
+ExecStop=/opt/tomcat/bin/shutdown.sh
+
+User=tomcat
+Group=tomcat
+UMask=0007
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+//save, close, reload systemd daemon so that it knows about tomcat service
+sudo systemctl daemon-reload
+
+//start tomcat service
+sudo systemctl start tomcat
+
+//check that it started without errors
+sudo systemctl status tomcat
+
+//adjust firewall
+sudo ufw allow 8080
+
+//open in browser
+http://localhost:8080
+
+//to make it start at boot
+sudo systemctl enable tomcat
+
+//to use manager web app, edit tomcat-users-xml
+sudo nano /opt/tomcat/conf/tomcat-users.xml
+<tomcat-users . . .>
+    <user username="admin" password="password" roles="manager-gui,admin-gui"/>
+</tomcat-users>
+
+/*You will want to add a user who can access the manager-gui and admin-gui (web apps that come with Tomcat). You can do so by defining a user, similar to the example below, between the tomcat-users tags. Be sure to change the username and password to something secure:*/
+
+/*By default, newer versions of Tomcat restrict access to the Manager and Host Manager apps to connections coming from the server itself. Since we are installing on a remote machine, you will probably want to remove or alter this restriction. To change the IP address restrictions on these, open the appropriate context.xml files.*/
+
+//For the Manager app, type:
+
+sudo nano /opt/tomcat/webapps/manager/META-INF/context.xml
+
+//For the Host Manager app, type:
+sudo nano /opt/tomcat/webapps/host-manager/META-INF/context.xml
+
+/*Inside, comment out the IP address restriction to allow connections from anywhere. Alternatively, if you would like to allow access only to connections coming from your own IP address, you can add your public IP address to the list:*/
+
+//context.xml files for Tomcat webapps
+<Context antiResourceLocking="false" privileged="true" >
+  
+</Context>
+
+//Save and close the files when you are finished.
+
+//To put our changes into effect, restart the Tomcat service:
+sudo systemctl restart tomcat
+
+/*Let's take a look at the Manager App, accessible via the link or*/ http://localhost:8080/manager/html
+
+/*You will need to enter the account credentials that you added to the tomcat-users.xml file.*/
+
+/*The Web Application Manager is used to manage your Java applications. You can Start, Stop, Reload, Deploy, and Undeploy here. You can also run some diagnostics on your apps (i.e. find memory leaks). Lastly, information about your server is available at the very bottom of this page.
+
+Now let's take a look at the Host Manager, accessible via the link or */
+http://localhost:8080/host-manager/html/
+
+//From the Virtual Host Manager page, you can add virtual hosts to serve your applications from.
+
+
