@@ -1,3 +1,10 @@
+//stop tomcat
+sudo service <service_name> <action>
+sudo service tomcat stop | start | restart | status
+
+//systemctl
+sudo systemctl stop tomcat
+
 How To Install Apache Tomcat 8
 
 //update apt-get package
