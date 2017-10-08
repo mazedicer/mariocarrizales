@@ -1,0 +1,81 @@
+////////////////////////////////////////////////////////////////////////////
+//RESOURCE LINKS
+///////////////////////////////////////////////////////////////////////////
+
+https://ofbiz.apache.org/developers.html
+
+//API
+https://ci.apache.org/projects/ofbiz/site/javadocs/
+
+//online demo
+https://ofbiz-vm2.apache.org:8443/ecomseo/product/DropShip-from-DemoSupplier-dropShip1.html
+
+//confluence pages
+https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=68718605
+
+//bootstrap theme
+http://ofbiz.135035.n4.nabble.com/Theme-bootstrap-td4656663.html
+https://apache.googlesource.com/ofbiz/+/boostrap_theme/themes/
+
+
+////////////////////////////////////////////////////////////////////////////
+//DIRECTORY STRUCTURE
+///////////////////////////////////////////////////////////////////////////
+/*
+framework/
+    components that run ofbiz
+    components depend on each other
+    loaded first
+
+application/
+    business related components
+    management of content, orders, etc
+
+specialpurpose/
+    more components
+    
+themes/
+    facades
+    
+hot-deploy/
+    for add-on components and apps
+*/
+
+////////////////////////////////////////////////////////////////////////////
+//CONFIG FILES
+///////////////////////////////////////////////////////////////////////////
+/* 
+framework/base/config/component-load.xml file
+main component loading file. Each component has this file as well.
+can exclude individual components from loading.
+*/
+
+////////////////////////////////////////////////////////////////////////////
+//WEBAPPS
+///////////////////////////////////////////////////////////////////////////
+/* configuration files
+component/webapp/WEB-INF
+    web.xml deployment descriptor
+    controller.xml controller servlet config file.
+component/ofbiz-component.xml files*/
+
+/* mount-point
+to mount application as root app set it to "/"
+only one webapp may be at the root
+others set "/<sub-component-name>"
+http://localhost:<port>/<sub-component-name>*/
+
+////////////////////////////////////////////////////////////////////////////
+//CLASSPATH
+///////////////////////////////////////////////////////////////////////////
+/* env variable lists resources used during program execution.
+add resources by adding into a directory already listed in CLASSPATH
+e.g. framework/base/lib, framework/webapp/lib
+restart ofbiz*/
+
+////////////////////////////////////////////////////////////////////////////
+//INTERFACE
+///////////////////////////////////////////////////////////////////////////
+/*controller.xml view-mapping
+browser url request to specific screen definition
+
