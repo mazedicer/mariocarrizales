@@ -231,6 +231,6 @@
 				</div><!-- end notes div -->
 			</div><!-- end main div -->
 		</div><!-- end mother div -->
-		<script src="js/default.js"></script>
+		<script src="js/default-min.js"></script>
 	</body>
 </html>
