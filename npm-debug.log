@@ -1,0 +1,32 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/data/data/com.termux/files/usr/bin/node',
+1 verbose cli   '/data/data/com.termux/files/usr/bin/npm',
+1 verbose cli   'link',
+1 verbose cli   'gulp' ]
+2 info using npm@3.10.10
+3 info using node@v6.11.3
+4 verbose link symlinking /data/data/com.termux/files/usr/lib/node_modules/gulp to /storage/emulated/0/pws/www/mariocarrizales/mariocarrizales/node_modules/gulp
+5 silly gentlyRm /storage/emulated/0/pws/www/mariocarrizales/mariocarrizales/node_modules/gulp is being purged
+6 verbose gentlyRm don't care about contents; nuking /storage/emulated/0/pws/www/mariocarrizales/mariocarrizales/node_modules/gulp
+7 verbose stack Error: EACCES: permission denied, symlink '../../../../../../../../data/data/com.termux/files/usr/lib/node_modules/gulp' -> '/storage/emulated/0/pws/www/mariocarrizales/mariocarrizales/node_modules/gulp'
+7 verbose stack     at Error (native)
+8 verbose cwd /storage/emulated/0/pws/www/mariocarrizales/mariocarrizales
+9 error Linux 3.10.49
+10 error argv "/data/data/com.termux/files/usr/bin/node" "/data/data/com.termux/files/usr/bin/npm" "link" "gulp"
+11 error node v6.11.3
+12 error npm  v3.10.10
+13 error path ../../../../../../../../data/data/com.termux/files/usr/lib/node_modules/gulp
+14 error code EACCES
+15 error errno -13
+16 error syscall symlink
+17 error Error: EACCES: permission denied, symlink '../../../../../../../../data/data/com.termux/files/usr/lib/node_modules/gulp' -> '/storage/emulated/0/pws/www/mariocarrizales/mariocarrizales/node_modules/gulp'
+17 error     at Error (native)
+17 error  { Error: EACCES: permission denied, symlink '../../../../../../../../data/data/com.termux/files/usr/lib/node_modules/gulp' -> '/storage/emulated/0/pws/www/mariocarrizales/mariocarrizales/node_modules/gulp'
+17 error     at Error (native)
+17 error   errno: -13,
+17 error   code: 'EACCES',
+17 error   syscall: 'symlink',
+17 error   path: '../../../../../../../../data/data/com.termux/files/usr/lib/node_modules/gulp',
+17 error   dest: '/storage/emulated/0/pws/www/mariocarrizales/mariocarrizales/node_modules/gulp' }
+18 error Please try running this command again as root/Administrator.
+19 verbose exit [ -13, true ]
