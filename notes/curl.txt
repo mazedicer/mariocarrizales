@@ -117,3 +117,60 @@ a command line like:*/
  Put a file to a HTTP server with curl:*/
  curl --upload-file uploadfile http://www.example.com/receive.cgi
 
+/* refere Header
+A HTTP request may include a 'referer' field (yes it is misspelled), 
+which can be used to tell from which URL the client got to this
+ particular resource. Some programs/scripts check the referer 
+field which is a stupid way to check something so easily forged, 
+many scripts still do it.*/
+curl --referer http://www.example.come http://www.example.com
+
+/*User-Agent
+Very similar to the referer field, all HTTP requests may set the 
+User-Agent field. It names what user agent (client) that is being used. 
+Many applications use this information to decide how to display pages.
+ To make curl look like Internet Explorer 5 on a Windows 2000 box:*/
+curl --user-agent "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)" [URL]
+/*Or why not look like you're using Netscape 4.73 on an old Linux box:*/
+curl --user-agent "Mozilla/4.73 [en] (X11; U; Linux 2.2.15 i686)" [URL]
+
+/*Location header
+Curl does not follow Location: headers by default, but will 
+simply display such pages in the same manner it displays
+ all HTTP replies. It does however feature an option that will 
+make it attempt to follow the Location: pointers.
+To tell curl to follow a Location:*/
+ curl --location http://www.example.com
+ 
+ /*certificates
+ Curl supports client- side certificates. All certificates are locked
+ with a pass phrase, which you need to enter before the certificate
+ can be used by curl. The pass phrase can be specified on the 
+command line or if not, entered interactively when curl queries for it. 
+Use a certificate with curl on a HTTPS server like:*/
+ curl --cert mycert.pem https://secure.example.com
+
+/*debug tricks
+Many times when you run curl on a site, you'll notice that the site
+ doesn't seem to respond the same way to your curl requests as it
+ does to your browser's.Then you need to start making your curl 
+requests more similar to your browser's requests:
+* Use the --trace-ascii option to store fully detailed logs of the
+ requests for easier analyzing and better understanding
+* Make sure you check for and use cookies when needed 
+(both reading with --cookie and writing with --cookie-jar)
+* Set user-agent to one like a recent popular browser does
+* Set referer like it is set by the browser
+* If you use POST, make sure you send all the fields and in the 
+same order as the browser does it.
+A very good helper to make sure you do this right, 
+is the LiveHTTPHeader tool that lets you view all headers you 
+send and receive with Mozilla/Firefox (even when using HTTPS).
+ Chrome features similar functionality out of the box among the 
+developer's tools.
+A more raw approach is to capture the HTTP traffic on the 
+network with tools such as ethereal or tcpdump and check 
+what headers that were sent and received by the browser.
+ (HTTPS makes this technique inefficient.)*/
+ 
+ 
