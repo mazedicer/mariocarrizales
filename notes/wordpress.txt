@@ -1,5 +1,269 @@
 <?php
-// https://code.tutsplus.com/tutorials/the-wordpress-settings-api-part-4-on-theme-options--wp-24902
+//////////////////////////////////////////////////
+WP_Query
+/////////////////////////////////////////////////
+/*includes/query.php*/
+$args = array(
+    /* Arguments for your query.
+    checkout https://code.tutsplus.com/series/mastering-wp_query--cms-818
+    for a huge list of WP_Query Arguments*/
+);
+// Custom query.
+$query = new WP_Query( $args );
+// Check that we have query results.
+if ( $query->have_posts() ) {
+    // Start looping over the query results.
+    while ( $query->have_posts() ) {
+        $query->the_post();
+        // Contents of the queried post results go here.
+        the_ID(); 
+        post_class( 'left' );
+        the_permalink(); 
+        the_title_attribute();
+        post_thumbnail( 'thumbnail');
+        the_title();
+        the_excerpt();
+    }
+}
+// Restore original post data.
+wp_reset_postdata();
+
+/*If you need to modify the main query, use pre_get_posts instead, 
+and if you want to create a completely new query, use WP_Query*/
+
+/*pre_get_posts is a hook which modifies the main query. 
+You can use it with a conditional tag to check if a certain type 
+of page is being viewed (for example the home page) and then
+ use it to amend the query that's run (for example to remove the most 
+recent three posts, if you're displaying them elsewhere on the page). 
+It's a very efficient way of modifying the main query and should be
+ your first port of call if that's what you want to do. However you 
+can't use it to create a completely new query.
+get_posts() and get_pages() are very similar, with the main
+ difference being obvious from their names. These template tags 
+actually use the WP_Query class, so they are another way of 
+doing the same thing, but add an extra step because they call 
+the WP_Query class instead of you doing it directly. 
+You can only use them to query either posts or pages*/
+
+/*functions
+get_query_var(<string_var>,<default_val>) It takes the global 
+$wp_query object and retrieves a public query variable from it. 
+It has two parameters: The first one is the variable to return
+ its value, and the second one is a default value to return if the 
+variable is not set.
+
+query_posts() is a function that alters the main query by putting
+ the main query aside and running a new query?and you'll need to 
+use wp_reset_query() to clean up after it.
+
+get_post(<post_ID>, [assoc | num] array, raw | edit | display | attrib | js filter )*/
+$first_post = get_post( 1, ARRAY_A );
+$post_title = $first_post[ 'post_title' ];
+
+/*get_posts() function allows us to run queries and save them as 
+arrays to use in various places. It requires the same arguments
+ with WP_Query so you can customize the query as you like*/
+ $args = array(
+    'category_name' => 'news',
+    'order' => 'ASC',
+    'orderby' => 'post_title',
+    'posts_per_page' => -1
+);
+// Return an array of all posts in the "news" category.
+$all_posts_list = get_posts( $args );
+ 
+/*get_pages() fetches a list of pages. The follow. shows the args
+that can be provided*/
+$args = array(
+    'sort_order' => 'ASC',
+    'sort_column' => 'post_title',
+    'hierarchical' => 1,
+    'exclude' => '',
+    'include' => '',
+    'meta_key' => '',
+    'meta_value' => '',
+    'authors' => '',
+    'child_of' => 0,
+    'parent' => -1,
+    'exclude_tree' => '',
+    'number' => '',
+    'offset' => 0,
+    'post_type' => 'page',
+    'post_status' => 'publish'
+);
+$pages = get_pages( $args );
+
+/*have_posts() returns true or false if records are returned or not.
+
+the_post() 
+It fetches the next record from the query.
+It sets up the $post data.
+It sets the in_the_loop parameter to TRUE
+
+setup_postdata() fills the global variables $id, $authordata, 
+$currentday, $currentmonth, $page, $pages, $multipage,
+ $more, $numpages, which help many Template Tags work in 
+the current post context. It does not assign the global $post
+ variable, but seems to expect that its argument is a reference to it.*/
+global $post;
+setup_postdata( $post );
+
+/*rewind_posts() restart the loop
+
+wp_reset_postdata() resets the global $post variable back to the
+ first post in the main query. It's better to use this one after a 
+secondary query.
+
+wp_reset_query() should be used if the main query is changed 
+with the query_posts() function or the pre_get_posts 
+
+is_main_query() is a Conditional Tag that returns TRUE if the current 
+query is the main query and FALSE if it's not.*/
+if ( is_main_query() ) {   
+    // Success.
+} else {  
+    // Failure.
+}
+
+/*in_the_loop() Conditional Tag returns TRUE or FALSE if your code 
+is running inside the Loop or not
+
+WP_Query filters
+https://codex.wordpress.org/Plugin_API/Filter_Reference#WP_Query_Filters
+
+_______________________________________________________________________
+Properties of the WP_Query Class
+Let's begin with the properties, or the variables, of the WP_Query class.
+
+The Query String: $query
+This property stores the query passed to the $wp_query object.
+
+The Array of Query Variables: $query_vars
+This property stores an associative array of the variables 
+(and their values) of $query.
+
+The Queried Object: $queried_object
+This property stores the currently queried object, like the $post
+ object if it's a post query or the $author object if it's an author query.
+
+The ID of the Queried Object: $queried_object_id
+This property stores the ID of the queried object.
+
+The Posts Returned From the Query: $posts
+This property stores the posts returned from the query.
+
+The Number of Posts Being Displayed: $post_count
+This property stores the number of posts for the current query.
+
+The Number of Posts Returned from the Query: $found_posts
+This property stores the number of posts without the LIMIT 
+clause of the SQL query.
+
+The Number of Pages: $max_num_pages
+This property stores the number of pages?it's calculated by 
+dividing $found_posts by $posts_per_page.
+
+The Index of the Current Post: $current_post
+This property stores the index number of the current item in the Loop.
+ For example, it's -1 if the Loop has just started and it's incremented 
+by the next_post() method.
+
+The Current Post: $post
+This property stores, well, the current post.
+
+Conditional Tag Booleans: $is_{conditional}
+The following properties are stored as booleans, giving information 
+about the current post's status:
+
+$is_single: Checks if it's a single post of any post type 
+(except "attachment" and "page" post types) or not.
+$is_page: Checks if it's a page or not.
+$is_archive: Checks if it's an archive page or not.
+$is_preview: Checks if it's a post preview or not.
+$is_date: Checks if it's a date-based archive page or not.
+$is_year: Checks if it's a year-based archive page or not.
+$is_month: Checks if it's a month-based archive page or not.
+$is_time: Checks if it's a time-based (hourly, minutely or secondly)
+ archive page or not.
+$is_author: Checks if it's an author's archive page or not.
+$is_category: Checks if it's a category archive page or not.
+$is_tag: Checks if it's a tag archive page or not.
+$is_tax: Checks if it's a taxonomy archive page or not.
+$is_search: Checks if it's a "search results" page or not.
+$is_feed: Checks if it's a feed or not.
+$is_comment_feed: Checks if it's a comment feed or not.
+$is_trackback: Checks if it's a trackback or not.
+$is_home: Checks if it's the main blog page or not.
+$is_404: Checks if it's a 404 error page or not.
+$is_comments_popup: Checks if it's a comments popup window or not.
+$is_admin: Checks if it's the administration panel or not.
+$is_attachment: Checks if it's an attachment or not.
+$is_singular: Checks if it's a single post of any post type
+ (including "attachment" and "page" post types) or not.
+$is_robots: Checks if it's a query for the robots.txt file or not.
+$is_posts_page: Checks if it's the "Posts Page" 
+(set on the "Reading Settings" page in the admin panel) or not.
+$is_paged: Checks if it's a paginated query and it's not the first page.
+
+________________________________________________________________________
+Methods of the WP_Query Class
+the methods (functions) of the WP_Query class.
+
+init()
+This method simply initializes the object, setting all properties
+ to NULL, 0 or FALSE.
+
+parse_query( $query )
+This method uses the $query property to parse the query 
+and populate all other properties (except $posts, $post_count, 
+$post and $current_post).
+
+parse_query_vars()
+This method reparses the query variables.
+
+get( $query_var )
+This method fetches a given query variable.
+
+set( $query_var, $value )
+This method sets the given query variable to a specific value.
+
+&get_posts()
+This method returns the posts requested by the query and populates
+ the $posts and $post_count properties.
+
+next_post()
+This method increments the $current_post index and advances to
+ the next post in $posts, returning the current post object. 
+(This method must be used inside a Loop to work properly.)
+
+the_post()
+This method sets the global $post variable with the next post's data. 
+(This method must be used inside a Loop to work properly.)
+
+have_posts()
+This method checks if there are any posts left to work on, and returns 
+FALSE if there aren't. (This method must be used before a Loop to
+ work properly.)
+
+rewind_posts()
+This method simply resets the $current_post and $post properties.
+
+&query( $query )
+This method calls two of its sibling methods, parse_query() and 
+get_posts(), and returns the result of get_posts().
+
+get_queried_object()
+This method returns the queried object. (It sets $queried_object 
+if it's not already set.)
+
+get_queried_object_id()
+This method, similar to the one above, returns the queried 
+object's ID ($queried_object_id).
+
+Quick Tip: If there's an ampersand before a method,
+ it means that the method returns by reference.
+ 
 //////////////////////////////////////////////////
 CUSTOM ADMIN MENUS
 /////////////////////////////////////////////////
