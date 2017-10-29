@@ -39,11 +39,16 @@ padding: between content and border
 padding 10px 10px 10px 10px
 
 /*UNIT TYPES*/
-	
-	pixels(px): unit that represents pixels on device
-	points(pt): used in print media 72pt = 1 inch
-	Ems(em): em = current font size
-	percent(%): current font size = 100%
+	absolute:
+	    pixels(px): unit that represents pixels on device
+	    points(pt): used in print media 72pt = 1 inch
+	    picas(pc): 1pc = 12 pt
+	relative:
+	Ems(em): em = relative to the parent
+	    rem: relative to the root
+	    percent(%): current font size = 100%
+	    vw: relative to viewport width
+	    vh: relative to viewport height
 	
 /*BLOCK ELEMENTS*/
 
@@ -140,18 +145,33 @@ span:nth-child(2) { rules }
 /*CUSTOM CURSOR*/
 	
 	cursor: pointer; url( sample.cur );
-	
+
+/* FUNCTIONS
+attr():returns value of element attribute*/
+a:after{
+	content:"("attr(href)")";
+	}
+/*calc(): for calculations with addition, subtraction,
+multiplication, division*/
+#div1{
+	width:calc(100%-100px);
+	}
+/*linear-gradient():creates color gradients for backgrounds
+radial-gradient():creates circular color gradient for backgrounds
+repeating-linear-gradient():
+repeating-radial-gradient():
+*/
 /*//////////////////////////////////////////////////////////////////////////////////
 ////FLEX
 ////////////////////////////////////////////////////////////////////////////////////*/ 
 
 /*center elements horizontally
 justify-content:
-	flex-start - Default value. Items are positioned at the beginning of the container
-	flex-end - Items are positioned at the end of the container
-	center - Items are positioned at the center of the container
-	space-between - Items are positioned with space between the lines
-	space-around - Items are positioned with space before, between, and after the lines
+	flex-start - beginning of the container
+	flex-end - end of the container
+	center - center of the container
+	space-between - space between the lines
+	space-around - space before, between, and after the lines
 */
 .flex-container {
     display: -webkit-flex;
@@ -190,10 +210,10 @@ flex direction:
 }
 /* space elements vertically with align-items 
 	stretch - Default value. Items are stretched to fit the container
-	flex-start - Items are positioned at the top of the container
-	flex-end - Items are positioned at the bottom of the container
-	center - Items are positioned at the center of the container (vertically)
-	baseline - Items are positioned at the baseline of the container
+	flex-start -  top of the container
+	flex-end - bottom of the container
+	center - center of the container (vertically)
+	baseline - baseline of the container
 */
 .flex-container {
     display: -webkit-flex;
