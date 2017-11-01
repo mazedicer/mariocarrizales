@@ -39,6 +39,7 @@ recent three posts, if you're displaying them elsewhere on the page).
 It's a very efficient way of modifying the main query and should be
  your first port of call if that's what you want to do. However you 
 can't use it to create a completely new query.
+
 get_posts() and get_pages() are very similar, with the main
  difference being obvious from their names. These template tags 
 actually use the WP_Query class, so they are another way of 
@@ -298,6 +299,7 @@ function sandbox_menu_page_display() {
     echo $html;
      
 } // end sandbox_menu_page_display
+
 //////////////////////////////////////////////////
 CUSTOM ADMIN SUB MENUS
 /////////////////////////////////////////////////
@@ -317,6 +319,7 @@ function sandbox_options_display() {
     // Send the markup to the browser
     echo $html;  
 } // end sandbox_options_display
+
 //////////////////////////////////////////////////
 Plugin Pages
 //////////////////////////////////////////////////
@@ -343,6 +346,7 @@ function sandbox_plugin_display() {
     // Send the markup to the browser
     echo $html;  
 } // end sandbox_plugin_display
+
 //////////////////////////////////////////////////
 Theme Pages
 //////////////////////////////////////////////////
@@ -536,8 +540,10 @@ page.php
 	page templates unlimited
 */
 	
-/* PLUGINS
-Give every plugin its own folder.
+//////////////////////////////////////////////////
+// PLUGINS
+//////////////////////////////////////////////////
+/*Give every plugin its own folder.
 Should have the same file name and folder name.
 Name files, functions, and variables logically.
 Prefix functions and variable names.
@@ -572,7 +578,9 @@ wp-content/plugins/
 	/addimage.php
 */
 
-/* ACTION HOOKS 
+//////////////////////////////////////////////////
+// ACTION HOOKS 
+//////////////////////////////////////////////////
 action hooks execute when event occurs 
 admin_head - head for dashboard
 admin_init - when dashboard has loaded
@@ -606,8 +614,10 @@ To uninstall:
 register_uninstall_hook( string $file, callable $callback )
 */
 
-/* FILTERS
-Filters modify data 
+//////////////////////////////////////////////////
+//FILTERS
+//////////////////////////////////////////////////
+/*Filters modify data 
 filter hooks change content before displaying and saving to database
 comment_text changes comments before display
 get_categories - changes category list
@@ -639,7 +649,9 @@ function listAllShrimp(){
 	return $list;
 }
 
-/* CUSTOM POST TYPES
+//////////////////////////////////////////////////
+// CUSTOM POST TYPES
+//////////////////////////////////////////////////
 /plugins/customposttypes.php
 register_post_type( string $name_of_post_type, array of arguments ) */
 function myCustomPostTypes(){
@@ -657,6 +669,7 @@ function myCustomPostTypes(){
 	register_post_type('coupons',$args);
 }
 add_action( 'init', 'myCustomPostTypes' );
+
 ////////////////////////////////////////////////////////////
 /* ////TAXONAMIES
 ////////////////////////////////////////////////////////////
@@ -669,7 +682,85 @@ function register_recipe_taxonomy(){
 }
 add_action( 'init', 'register_recipe_taxonomy' ); //hooking to init action 
 
+//////////////////////////////////////////////////
+//CHILD THEME
+//////////////////////////////////////////////////
+/*1. Create a child theme folder 
+wp-content/themes/<parent-name>-child/
+
+2. Create a stylesheet: style.css 
+Your stylesheet must contain the below required header comment 
+at the very top of the file. This tells WordPress basic info about 
+the theme, including the fact that it is a child theme with a 
+particular parent:*/
+/* 
+Theme Name:   <Parent_theme_name> Child
+Template:     <Parent_theme_name>
+*/
+there are more properties but these are required.
+
+3. Enqueue stylesheet 
+ enqueue the parent and child theme stylesheets.
+functions.php*/
+add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_styles' );
+function my_theme_enqueue_styles() {
+ 
+    $parent_style = 'parent-style'; // This is 'twentyfifteen-style' for the Twenty Fifteen theme.
+ 
+    wp_enqueue_style( $parent_style, get_template_directory_uri() . '/style.css' );
+    wp_enqueue_style( 'child-style',
+        get_stylesheet_directory_uri() . '/style.css',
+        array( $parent_style ),
+        wp_get_theme()->get('Version')
+    );
+}
+
+/*4. Activate child theme 
+Administration Screen > Appearance > Themes
+
+5 Adding Template Files 
+Other than the functions.php file (as noted above), any file you 
+add to your child theme will overwrite the same file in the parent theme.
+For example, if you wanted to change the code of the parent 
+theme?s header.php file, you would copy the file to your child
+q theme folder and customize it there.*/
+
+//////////////////////////////////////////////////
+//functions.php 
+//////////////////////////////////////////////////
+/*Unlike style.css, the functions.php of a child theme does not override
+ its counterpart from the parent. Instead, it is loaded in addition to 
+the parent?s functions.php. (Specifically, it is loaded right before 
+the parent?s file.)
+If you want to modify parent theme via functions.php file,
+DO NOT add the code in the parent theme functions.php because it
+will dissapear the moment the theme gets updated. You must 
+create a child theme and add the code in the child theme's
+ functions.php. The child theme will not be affected.*/
+ // e.g. custom function to Include in functions.php
+function my_favicon_link() {
+    echo '<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />' . "\n";
+}
+add_action( 'wp_head', 'my_favicon_link' );
+
+//////////////////////////////////////////////////
+//Referencing or Including Other Files 
+//////////////////////////////////////////////////
+//points to child theme dir
+get_stylesheet_directory()
+//points to parent theme dir
+get_template_directory()
+//e.g.
+require_once( get_stylesheet_directory(). '/my_included_file.php' ); 
+/*Unlike get_stylesheet_directory(), which returns a file path, 
+get_stylesheet_directory_uri() returns a URL, which is useful for 
+front-end assets.*/
+echo get_stylesheet_directory_uri() . '/images/my_picture.png';
+
+
+//////////////////////////////////////////////////
 //CHILD THEME for post types
+//////////////////////////////////////////////////
 //theme/childtheme/style.css
 /*Theme name: Child Theme
 ...
@@ -685,13 +776,17 @@ get_template_part('content','mychildtheme');
 //to add links
 get_the_term_list(post $id,taxonomy $taxonomy, html $before,seperator $sep, html $after)
 
-/* ROLES Administrator, Editor, Author, Contributor, Subscriber
-add_role() - allows you to create custom roles
+//////////////////////////////////////////////////
+//ROLES Administrator, Editor, Author, Contributor, Subscriber
+//////////////////////////////////////////////////
+/*add_role() - allows you to create custom roles
 add_cap(), remove_cap() - allows you to set|remove capabilities
 current_user_can() - check user capabilites 
 user_can() - check a particular user capabilites */
 
-/* SHORTCODES
+//////////////////////////////////////////////////
+// SHORTCODES
+//////////////////////////////////////////////////
 [caption] - wrap caption around content 
 [gallery] - show image galleries
 [audio] - embed and play audo files 
@@ -712,8 +807,9 @@ function make_a_button( $atts, $content = null ){
 add_shortcode( 'my_button', 'make_my_button' ); // [my_button] $content [/my_button]
 
 
-
-/* PLUGIN HEADER
+//////////////////////////////////////////////////
+// PLUGIN HEADER
+//////////////////////////////////////////////////
 Plugin Name: Add Image
 Plugin URL: http://yourwebsite.com
 Version: 1.0
