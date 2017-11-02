@@ -323,5 +323,131 @@ function woocommerce_support() {
 }
 ////////////////////////////////////////////////////////////////////
 // WPGoogle Maps Plugin 
+// https://developers.google.com/maps/documentation/javascript/styling
 ////////////////////////////////////////////////////////////////////
+table: wp_wpgmza
+columns:
+	id int(11) PRIMARY KEY AUTO_INCREMENT:
+	map_id int(11):
+	address varchar(700):
+	description mediumtext:
+	pic varchar(700):
+	link varchar(700):
+	icon varchar(700):
+	lat varchar(700):
+	lng varchar(700):
+	anim varchar(3):
+	title varchar(700):
+	infoopen varchar(3):
+	category varchar(500):
+	approved tinyint(1):
+	retina tinyint(1):
+	type tinyint(1):
+	did varchar(500):
+	other_data longtext:
+////////////////////////////////////////////////////////////////////
+// https://wordpress.stackexchange.com/questions/116617/how-can-i-show-a-google-map-in-custom-post-type
+////////////////////////////////////////////////////////////////////	
+<?php 
+    if(isset($prop_mapaddress)) {
+        global $post;
+        global $wpdb;
+
+        $fromat_address = trim($prop_mapaddress);
+        $fromat_address = str_replace(" ","+",$fromat_address);
+        $address_obj = file_get_contents("http://maps.googleapis.com/maps/api/geocode/json?address=".$fromat_address."&sensor=false");
+        $address_obj =json_decode($address_obj);
+        $latitude = $address_obj->results[0]->geometry->location->lat;
+        $longitude = $address_obj->results[0]->geometry->location->lng;            
+    ?>       
+        <script>        
+            var geocoder;       
+            var map;      
+            var lat = "<?php echo $latitude ?>";       
+            var lng = "<?php echo $longitude;  ?>";
+
+            function initialize() {       
+                geocoder = new google.maps.Geocoder();       
+                var latlng = new google.maps.LatLng(lat, lng);       
+                var mapOptions = {        
+                    zoom: 15,        
+                    center: latlng,        
+                    mapTypeId: google.maps.MapTypeId.ROADMAP       
+                }        
+                map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);        
+            } // map-convas would be id of div you want to show your map in  
+
+            google.maps.event.addDomListener(window, 'load', initialize);       
+        </script>      
+        <?php        
+    }
+?>
+////////////////////////////////////////////////////////////////////
+// https://developers.google.com/maps/documentation/javascript/examples/geocoding-simple
+////////////////////////////////////////////////////////////////////
+
+
+
+////////////////////////////////////////////////////////////////////
+// https://wordpress.stackexchange.com/questions/116617/how-can-i-show-a-google-map-in-custom-post-type
+////////////////////////////////////////////////////////////////////	
+/* pull data from custom post type */
+$args = array (
+  'post_type'              => array( 'card' ),
+  'posts_per_page'         => '-1',
+);
+
+// The Query
+$site_query = new WP_Query( $args );
+$result = array();
+// The Loop
+if ( $site_query->have_posts() ) {
+
+  while ( $site_query->have_posts() ) {
+    $site_query->the_post();
+    $sitename = get_post_meta( get_the_ID(), 'siteName', true );
+    $addr1 = get_post_meta( get_the_ID(), 'addr1', true );
+    $addr2 = get_post_meta( get_the_ID(), 'addr2', true );
+    $op1 = get_post_meta( get_the_ID(), 'op1', true );
+    $priceclass = get_post_meta( get_the_ID(), 'price_class', true );
+    $longitude = get_post_meta( get_the_ID(), 'longitude', true );
+    $latitude = get_post_meta( get_the_ID(), 'latitude', true );
+
+
+     $result[] = array(
+       'siteName' => $sitename,
+       'addr1' => $addr1,
+       'addr2' => $addr2,
+       'op1' => $op1,
+       'price_class' => $priceclass,
+       'longitude' => $latitude,
+       'latitude' => $latitude,
+     );
+
+  }
+}
+
+wp_reset_postdata();
+/* store this in a JavaScript variable: */
+var locations = <?php echo json_encode($result); ?>;	
+
+////////////////////////////////////////////////////////////////////
+// https://wordpress.stackexchange.com/questions/249505/get-all-meta-keys-assigned-to-a-post-type
+////////////////////////////////////////////////////////////////////
+$meta_fields = array();
+$the_query = new WP_Query( 'post_type=posttype' );
+if ( $the_query->have_posts() ) {
+ while ( $the_query->have_posts() ) {
+  $the_query->the_post();
+  $meta_array = get_post_meta( get_the_ID() );
+  foreach( $meta_array as $meta) {
+   $meta_fields = $meta[];
+
+  } 
+ }
+ wp_reset_postdata();
+}	
+/*adding post-meta 
+add_post_meta($post_id, $meta_key, $meta_value, $unique);*/
+add_post_meta( 68, '_color', 'red', true );
 
