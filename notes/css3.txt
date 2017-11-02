@@ -44,7 +44,7 @@ padding 10px 10px 10px 10px
 	    points(pt): used in print media 72pt = 1 inch
 	    picas(pc): 1pc = 12 pt
 	relative:
-	Ems(em): em = relative to the parent
+		Ems(em): em = relative to the parent
 	    rem: relative to the root
 	    percent(%): current font size = 100%
 	    vw: relative to viewport width
