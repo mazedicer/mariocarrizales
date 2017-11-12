@@ -1,0 +1,468 @@
+Canvas
+
+- Transparent
+
+<canvas id="canvas_x" width="400" height="300">
+	Fallback content
+</canvas>
+
+toDataURL( type ) : Convert to image. type can be image/png
+
+getContext( ctxID ) : Get the drawing context for the canvas. Info about the canvas, methods, etc.
+
+CANVAS STATE
+
+	Each context maintain a drawing state, which can be managed
+
+	You can save the current state and restore a previous one
+	
+	States can be pushed onto a stack of saved states
+	
+	Canvas state keeps track of:
+	
+		1. lineWidth, strokeStyle, fillStyle, lineCap, etc.
+		2. transformation matrix
+		3. clipping region
+		
+	save()
+	
+	restore()
+
+Canvas & SVG
+
+C- elements are draw programmatically
+s- elements are part of the page's DOM
+
+c- drawing is done with pixels
+s- drawing is done with vectors
+
+c- animation is not built in
+s- animation effects are built in
+
+c- high performance for pixel-based drawing operations
+s- based on standard XML syntax, which provides better accessibility
+
+API
+
+	1. Retrieve a reference to the canvas
+	2. get the drawing context from the element using getContext()
+	3. if result of getContext() is not NULL, you can start using the drawing API
+	
+Rectangles
+	
+	fillRect( origin_x, origin_y, width, height )
+	
+	strokeRect( origin_x, origin_y, width, height )
+	
+	clearRect( origin_x, origin_y, width, height )
+
+Lines
+
+	moveTo( x, y ) : moves the pen to given coordinate
+	
+	lineTo( x, y ) : draws a line from the current position to the new
+	
+	lineWidth( x, y) : pixel width of line
+	
+	lineCap : line endings-butt(default), round, square
+	
+	lineJoin : how lines join together-round, bevel, miter(default)
+	
+	miterLimit : limit at which line joins are cut off and drawn as bevel(10)
+	
+	beginPath() : begins a new set of line drawing operations
+	
+	stroke() : collects all of the current path cammands and draws them
+
+Arcs
+
+	curves that are portions of a circle
+	
+	arc( start_x, start_y, r, start_angle, end_angle, bool ) : add an arc to the current path that starts at x, y and has a radius of r, bool is true if the arc is anti-clockwise.
+	
+	arcTo( x1, y1, x2, y2, r ) : adds an arc to the current path that starts at the current pen position, has the given control points, and a radius of r.
+	
+	closePath();
+	
+	Angles are in radians. TO convert degrees to radians:
+	
+		var radians = ( Math.PI / 180 ) * degrees;
+		
+	Stroke a 90-degree arc, clockwise:
+	
+		ctx.beginPath();
+		ctx.arc( 50, 150, 100, 1.5 * Math.PI, 2 * Math.PI );
+		ctx.stroke();
+		
+	Stroke a 270-degree arc, anti-clockwise:
+	
+		ctx.beginPath();
+		ctx.arc( 300, 150, 100, 0, 1.5 * Math.PI, false );
+		ctx.stroke();
+
+Paths
+
+	Set of connected points, by lines or curves, opened or closed.
+	Context has one and only one current path
+	
+	a closed path has an end point that is the same as its start point
+	
+	beginPath() : starts creating a path
+	
+	closePath() : closes the path
+	
+
+Colors/Styles
+
+	fillStyle: css colors, gradients, pattern (black)
+	
+		ctext.fillStyle = "green";
+	
+	strokeStyle: css color, gradient, pattern (black)
+	
+		ctext.strokeStyle = "rgba( 0, 0, 255, 1 )";
+		
+	lineWidth: width of imaginary pen
+	
+		ctext.lineWidth = 5;
+	
+Bezier Curves
+
+	drawn starting from a context point to an end point using two control points to determine the curve
+	
+	bezierCurveTo( cx1, cy1, cx2, cy2, end1, end2 ) : start at the current pen position using the two control points defined by cx1, cy1 and cx2, cy2 and ending at the point end1, end2
+
+Quadratic Curves
+
+	use a start point, one control point, and an end point.
+	
+	quadraticCurveTo( cx, cy, x, y ) : start at the current pen position using the given control point cx, cy and ending at the end point defined by x,y
+
+Text
+
+	similar to drawing paths
+	
+	can be stroked or filled using the same fillStyle and strokeStyle as paths
+	
+	font : css rules-like family, size, weight, variant, etc. default 10px sans-serif
+	
+	textAlign : start (default), end, left, right, center
+	
+	textBaseline : top, hanging, middle, alphabetic (default), ideographic, bottom
+	
+	fillText( txt, x, y, [maxW] ) : render the text string at x, y no wider than maxW
+	
+	strokeText( txt, x , y, [maxW] ) : render the text string at x, y no wider than maxW
+	
+	measureText( text ) : return the dimension metrics of the string using the current font settings
+
+Compositing
+Patterns
+
+	colors, patterns, gradients with fill or stroke property
+	
+	from image, video, or another canvas element
+	
+	if video, current playback frame is used as pattern
+	
+	repeat in x or y
+	
+	createPattern( elem, repeat ) : create pattern form the give element
+		
+		elem: img, video, canvas
+		
+		repeat: no-repeat, repeat, repeat-x, repeat-y
+
+Gradients
+
+	linear and radial
+	
+	1. use function to create gradient of right type
+	2. add color stops to the gradient to create color transitions
+	
+	after gradient has been created, it can be used anywhere a stroke or fill style is used
+	
+	createLinearGradient( x0, y0, x1, y1 ) : starts at point x0, y0 and travels to x1, y1
+	
+	createRadialGradient( x0, y0, r0, x1, y1, r1 ) : radial gradient that begins with the circle whose center is at (x0, y0) and has a radius r0, and travels to the circle whose center is at (x1, y1) and has radius r1
+	
+	addColorStop( position, color ) : adds a color stop at the given position and has the given color. position is a floating point number from 0.0 to 1.0
+
+Shadows
+
+	4 attributes
+	drawing operations are affected by shadow attributes: paths, images, text, etc.
+	
+	can be colored, offset in X and Y, and have a blur value
+	
+	shadowColor : css color string
+	
+	shadowOffsetX : horizontal
+	
+	shadowOffsetY : vertical
+	
+	shadowBlur : value greater than 0
+
+Clipping Paths
+
+	Any path can be defined as a clipping path
+	
+	defines a region inside of which drawing takes place and outside of which drawing has no effect
+	
+	clip() : 
+
+Transforms
+Images
+
+	drawImage(srcImg, dx, dy) : draw at location dx, dy.
+	
+	drawImage(srcImg, dx, dy, dw, dh) : scales the image with dw and dh
+	
+	drawImage(srcImg, sx, sy, sw, sh, dx, dy, dw, dh) : draws portion of the source image sx, sy, sw, sh
+	
+	
+
+Video
+Raw Pixels
+
+FABRIC.js
+--------------------------------------------------------------------------------------------------------
+
+	PATHS
+
+	moveto x 680 y 1
+	drawto x 5030 y 1
+	bezierto x 5699 y 680
+	drawto x 5699 y 820
+	bezierto x 5030 y 1554
+	drawto x 680 y 1554
+	bezierto x 1 y 820
+	closepath
+
+	var path = new fabric.Path('M 0 0 L 300 100 L 200 300 z');
+
+	path.set({ fill: 'red', stroke: 'green', opacity: 0.5 });
+
+	M = move
+
+	L = line
+
+	Z = close path
+
+	C = cubic bezier : x, y, bcpx, bcpy, ecpx, ecpy
+	
+	x,y: move to point
+	bcpx, bcpy: control point of beginning of line
+	ecpx, ecpy: control point at end of line
+	
+	OBJECTS ON CANVAS
+
+	canvas.item(0); // reference fabric.Rect added earlier (first object)
+	canvas.getObjects(); // get all objects on canvas (rect will be first and only)
+
+	mycanvas.getActiveObject().get('type')
+
+	mycanvas is canvas id
+
+	function onObjectSelected(e) { console.log(e.target.get('type')); } mycanvas.on('object:selected', onObjectSelected);
+
+	
+	SUBCLASSING
+	
+	All 2D objs inherit from fabric.Object
+	
+	fabric.util.createClass
+	
+		var Point = fabric.util.createClass( { 
+
+						initialize: function( x, y ){
+						
+							this.x = x || 0;
+							
+							this.y = y || 0;
+						
+						},
+						toString: function(){
+						
+							return this.x + '/' + this.y;
+						
+						}
+		
+					} );
+					
+	createClass:
+	
+		takes an object, uses that object's properties to create
+		"class" with instance-level properties.
+		
+		initialize: constructor
+		
+			when initializing Point, an instance with x, y, and toString methods are created:
+			
+			Usage:
+			
+				var point = new Point( 10, 20 );
+				
+				point.x; //10
+				
+				point.y; //20
+				
+				point.toString(); // "10/20"
+				
+		child of Point Class
+
+			var ColoredPoint = fabric.util.createClass( Point, { 
+
+								initialize: function( x, y, color ){
+								
+									this.callSuper( 'initialize', x, y );
+									this.color = color || '#00';
+								
+								},
+								toString: function(){
+								
+									return this.callSuper('toString') +
+									
+									' ( color: ' + this.color + ')';
+								
+								}
+
+			} );
+			
+	LabeledRect class
+	
+		var LabeledRect = fabric.util.createClass( fabric.Rect, { 
+
+						type: 'labeledRect',
+						
+						initialize: function( options ){
+						
+							options || ( options = { } );
+							
+							this.callSuper( 'initialize', options );
+							
+							//give all labeled rectangles fixex width/height values
+							
+							this.set( { 
+
+								width: 100, 
+								
+								height: 50
+
+							} );
+							
+							this.set( 'label', options.label || '' );
+						
+						},
+						
+						toObject: function(){
+						
+							return fabric.util.object.extend( this.callSuper( 'toObject' ), { 
+
+								label: this.get( 'label' )
+
+							} );
+						
+						},
+						
+						_render: function( ctx ){
+						
+							this.callSuper( '_render', ctx );
+							
+							ctx.font = '20px Helvetica';
+							
+							ctx.fillStyle = '#333';
+							
+							//or make font and fill values of labels configurable but if you do make properties configurable, account them in "toObject" and "initialize":
+							
+							ctx.font = this.labelFont;
+							
+							ctx.fillStyle = this.labelFill;
+							
+							//the above are configurable properties that should be accounted in "toObject" and "initialize" methods of extended class
+							
+							ctx.fillText( this.label, -this.width/2, -this.height/2 + 20 );
+						
+						}
+
+		} );
+
+		fabric.Rect: Parent Class
+		
+			use its rendering abilities
+		
+		type: property of class for identification
+		
+		initialize: constructor
+		
+			using callSuper
+			
+		options: object's label value passed as argument parameter
+		
+		toObject: serialized object representation of an instance
+		
+			used to extend parent's toObject method to add the label to it
+			
+		_render: method responsible for drawing of an instance
+		
+			callSuper call renders rectangle and additional 3 lines of text-rendering logic.
+			
+		sample usage:
+		
+			var labeledRect = new LabeledRect( { 
+
+								width: 100,
+								height: 50,
+								left: 100,
+								top: 40,
+								label: 'test',
+								fill: '#faa'
+
+							} );
+							
+			canvas.add( labeledRect );
+			
+		setting values:
+			
+			labeledRect.set( { 
+
+				label: 'trololo',
+				fill: '#aaf',
+				rx: 10,
+				ry: 10
+
+			} );
+
+Utilities
+-----------------------------------------------------------------------------------------------------
+http://jsfiddle.net/jaredwilli/qFuDr/
+
+<canvas id="canvas"></canvas>
+
+* { margin:0; padding:0; } /* to remove the top and left whitespace */
+html, body { width:100%; height:100%; } /* just to be sure these are full screen*/
+canvas { display:block; } /* To remove the scrollbars */
+
+(function() {
+    var canvas = document.getElementById('canvas'),
+            context = canvas.getContext('2d');
+
+    // resize the canvas to fill browser window dynamically
+    window.addEventListener('resize', resizeCanvas, false);
+
+    function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            /**
+             * Your drawings need to be inside this function otherwise they will be reset when 
+             * you resize the browser window and the canvas goes will be cleared.
+             */
+            drawStuff(); 
+    }
+    resizeCanvas();
+
+    function drawStuff() {
+            // do your drawing stuff here
+    }
+})();

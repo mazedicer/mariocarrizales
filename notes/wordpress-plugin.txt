@@ -1,0 +1,97 @@
+<?php
+/*
+Plugin Name: NTT Social Networks
+Plugin URI: http://www.newthinktank.com/wordpress-plugin-howto/
+Description: Displays links to RSS, Facebook, and Twitter. Teaches you how to make plugins.
+Version: 2.0
+Author: Derek Bananas
+Author URI: http://www.newthinktank.com 
+*/
+class ntt_link_to_social_networks extends WP_Widget {
+	//initialize plugin 
+	function ntt_link_to_social_networks(){
+		$widget_options = array(
+			'classname' => 'ntt_link_to_social_networks',
+			'description' => __( 'Displays Links to Facebook, Twitter, and RSS' )
+		);
+		parent::WP_Widget( 'ntt_link_to_social_networks', 'NTT Social Network Links', $widget_options );
+	}//ntt_link_to_social_networks
+	/*displays on website
+	$instance: widget itself
+	*/
+	function widget( $args, $instance ){
+		extract( $args, EXTR_SKIP );//deprecated
+		$title = ( $instance['title'] ) ? $instance['title'] : 'Follow Me';
+		$facebook = ( $instance['facebook'] ) ? $instance['facebook'] : 'dbananas2';
+		$twitter = ( $instance['twitter'] ) ? $instance['twitter'] : 'newthinktank';
+		//plugins_url: kicks back the location of the images
+		$ntt_feed_icon = plugins_url( 'images/rss_logo.php', __FILE__ );
+		$ntt_facebook_icon = plugins_url( 'images/facebook_logo.php', __FILE__ );
+		$ntt_twitter_icon = plugins_url( 'images/twitter_logo.php', __FILE__ );
+		//bloginfo( 'rss2_url' ): location to rss url 
+		bloginfo( 'rss2_url' );
+		/*display the data inputed by the user complying with WP 
+		$before_title, $before_widget, $after_title, $after_widget are all WP variables
+		that contain html that complies with WP structure themes
+		*/
+		echo $before_widget;
+		echo $before_title . $title . $after_title;
+		echo $instance['twitter'];
+		echo $instance['facebook'];
+	}//widget 
+	//save everything that's been entered
+	function update( $new_instance, $old_instance ){
+		$instance = $old_instance;
+		$instance['title'] = strip_tags( $new_instance['title'] );
+		$instance['facebook'] = strip_tags( $new_instance['facebook'] );
+		$instance['twitter'] = strip_tags( $new_instance['twitter'] );
+		return $instance;
+	}//update 
+	//admin section
+	function form( $instance ){
+		$default = array( 'title' => 'Follow Me',
+							'facebook' => 'dbananas2',
+							'twitter' => 'newthinktank' );
+		/*
+		wp_parse_args( string|array $args, array $defaults = '' )
+		Merge user defined arguments into defaults array.
+		This function is used throughout WordPress to allow for both string or array to be merged into another array.
+		Return: (array) Merged user defined values with defaults.
+		Source file: wp-includes/functions.php 
+		*/
+		$instance = wp_parse_args( ( array ) $instance, $defaults );
+		$title = $instance['title'];
+		$facebook = $instance['facebook'];
+		$twitter = $instance['twitter'];
+		//build your html form with the following
+		//get_field_name( string ): 
+		echo $this->get_field_name( 'title' );
+		echo esc_attr( $title );
+		echo $this->get_field_name( 'facebook' );
+		echo esc_attr( $facebook );
+		echo $this->get_field_name( 'twitter' );
+		echo esc_attr( $twitter );
+	}//form 
+}
+
+function ntt_link_to_social_networks_init(){
+	register_widget( 'ntt_link_to_social_networks' );
+}//ntt_link_to_social_networks_init
+//action hook
+add_action( 'widget_init', 'ntt_link_to_social_networks_init' );
+/*
+most common action hooks and when they occur:
+admin_head: Occur in the head for the dashboard
+admin_init: Occurs when the dashboard has loaded
+comment_post: Occurs when a new comment is created
+create_category: Occurs when a category is created
+init: Occurs when WP has loaded the website
+publish_post: Occurs when a new post is published
+switch_theme: Occurs when the theme is changed
+user_register: Occurs when a new user registers
+wp_footer: Occurs in the footer
+wp_head: Occurs in the header 
+*/
+
+
+
