@@ -27,4 +27,16 @@ f char - Find next char
 F char - Find next char
 t char - Find next char
 T char - Find next char
-
+/************************************************************
+SELECTING
+************************************************************/
+v - Select char
+V - Select line
+CTRL V - Select column
+/************************************************************
+PASTING
+************************************************************/
+d - Cut
+y - Copy
+p - Paste after cursor
+P - Paste before cursor
