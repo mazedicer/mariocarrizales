@@ -1,0 +1,35 @@
+/* Passing data through props */
+class Board extends React.Component{
+	renderSquare(i){
+		return <Square value={i} />;
+	}
+}
+/* imports value in Square compoent */
+class Square extends React.Component{
+	render(){
+		return(
+			<button className="square">
+				{this.props.value}
+			</button>
+		);
+	}
+}
+/*onclick event to change state*/
+<button className="square" onClick={()=>this.setState({value:'X'})
+	{this.state.value}
+</b...
+
+/*React component can have state by setting*/ 
+this.state 
+/*in the constructor which should be considered private to the component*/
+class Square extends React.Component{
+	constructor(props){
+		super(props);
+		this.state={
+			value=null,
+		};
+	}
+
+	
+	
+	

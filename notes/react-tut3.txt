@@ -1,4 +1,7 @@
-/* everything in react is a component.
+/*
+React is a declerative js library for building user interfaces.
+Everything in react is a component.
+Components take in parameters called props.
 can only return one html element: e.g. <div></div>
 {} anything in curly-braces gets executed as javascript.
 render everything all the time any change that will reflect in a visual way.
