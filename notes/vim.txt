@@ -1,0 +1,30 @@
+/*************************************************************
+MOVE CURSOR
+************************************************************/
+H - Left
+J - Down
+K - Up
+L - Right
+w - Word jump
+W - Word jump
+e - End of Word jump
+E - End of Word jump
+b - Back by word jump
+B - Back by word jump
+0 - (zero)Start of line
+$ - End of line
+CTRL D - Half page down
+CTRL U - Half page up
+} - Paragraph next
+{ - Paragraph before
+gg - Top of page
+G - Bottom of page
+: # - Go to line #
+/************************************************************
+SEARCHING
+************************************************************/
+f char - Find next char
+F char - Find next char
+t char - Find next char
+T char - Find next char
+
