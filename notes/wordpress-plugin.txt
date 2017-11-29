@@ -1,5 +1,83 @@
 <?php
+/*---------------------------------------------
+ACTION function inside your plugin file 
+----------------------------------------------*/
+function email_friends($post_ID){
+	//mail your friends 
+	return $post_ID;
+}
+/*use classes
+and outside the class add_action with an array('class','method')*/
+class emailer{
+	static function send($post_ID){
+		//mail your friends 
+		return $post_ID;
+	}
+}
+add_action('publish_post',array('emailer','send'));
+/*class without static function*/
+class emailer{
+	function send($post_ID){
+		//mail your friends 
+		return $post_ID;
+	}
+}
+$myEmailClass = new emailer();
+add_action('publish_post', array($myEmailClass, 'send'));
+/*---------------------------------------------
+SAVING Plugin data  
+----------------------------------------------*/
 /*
+1. Option - for plugin related data
+https://codex.wordpress.org/Creating_Options_Pages
+mechanism for saving, updating, and retrieving individual, named pieces of data("options")
+Option values can be strings,arrays,php objects(auto serialize/unserialized)
+must be unique so that they do not conflict with other plugin options.*/
+//will create a new option,nothing if already exists.
+add_option($name,$value,$deprecated,$autoload);
+//get an option value 
+get_option($option_name);
+//update option 
+update_option($option_name,$newvalue);
+/*Add administration menu for your custom options
+https://codex.wordpress.org/Adding_Administration_Menus 
+to match wordpress look*/
+<div class="wrap">
+//create form 
+<form method="post" action="options.php">
+//settings_field() know which settings your options page will handle.
+//myoption-group = same name used in register_setting function 
+settings_fields('myoption-group');
+//replace form-field markup in the form 
+do_settings_sections('myoption-group');
+//close the form 
+submit_button();
+</form>
+</div>
+/*register_setting and unregister_setting add and remove options from a whitelist
+register_setting() should be called in an admin_init action, runs before every admin page and options.php, which receives this form.*/
+if(is_admin()){
+	add_action('admin_menu','add_mymenu');
+	add_action('admin_init','register_mysettings');
+}else{
+	//non admin stuff 
+}
+/*whitelist 
+the name myoption-group has to match the name in settings_fields() function above.*/
+function register_mysettings(){
+	register_setting('myoption-group','new_option_name');
+	register_setting('myoption-group','some_other_option');
+	register_setting('myoption-group','option_etc');
+}
+/*2. Post Meta(aka custom fields) for data associated with individual posts, pages, or attachments. add_post_meta() and related functions.
+https://codex.wordpress.org/Function_Reference/post_meta_Function_Examples
+https://codex.wordpress.org/Function_Reference/add_post_meta
+3. Taxonomy - for classifying posts or other objects. When you want to access all posts/objects associated with a given taxonomy term. See custom taxonomies.
+https://codex.wordpress.org/Taxonomies#Custom_Taxonomies
+4. New db table. for data not associated with individual posts, pages, attachments, or comments. See creating tables with plugins.
+https://codex.wordpress.org/Creating_Tables_with_Plugins
+
+/* widget plugin example start the php file with the following comment:
 Plugin Name: NTT Social Networks
 Plugin URI: http://www.newthinktank.com/wordpress-plugin-howto/
 Description: Displays links to RSS, Facebook, and Twitter. Teaches you how to make plugins.
