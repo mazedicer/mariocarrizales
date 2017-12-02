@@ -1,0 +1,36 @@
+/* -----------------------------------------------------
+MOVING CODE
+------------------------------------------------------*/
+CTRL SHIFT UP-Arrow : move line/selection up
+CTRL [ : indent left 
+TAB : indent right 
+SHIFT TAB : indent left 
+/* -----------------------------------------------------
+SELECTING CODE
+------------------------------------------------------*/
+CTRL L : current line 
+CTRL B : current word
+SHIFT UP-Arrow : previous line 
+SHIFT ALT RIGHT-Arrow : next word 
+SHIFT CMD RIGHT-Arrow : to end of line 
+/* -----------------------------------------------------
+FIND & REPLACE
+------------------------------------------------------*/
+F3 : next 
+SHIFT F3 : previous 
+CTRL SHIFT F : in files
+CTRL H : replace 
+CTRL SHIFT H : in files 
+/* -----------------------------------------------------
+MULTIPLE CURSORS
+------------------------------------------------------*/
+CTRL B : add next match to selection 
+CTRL SHIFT B : skip match and add next match to selection 
+CTRL U : undo last selection change 
+CTRL SHIFT U : redo last selection change 
+ALT F3 : find all and select 
+CTRL CLICK : add to selection 
+ALT CLICK DRAG : select a column 
+ALT SHIFT UP-Arrow : add cursor to previous line 
+CTRL ALT L : split selection into lines 
+ESC : switch to single selection 

@@ -1179,7 +1179,9 @@ function processCC( $number = null, $zip_code = null ){
 	}
 }
 
-/* PHP 7 */
+/***************************************************************************************** 
+PHP 7 
+******************************************************************************************/
 //Scalar type declarations: coercive and strict.
 //coercive
 function sumOfInts( int ...$ints ){
@@ -1242,6 +1244,19 @@ rather than just a string to be evaluated or a boolean value to be tested */
 ini_set( 'assert.exception', 1 );
 class CustomError extends AssertionError{}
 assert( false, new CustomError( 'Some error message' ) );
+/***************************************************************************************** 
+NAMESPACES 
+******************************************************************************************/
+/*Is just like referring to a file by its absolute path.
+And that's really it! Adding a namespace to a class is like organizing files from one directory, 
+into a bunch of sub-directories. To refer to a class, use its fully-qualified name, 
+starting with the slash.*/
+namespace Acme\Tools;
+class Foo{
+	//some code 
+}
+/*To use Foo*/
+$foo=new \Acme\Tools\Foo();
 
 //Group use declaration 
 /* Classes, functions, and constants being imported from the same namespace can now be 
