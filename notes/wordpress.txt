@@ -1,6 +1,37 @@
 <?php
+/*---------------------------------------------
+GLOBALS DB
+----------------------------------------------*/
+//db object 
+$wpdb
+//query object 
+$wp_query 
+//array stores error info of query 
+$EZSQL_ERRROR
+//array|object update user data 
+$userdata 
+//holds query string passed to the $wp_query object by wp-blog-header.php 
+$query 
+//array assoc. of query var names and values 
+$query_vars 
+/*---------------------------------------------
+GLOBALS
+----------------------------------------------*/
+$day
+$previousday
+$wp_version
+$wp_locale
+$wp_broken_theme
+$wp_themes //array holds working themes 
+$wp_did_header //boolean true if header loaded 
+$cache_lastpostdate //array stores the date the last post was published in different formats
+$cache_lastpostmodified 
+$cache_lastcommentmodified
+$blog_id //the blog ID 
+
+
 //////////////////////////////////////////////////
-WP_Query
+//WP_Query
 /////////////////////////////////////////////////
 /*includes/query.php*/
 $args = array(
@@ -379,12 +410,12 @@ function sandbox_theme_display() {
 
 
 //////////////////////////////////////////////////
-CUSTOM ADMIN SETTINGS
+//CUSTOM ADMIN SETTINGS
 /////////////////////////////////////////////////
 /* ------------------------------------------------------------------------ *
  * Setting Registration
  * ------------------------------------------------------------------------ */
- * Initializes the theme options page by registering the Sections,
+ /* Initializes the theme options page by registering the Sections,
  * Fields, and Settings.
  *
  * This function is registered with the 'admin_init' hook.
@@ -479,9 +510,8 @@ To do this, we need to use the get_option function*/
 Develop in a WordPress install.
 Turn WP_DEBUG on in wp-config.php file.
 Download Debug bar, Query Monitor plugins tools while designing plugins.
-Prevent direct access to files: 
+Prevent direct access to files: */
 	if( !defined( 'ABSPATH' ) ) exit;
-*/
 
 //use of bloginfo('description'); = tagline
 <head>
@@ -581,7 +611,7 @@ wp-content/plugins/
 //////////////////////////////////////////////////
 // ACTION HOOKS 
 //////////////////////////////////////////////////
-action hooks execute when event occurs 
+/*action hooks execute when event occurs 
 admin_head - head for dashboard
 admin_init - when dashboard has loaded
 comment_post - when new comment is created
@@ -696,7 +726,7 @@ particular parent:*/
 /* 
 Theme Name:   <Parent_theme_name> Child
 Template:     <Parent_theme_name>
-*/
+
 there are more properties but these are required.
 
 3. Enqueue stylesheet 
@@ -766,7 +796,7 @@ echo get_stylesheet_directory_uri() . '/images/my_picture.png';
 ...
 */
 //copy single.php
-paste into /theme/childtheme/single-mychildtheme.php
+//paste into /theme/childtheme/single-mychildtheme.php
 //single.php contains the framework
 ...content-mychildtheme.php
 //content.php contains the content
@@ -787,12 +817,12 @@ user_can() - check a particular user capabilites */
 //////////////////////////////////////////////////
 // SHORTCODES
 //////////////////////////////////////////////////
-[caption] - wrap caption around content 
+/*[caption] - wrap caption around content 
 [gallery] - show image galleries
 [audio] - embed and play audo files 
 [video] - embed and play video files 
 [playlist] - display collection of audio or video files 
-[embed] - wrap embedded items
+[embed] - wrap embedded items*/
 
 add_shortcode( $name_of_shortcode, $function ) */
 //basic
