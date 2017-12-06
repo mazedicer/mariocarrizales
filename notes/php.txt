@@ -852,7 +852,10 @@ class Table implements TableInterface, LogInterface {
 echo ( new Table() )->save([]); //short array syntax - same as declaring an array 
 echo ( new Table() )->log( "Interfaces are cool!" );
 
-/* standard interfaces 
+/*********************************************************************************
+ SPL (Standard PHP Library) standard interfaces 
+ ********************************************************************************/
+ /*
 Countable
 	abstract public int count( void ) 
 OuterIterator
@@ -880,6 +883,53 @@ class Table implements TableInterface, LogInterface, Countable {
 	}
 }
 echo ( new Table() )->count(); //10
+/* SPLs put together*/
+class SetFull implements Iterator, ArrayAccess,Countable,Serializable{
+	//Iterator
+	public function current(){
+		return current($this->_set);
+	}
+	public function key(){
+		return key($this->_set);
+	}
+	public function next(){
+		next($this->_set);
+	}
+	public function rewind(){
+		reset($this->_set);
+	}
+	public function valid(){
+		return (key($this->_set) !== NULL);
+	}
+	//ArrayAccess
+	public function offsetExists($key){
+		return array_key_exists($key,$this->_set);
+	}
+	public function offsetGet($key){
+		return $this->_set[$key];
+	}
+	public function offsetUnset($key){
+		unset($this->_set[$key];
+	}
+	public function offestSet($key,$value){
+		if(is_null($key)){
+			$this->_set[]=$value;
+		}else{
+			$this->_set[$key]=$value;
+		}
+	}
+	//Countable
+	public function count(){
+		return count($this->_set);
+	}
+	//Serializable
+	public function serialize(){
+		return serialize($this->_set);
+	}
+	public function unserialize($data){
+		$this->_set=unserialize($data);
+	}
+}
 
 /* TRAITS 
 If you can copy and paste the code from one class to another (and we've all done this, even though we try not to because its code duplication) then you have a candidate for a trait.
@@ -985,8 +1035,10 @@ Example::doSomething();
 if a trait has static properties, each class using that trait has independent instances of those properties.*/
 
 
-/* MAGIC METHODS 
-__ (double underscore)
+/***************************************************************************************************** 
+MAGIC METHODS 
+*****************************************************************************************************/
+/*__ (double underscore) 
 do work for free*/
 // __construct, __destruct
 class test {
@@ -1001,12 +1053,16 @@ class test {
 $objA = new test(); 
 //__destruct triggers and prints 2
 unset( $objA );
-
 //__sleep - when you serialize( $Object )
-/*serialize() checks if your class has a function with the magic name __sleep(). If so, that function is executed prior to any serialization. It can clean up the object and is supposed to return an array with the names of all variables of that object that should be serialized. If the method doesn't return anything then NULL is serialized and E_NOTICE is issued.*/
-
+/*serialize() checks if your class has a function with the magic name __sleep(). If so, that function is executed 
+prior to any serialization. It can clean up the object and is supposed to return an array with the names of all 
+variables of that object that should be serialized. If the method doesn't return anything then NULL is serialized 
+and E_NOTICE is issued.*/
 //__wakeup - when object is unserialize( ObjectSerialized )
-/* unserialize() checks for the presence of a function with the magic name __wakeup(). If present, this function can reconstruct any resources that the object may have. The intended use of __wakeup() is to reestablish any database connections that may have been lost during serialization and perform other reinitialization tasks.*/
+/* unserialize() checks for the presence of a function with the magic name __wakeup().
+If present, this function can reconstruct any resources that the object may have. 
+The intended use of __wakeup() is to reestablish any database connections that may have been
+ lost during serialization and perform other reinitialization tasks.*/
 class Connection{
     protected $link;
     private $dsn, $username, $password;

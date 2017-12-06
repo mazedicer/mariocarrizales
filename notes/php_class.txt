@@ -133,7 +133,35 @@ class Address {
 $this, 
 //instead use 
 self::function()
-	
+//self points to the class in which it is written
+self::$_instance=new self();
+//is the same as
+self::$_instance=new MyClass();
+//_call,__callStatic()
+class SetCall extends SetState{
+	public function __call($name,$args){
+		if($name=='flip'){
+			return array_reverse($this->_set);
+		}
+	}
+	public function __callStatic($name,$args){
+		if($name=='factory'){
+			return new self();
+		}
+	}
+}
+$myset=SetCall::factory();
+$reversed=$myset->flip();
+var_dump($reversed);
+//__invoke() allows your object to be called as  a function
+class SetInvoke extends SetCall{
+	public function __invoke($start,$length){
+		return array_slice($this->_set,$start,$length,TRUE)
+	}
+}
+$myset=new SetInvoke();
+$slice=$myset(1,3);
+var_dump($slice);
 //CONSTANTS
 
 	const ADDRESS_TYPE_RESIDENCE = 1;
