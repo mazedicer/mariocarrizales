@@ -89,7 +89,26 @@ Introspect and improve within the Scrum process framework
 1. Combine the learning from the last sprint, with regards to people,relationships,process,and tools.
 2. Identify improvements.
 3. Create a plan for implementing improvements to increase product quality.
+/***********************************************************************
+SCRUM ARTIFACTS
+***********************************************************************/
+Provide key info for the team and stakeholders
+	understand the product
+	activities
+	plans
+Artifacts:
+	- product backlog
+	- sprint backlog
+	- burn-down chart
+	- increment
 
+//Product backlog (by Product Owner)
+Evolving as it gets developed.
+Ordered list of features needed as part of the end product.
+Single source of requirements.
+Lists: features, functions, requirements, enhancements, and fixes for future releases.
+Item attributes: description, order, estimate, and value.
+Higher-ordered items are clearer, detailed, more precise estimate. The lower the order, the lesser is the detail.
 	
 	
 	
