@@ -1,0 +1,122 @@
+<style>
+	body{margin:0;}
+	canvas{width:100%;height:100%}
+</style>
+<body>
+<script>
+/*In order to display anyhting you need:
+	1. scene
+	2. camera
+	3. renderer*/
+var scene=new THREE.Scene();
+var camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
+var renderer=new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth,window.innerHeight);
+/*adds a canvas element to display the scene*/
+document.body.appendChild(renderer.domElement);
+</script>
+/*PerspectiveCamera( <FOV degrees>, <ASPECT RATIO>, <NEAR CLIPPING PLANE>, <FAR CLIPPING PLANE>)
+FOV - the extent of the scene that is seen on the display at any given moment.
+ASPECT RATIO - use width of the element divided by the height.
+NEAR/FAR CLIPPING PLANES - objects further away from the camera than the value of far or closer than near
+	won't be rendered. For performance reasons.*/
+/*WebGLRenderer()
+setSize(<WIDTH>,<HEIGHT>,<BOOL updateStyle>
+updateStyle: false will render at half resolution, given that your <canvas> has 100% width and height.*/
+/*Adding the cube*/
+var geometry=new THREE.BoxGeometry(1,1,1);
+var material=new THREE.MeshBasicMaterial({color:0x00ff00});
+var cube=new THREE.Mesh(geometry,material);
+scene.add(cube);
+camera.posiiton.z=5;
+/*BoxGeometry contains the vertices and faces of the cube.
+MeshBasicMaterial used to color the geometry.
+Mesh is an object that takes a geometry, applies the material, which we can insert into the scene.
+scene.add() by default will place elements at (0,0,0) coordinates so you have to move the camera position.*/
+/*Animation Loop*/
+function animate(){
+	//this will call itself every animation frame
+	requestAnimationFrame(animate);
+	//animate the cube
+	cube.rotation.x+=0.1;
+	cube.rotation.y+=0.1;
+	renderer.render(scene,camera);
+}
+/*requestAnimationFrame() pauses when the user navigates to another browser tab
+saves processing power and battery*/
+animate();
+/*******************************************************************************************
+SERVER
+*******************************************************************************************/
+/*three.js is available as an NPM package*/
+npm install three
+/*importing*/
+var THREE=require('three');
+var scene=new THREE.Scene();
+/*ES6 importing*/
+import * as THREE from 'three';
+const scene=new THREE.Scene();
+/*Import selected parts*/
+import {Scene} from 'three';
+const scene=new Scene();
+/*Testing server Node.js*/
+npm install http-server -g
+//run it from the local directory
+http-server . -p 8000
+//Python 2.x server
+python -m SimpleHTTPServer
+//Python 3.x
+python -m http.server
+//PHP
+php -S localhost:8000
+/*******************************************************************************************
+LINES
+*******************************************************************************************/
+var screen=new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth,window.innerHeight);
+document.body.appendChild(renderer.domElement);
+var camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,1,500);
+camera.position.set(0,0,100);
+camera.lookAt(new THREE.Vector3(0,0,0));
+var scene=new THREE.Scene();
+//create the material for the line
+var material=new THREE.LineBasicMaterial({color:0x0000ff});
+/*Geometry or BufferGeometry with some vertices*/
+var geometry=new THREE.Geometry();
+geometry.vertices.push(new THREE.Vector3(-10,0,0));
+geometry.vertices.push(new THREE.Vector3(0,10,0));
+geometry.vertices.push(new THREE.Vector3(10,0,0));
+var line=new THREE.Line(geometry,material);
+//add it to the scene
+scene.add(line);
+screen.render(scene,camera);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
