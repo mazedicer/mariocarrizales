@@ -1,0 +1,111 @@
+<?php
+wp_remote_get($url,$args[optional]);
+/*$args = array 
+method - GET
+timeout - how long to wait before quiting
+redirection - how many times to follow redirection 
+httpversion - 1.0
+blocking - true: should the rest of the page wait to finish loading until this
+					operation is complete?
+headers - array()
+body - null
+cookies - array()*/
+$response = wp_remote_get( 'https://api.github.com/users/mazedicer' );
+/*$response will contain headers, content, and other meta data
+Array
+(
+    [headers] => Array
+        (
+            [server] => nginx
+            [date] => Fri, 05 Oct 2012 04:43:50 GMT
+            [content-type] => application/json; charset=utf-8
+            [connection] => close
+            [status] => 200 OK
+            [vary] => Accept
+            [x-ratelimit-remaining] => 4988
+            [content-length] => 594
+            [last-modified] => Fri, 05 Oct 2012 04:39:58 GMT
+            [etag] => "5d5e6f7a09462d6a2b473fb616a26d2a"
+            [x-github-media-type] => github.beta
+            [cache-control] => public, s-maxage=60, max-age=60
+            [x-content-type-options] => nosniff
+            [x-ratelimit-limit] => 5000
+        )
+
+    [body] => {"type":"User","login":"blobaugh","gravatar_id":"f25f324a47a1efdf7a745e0b2e3c878f","public_gists":1,"followers":22,"created_at":"2011-05-23T21:38:50Z","public_repos":31,"email":"ben@lobaugh.net","hireable":true,"blog":"http://ben.lobaugh.net","bio":null,"following":30,"name":"Ben Lobaugh","company":null,"avatar_url":"https://secure.gravatar.com/avatar/f25f324a47a1efdf7a745e0b2e3c878f?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png","id":806179,"html_url":"https://github.com/blobaugh","location":null,"url":"https://api.github.com/users/blobaugh"}
+    [response] => Array
+        (
+             => 200
+            [message] => OK
+        )
+
+    [cookies] => Array
+        (
+        )
+
+    [filename] => 
+)
+*/
+/* Just the body can be retrieved with*/
+wp_remote_retrieve_body($response);
+/* Get response code*/
+$http_code = wp_remote_retrieve_response_code($response); //200
+/*Get a specific header*/
+$last_modified = wp_remote_retrieve_header($response,'last-modified');
+/*Get all of the header*/
+$last_modified = wp_remote_retrieve_header($response);
+/*Get with basic authentication*/
+$args = array(
+    'headers' => array(
+        'Authorization' => 'Basic ' . base64_encode( YOUR_USERNAME . ':' . YOUR_PASSWORD )
+    )
+);
+wp_remote_get( $url, $args );
+/*DELETE request*/
+$args = array(
+    'method' => 'DELETE'
+);
+$response = wp_remote_request( 'http://some-api.com/object/to/delete', $args );
+/*Error checking*/
+if(is_wp_error($response)){
+	/*Returns true if $response is an object of the WP_Error class.*/
+	$response->get_error_message();
+	return false; // Bail early
+}
+/***************************************************************************************** 
+POSTING DATA
+******************************************************************************************/
+wp_remote_post($url,$args[required]);
+/*To send data to the server you will need to build an associative array of data. 
+This data will be assigned to the 'body' value. From the server side of things the value will appear in the*/
+$_POST 
+/*variable as you would expect. I.E. if body => array( 'myvar' => 5 ) on the server $_POST['myvar'] = 5.*/
+$args = array(
+    'body' => $body,
+    'timeout' => '5',
+    'redirection' => '5',
+    'httpversion' => '1.0',
+    'blocking' => true,
+    'headers' => array(),
+    'cookies' => array()
+);
+$response = wp_remote_post( 'http://your-contact-form.com', $args );
+/***************************************************************************************** 
+CACHING RESPONSE DATA
+******************************************************************************************/
+set_transient($transient,$value,$expiration);
+/*$transient - name to reference later
+$value - the content of the transient 
+$expiration - how many seconds from saving until expiration */
+$response = wp_remote_get( 'https://api.github.com/users/mazedicer' );
+set_transient( 'maze_github_userinfo', $response, 60*60 );
+/*Using the data*/
+$github_userinfo=get_transient('maze_github_userinfo');
+if($github_userinfo){
+	// Transient expired, refresh the data
+    $response = wp_remote_get( 'https://api.github.com/users/mazedicer' );
+    set_transient( 'mazedicer_github_userinfo', $response, 60*60 );
+}
+// Use $github_userinfo
+/*Delete the transient*/
+delete_transient('mazedicer_github_userinfo');

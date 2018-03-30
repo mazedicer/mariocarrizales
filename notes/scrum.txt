@@ -1,0 +1,125 @@
+/***********************************************************************
+SCRUM
+***********************************************************************/
+Iterative and incremental agile software development framework for managing product development.
+1. Handles unpredicted challenges.
+2. Focuses on maximizing the teams ability to deliver quickly, respond to emerging requirements and
+to adapt to evolving technologies and changes in market conditions.
+/***********************************************************************
+SCRUM ROLES
+***********************************************************************/
+ScrumMaster, Product Owner, Delivery Team
+//Product Owner
+One person not a committee.
+The entire organization must respect the product owner desicions.
+Nobody does more or less than what is specified on the product backlog.
+1. Maximize the value of the product, work of the team.
+2. Manage product backlog:
+	a. express backlog items clearly
+	b. ordering backlog items to best achieve goals
+	c. optimize the value of the work the team performs
+	d. makes sure everybody understands the product backlog
+//ScrumMaster
+The mediator between the Product Owner and the Delivery team.
+Removes any impediments obstructing the team from achieving its sprint goals.
+Advices the Product owner about how to maximize ROI for the team.
+1. Help the team determine the definition of done for the product
+2. Coaches the team, within scrum principles.
+3. Promotes self organization.
+4. Educate key stakeholders in the product on scrum principles.
+//Delivery team
+About 7 members (officially 3-9), ideally in one team room protected from outside distractions.
+A typical team includes a mix of software engineers,architects,programmers,analysts,QA experts,testers, and UI designers.
+Each sprint, the team is responsible for determining how it will accomplish the work to be completed.
+/***********************************************************************
+SCRUM EVENTS
+***********************************************************************/
+Release planning(Product Backlog)>Sprint planning(Sprint Backlog)>Daily Scrum>1-4 Weeks>Sprint Review>
+Sprint Retrospective(Potential shippable product increment)>Repeat--->Release planning...
+//The Sprint
+It s a working product increment.
+Usually a duration of two weeks or one month, and this duration remains constant for all sprints.
+Cannot have varying durations for the different sprints in a project.
+A Sprint goal is set as the objective and used as a guide for the team.
+A Sprint should be cancelled if it becomes obsolete based on market or technology changes and conditions.
+//Sprint planning
+The work to be performed in the Sprint is planned in the Sprint Planning meeting.
+4hrs for 2week sprints, 8hrs for 1month sprints.
+Focuses on the following two questions:
+	1. What needs to be and can be delvered in the Sprint Increment?
+	2. How will the work needed for the execution of Sprint be achieved?
+The input to this meeting are:
+	Product backlog
+	Latest product increment
+	Projected capacity of the team
+	Past performance of the team
+The team decides on what functionality can be developed during the Sprint.
+The team decides from the Product backlog presented by the Product Owner.
+The Product backlog items selected for the Sprint plus the delivery plan is called the Sprint backlog.
+The work is divided into tasks of duration of one day or less.
+The team can get external advice or renegotiate Product backlog items after realizing too much or too little work.
+//Daily Scrum/Stand up Meeting
+15min
+A planning event, not a status tracking event.
+Same place/time to reduce complexity.
+During the meeting, each team member:
+	What did he do yesterday that helped the team meet the Sprint Goal?
+	What will he do today to help the team meet the Sprint Goal?
+	Does he see any impediments to the Sprint goal?
+Benefits of Daily Scrum Meeting:
+	Improve communication within the team.
+	Identify impediments, if any, in order to facilitate an early removal
+	Highlight and promote quick decision-making.
+	Improve the team's level of knowledge.
+//Sprint Review
+ScrumMaster responsible
+2hrs 2weeks, 4hrs 1month sprints
+End of every Sprint.
+Presentation of the increment that is getting released is reviewed.
+Scrum team and stakeholders collaborate to understand what was done.
+Product Owner explains what Product backlog items have been completed and those that haven't.
+Team discusses what went well and what problems arose and how they were solved.
+Group discusses what should be done next which helps Sprint planning of the subsequent Sprint.
+Scrum team then reviews the timeline,budget,potential capabilities,and marketplace for the next anticipated release
+of the product increment.
+//Sprint Retrospective
+1hr 2week sprint, 3hr 1month sprint
+After the Sprint Review
+Introspect and improve within the Scrum process framework
+1. Combine the learning from the last sprint, with regards to people,relationships,process,and tools.
+2. Identify improvements.
+3. Create a plan for implementing improvements to increase product quality.
+/***********************************************************************
+SCRUM ARTIFACTS
+***********************************************************************/
+Provide key info for the team and stakeholders
+	understand the product
+	activities
+	plans
+Artifacts:
+	- product backlog
+	- sprint backlog
+	- burn-down chart
+	- increment
+
+//Product backlog (by Product Owner)
+Evolving as it gets developed.
+Ordered list of features needed as part of the end product.
+Single source of requirements.
+Lists: features, functions, requirements, enhancements, and fixes for future releases.
+Item attributes: description, order, estimate, and value.
+Higher-ordered items are clearer, detailed, more precise estimate. The lower the order, the lesser is the detail.
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,66 @@
+php dependency manager
+getcomposer.org > download Composer-Setup.exe
+locate php.exe 
+
+PHP.ini php_openssl.dll uncomment
+
+restart wamp 
+
+//check installation
+>composer 
+
+//download dependencies from packagist.org 
+
+cmd>mkdir myapp
+cmd>cd myapp 
+cmd>touch composer.json //create file 
+/////////////////////////////////
+composer.json 
+
+{
+	"require": {
+		"package": "version",
+		"package": "version",
+		"package": "version"
+	}
+}
+
+OR
+
+{
+	"autoload": {
+		"classmap": [
+			"your/classes/directory"
+		]
+	}
+}
+
+OR with psr-4 namespaces
+
+{
+	"autoload": {
+		"psr-4": {
+			"Dir\\": "Main/Dir"
+		}
+	}
+}
+
+//install dependencies with following command:
+
+cmd> composer install 
+
+//packages are installed inside 
+
+myapp/vendor/package 
+
+//autoloading
+
+//auto update
+cmd> composer auto-update
+
+//update autoload 
+cmd> composer dump-autoload -o 
+
+require vendor/autoload.php 
+
+

@@ -1,0 +1,505 @@
+/*
+<link rel="stylesheet" type="text/css" href="mainstylesheet.css">
+*/
+
+/*mainstylesheet.css 
+	//imports other sheets into mainstylesheet.css
+*/
+	@import "heading.css"; 
+	@import "paragraph.css";
+
+/*change everything*/
+* { rules }
+
+/*change everything inside div*/
+div * { rules }
+
+/*target span with ID*/
+span#id { rules }
+
+/*target after h3*/
+h3 + p { rules }
+
+/*target after h3 after p */
+h3 + p > a { rules }
+
+/*target every p with class */
+p[class] { rules }
+
+/*target every p with id */
+p[id] { rules }
+
+/*target all with alt attribute nintendo*/
+*[alt~="nintendo"] { rules }
+
+margin: outside of border
+padding: between content and border 
+
+/* padding/margin goes clockwise from top to right */
+padding 10px 10px 10px 10px
+
+/*UNIT TYPES*/
+	absolute:
+	    pixels(px): unit that represents pixels on device
+	    points(pt): used in print media 72pt = 1 inch
+	    picas(pc): 1pc = 12 pt
+	relative:
+		Ems(em): em = relative to the parent
+	    rem: relative to the root
+	    percent(%): current font size = 100%
+	    vw: relative to viewport width
+	    vh: relative to viewport height
+	
+/*BLOCK ELEMENTS*/
+
+	elements that contain a line break statement
+	<div>, <th>, <table>, <ol>, <h1>
+
+/*INLINE ELEMENTS */
+
+	will not cause line breaks
+	<span>, <strong>, <font>, <a>
+
+/*POSITION*/
+
+	absolute: based on document, z-indexed
+	fixed: does not scroll
+	relative: relative to original position
+	
+/*COLUMS / RULES*/
+	/*equal size columns */
+	#lorem {
+		height: 200px;
+		width: 450px;
+		border 1px solid #ccc;
+		overflow: hidden;
+		/*sort between 4 columns */
+		-webkit-columns: 4;
+		-ms-columns: 4;
+		-o-columns: 4;
+		-moz-columns: 4;
+		columns: 4;
+		/*rules between columns */
+		-webkit-column-rule: 2px dashed black;
+	}
+	/*different size columns */
+	#container_div {
+		height: 200px;
+		width: 450px;
+		border: 1px solid black;
+	}
+	#container_div {
+		display: -webkit-box;
+	}
+	#container_div#div1 {
+		-webkit-box-flex: 2;
+	}
+	#container_div#div2 {
+		-webkit-box-flex: 2;
+	}
+	#container_div#div3 {
+		-webkit-box-flex: 3;
+	}
+	
+
+/*CLIPPING*/
+
+	clip: rect( 0px, 50px, 50px, 0px ) /*clockwise
+
+CONTENT ADD*/
+
+#paragraph:before {
+	content: "*";
+}
+#paragraph:after {
+	content: "@";
+}
+
+/*NUMBERING*/
+
+h3 {
+	counter-increment: num;
+}
+
+h3:before {
+	content: counter( num ) " ";
+}
+
+/*PSEUDO CLASSES*/
+
+/*target first character*/
+#paragraph:first-letter { rules }
+
+/*target first line*/
+#paragraph:first-line { rules }
+
+/*target first child */
+span:first-child { rules }
+
+/*target last child */
+p:last-child { rules }
+
+/*target x child */
+span:nth-child(2) { rules }
+
+/*CUSTOM CURSOR*/
+	
+	cursor: pointer; url( sample.cur );
+<<<<<<< HEAD
+/*//////////////////////////////////////////////////////////////////////////////////
+////@media 
+////////////////////////////////////////////////////////////////////////////////////*/
+
+
+
+=======
+
+/* FUNCTIONS
+attr():returns value of element attribute*/
+a:after{
+	content:"("attr(href)")";
+	}
+/*calc(): for calculations with addition, subtraction,
+multiplication, division*/
+#div1{
+	width:calc(100%-100px);
+	}
+/*linear-gradient():creates color gradients for backgrounds
+radial-gradient():creates circular color gradient for backgrounds
+repeating-linear-gradient():
+repeating-radial-gradient():
+*/
+>>>>>>> working
+/*//////////////////////////////////////////////////////////////////////////////////
+////FLEX
+////////////////////////////////////////////////////////////////////////////////////*/ 
+
+/*center elements horizontally
+justify-content:
+	flex-start - beginning of the container
+	flex-end - end of the container
+	center - center of the container
+	space-between - space between the lines
+	space-around - space before, between, and after the lines
+*/
+.flex-container {
+    display: -webkit-flex;
+    display: flex; /* display flex */
+    -webkit-justify-content: center; /* justify-content */
+    justify-content: center; /* justify-content */
+    width: 400px;
+    height: 250px;
+}
+.flex-item {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+}
+/*
+flex direction:
+	row - default 
+	row-reverse - If the writing-mode (direction) is left to right, the flex items will be laid out right to left
+	column - If the writing system is horizontal, the flex items will be laid out vertically
+	column-reverse - Same as column, but reversed
+*/
+.flex-container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row-reverse;
+    flex-direction: row-reverse;
+    width: 400px;
+    height: 250px;
+}
+/* space around horizontally */
+.flex-container {
+	display: -webkit-flex; /* display flex */
+    display: flex;
+    -webkit-justify-content: space-around; /* justify-content */
+    justify-content: space-around;
+}
+/* space elements vertically with align-items 
+	stretch - Default value. Items are stretched to fit the container
+	flex-start -  top of the container
+	flex-end - bottom of the container
+	center - center of the container (vertically)
+	baseline - baseline of the container
+*/
+.flex-container {
+    display: -webkit-flex;
+    display: flex; /* display flex */
+    -webkit-align-items: center; /* align-items */
+    align-items: center; /* align-items */
+    width: 400px;
+    height: 250px;
+}
+/* Wrapping content 
+nowrap - Default value. The flexible items will not wrap
+wrap - The flexible items will wrap if necessary
+wrap-reverse - The flexible items will wrap, if necessary, in reverse order
+*/
+.flex-container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    width: 300px;
+    height: 250px;
+}
+/* The align-content property modifies the behavior of the flex-wrap property. 
+It is similar to align-items, but instead of aligning flex items, it aligns flex lines.
+*/
+.flex-container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-align-content: center;
+    align-content: center;
+    width: 300px;
+    height: 300px;
+}
+/* ordering items
+The order property specifies the order of a flexible item 
+relative to the rest of the flexible items inside the same container:
+*/
+.flex-container {
+    display: -webkit-flex;
+    display: flex;
+    width: 400px;
+    height: 250px;
+}
+
+.flex-item {
+    background-color: cornflowerblue;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+}
+
+.first {
+    -webkit-order: -2;
+    order: -2;
+}
+/* 
+<div class="flex-container">
+  <div class="flex-item">flex item 1</div>
+  <div class="flex-item first">flex item 2</div>
+  <div class="flex-item">flex item 3</div>  
+</div>
+will display as follows:
+[flex item 2] [flex item 1] [flex item 3]
+*/
+/*//////////////////////////////////////////////////////////////////////////////////
+////ANIMATIONS
+////////////////////////////////////////////////////////////////////////////////////*/ 
+
+	transform:
+		/*scale
+		-webkit-transform: scale(2); /*scale by 2*/
+		-moz-transform: scale(2);
+		-o-transform: scale(2);
+		-ms-transform: scale(2);
+		
+		/*rotate
+		-webkit-transform: rotate(45deg); /*rotate by 45 degrees*/
+		
+		/*skew 
+		-webkit-transform: skew(45deg, 10deg); /*skey by 45 degrees x, 10 degrees y */
+		
+		/*move 
+		-webkit-transform: translate(20px,20px); /*move 20px x, 20px y */
+
+Transitions:
+	-webkit-transition-property: color:
+	-moz-transition-property: color;
+	-o-transition-property: color;
+	-ms-transition-property: color;
+	transition-property: color;
+	
+	
+	transition: all 2s cubic-bezier(0.175, 0.885, 0.320, 1.275) /*all properties*/
+	-ms-transition:
+	-o-transition:
+	-moz-transition:
+	-webkit-transition:
+	
+	transition timing function
+		ease /*increasing change */
+		ease-in /*increase at start*/
+		ease-out /*decrease at end*/
+		ease-in-out /*increase start, decrease end */
+		linear /*constant change */
+		cubic-bezier(x1,y1,x2,y2) 0 - 1
+		transition-delay: 0.5s|500ms; 0 -1
+		
+Multiple:
+	from:
+		.wheel {
+			/*to save time only webkit*/
+			-webkit-transition-property: left, opacity, webkit-transform;
+			-webkit-transition-duration: 3s,4s,3s;
+			-webkit-transition-timing-function: ease,ease,ease-out;
+			-webkit-transition-delay:0s,.5s,0s;
+/*//////////////////////////////////////////////////////////////////////////////////
+////TRANSFORM
+////////////////////////////////////////////////////////////////////////////////////*/
+	/*transform: function(parameters);
+	move objects along x and/or y axis ex,*/
+		transform: translate(10px, 10px); /*two axis*/
+		transform: translateX(20px); /* one axis x*/
+		transform: translateY(20px); /* one axis y*/
+	/*scale objects along x(width) and/or y(height) axis*/
+		transform: scale(.5,.5); 0-1
+		transform: scaleX(2);
+		transform: scaleY(.75);
+	/*rotate*/
+		transform: rotate(15deg);
+	/*Skew*/
+		transform skewX(-25deg);
+		transform skewY(10deg);
+
+	transform-origin: 50% 50%; /*center default*/
+	transform-origin: 10px 0; /*10px right offset*/
+	transform-origin: left bottom /* using left right top bottom*/
+/*//////////////////////////////////////////////////////////////////////////////////
+////3D TRANSFORM
+////////////////////////////////////////////////////////////////////////////////////*/
+	/*vanishing point*/
+	perspective: 500px; /* mid range from */
+	perspective: 1500px; /*very far away*/
+	perspective: 150px; /*very close*/
+	perspective-origin: 50% 50%; /*center*/
+	perspective-origin: 25% 50%; /*mid upper*/
+	perspective-origin: 50% 100%; /* center bottom*/
+	
+	/*move along x, y or z*/
+	transform: translate3d(20px,20px,-10px);
+	transform: translateX(20px);
+	transform: translateY(20px);
+	transform: translateZ(-10px); /*move away*/
+	
+	transform: scale3d(2,.75,1.5); /* use negative or positive numbers*/
+	transform: scaleX(2);
+	transform: scaleY(.75);
+	transform: scaleZ(1.5);
+	
+	transform: rotate3d(10,20,20, 15deg); /* axis and degree of movement*/
+	transform: rotateX(10deg);
+	transform: rotateY(20deg);
+	transform: rotateZ(10deg);
+	
+	transform-style: perserve-3d; /*determines how child elements are treated*/
+	transform-style: flat; /* child elements attach to the parent*/
+/*//////////////////////////////////////////////////////////////////////////////////
+////ANIMATION
+////////////////////////////////////////////////////////////////////////////////////*/
+	Percentage:
+		@keyframes myAnimation {
+			0% {color:black;}
+			50% {color:red;}
+			100% {color:black;}
+	
+	keyword:
+		@keyframes myAnimation {
+			to {color:black;}
+			from {color:red;}
+	
+	add to rule ex,
+	#animatedDiv {
+		animation: myAnimation 15s infinate alternate; //infinite = iterations, alternate = direction
+
+	/*Example:*/
+	
+	#my_div {
+		width: 100px; height: 100px;
+		bacground-color: red;
+		position: relative;
+		
+		-webkit-animation-name: example;
+		-webkit-animation-duration: 4s;
+		-webkit-animation-delay: 2s;
+		
+		animation-name: example;
+		animation-duration: 4s;
+		animation-delay: 2s;
+	}
+	/* webkit syntax */
+	@-webkit-keyframes example {
+		0% { 
+			background-color:red;
+			left: 0px;
+			top: 0px;
+		}
+		25% {
+			background-color: yellow;
+			left: 200px;
+			top: 0px;
+		}
+		50% {
+			background-color: blue;
+			left: 200px;
+			top: -200px;
+		}
+		75% {
+			background-color: green;
+			left: 0px;
+			top: -200px;
+		}
+		100% {
+			background-color: red;
+			left: 0px;
+			top: 0px;
+		}
+	}
+	/* standard syntax */
+	@keyframes example {
+		same rules as above
+	}
+	
+/*BOX Shadow*/
+
+		-webkit-box-shadow: 3px 3px 5px #000;
+		-moz-box-shadow: 3px 3px 5px #000;
+		box-shadow: 3px 3px 5px #000;
+		-webkit-backface-visibility: hidden;
+	
+/*Examples:*/
+	Color
+		from:
+			background-color: #FBAE2C;
+			-webkit-transition: background-color .75s ease:
+			-moz-transition:  background-color .75s ease;
+			-o-transition:  background-color .75s ease;
+			-ms-transition:  background-color .75s ease;
+			transition:  background-color .75s ease;
+		to:
+			background-color: rgba(168,88,160,.6); //.6 = alpha opacity
+			
+		from:
+			input[type="text"], input[type="email"], input[type="search"],
+			textarea, select{
+				background-color: #FBAE2C;
+				-webkit-transition: background-color .75s ease:
+				-moz-transition:  background-color .75s ease;
+				-o-transition:  background-color .75s ease;
+				-ms-transition:  background-color .75s ease;
+				transition:  background-color .75s ease;			
+		to:
+			input:focus, textarea:focus {
+				background-color: rgba(168,88,163,1);
+	
+		from:
+			.status {
+				opacity: 0;
+				-webkit-transition: opacity 1s ease-in:
+				-moz-transition: opacity 1s ease-in;
+				-o-transition: opacity 1s ease-in;
+				-ms-transition: opacity 1s ease-in;
+				transition: opacity 1s ease-in;
+		to:
+			.status h3 {
+				color: white;
+				
+			.status:hover {
+				opacity: .8;
+

@@ -1,0 +1,159 @@
+//////////////////////////////////////////////////////////////////
+// HTTP access control (CORS) Cross-Origin Resource Sharing
+//////////////////////////////////////////////////////////////////
+/* cross-origin HTTP request is made when a resource requests 
+a resource from a different domain, protocol, or port to its own.
+
+To improve web applications, developers asked browser vendors to allow
+cross-domain requests:
+	XMLHttpRequest
+	Fetch
+	Web Fonts
+	WebGL textures
+	Images/Video frames drawn to a canvas using drawImage
+	Stylesheets 
+	Scripts 
+
+CORS-safelisted request-headers:
+	Accept 
+		lists the MIME types of media resources that the agent is willing to process
+	Accept-Language
+	Content-Language 
+	Content-Type ( application/x-www-form-urlencoded, multipart/form-data, text/plain )
+	DPR
+	Downlink
+	Save-Data 
+	Viewport-Width
+	Width 
+*/
+//Server resquest:
+	Origin: http://foo.example
+//Server response:
+	Access-Control-Allow-Origin: *
+// * means that the resource can be accessed by any domain in a cross-site manner
+
+//////////////////////////////////////////////////////////////////
+// HTTP authentication
+//////////////////////////////////////////////////////////////////
+/* Status codes: 401 (Unauthorized), 407 (Proxy Authentication Required), 403 Forbidden
+WWW-Authenticate and Proxy-Authenticate response headers define the auth method 
+that should be used to gain access to a resource. */
+	WWW-Authenticate: <type> realm=<realm>
+	Proxy-Authenticate: <type> realm=<realm>
+	e.g. WWW-Authenticate: "Basic" realm="Access to the staging site"
+
+/* Authorization and Proxy-Authorization request headers contain the credentials
+to auth a user agent with a (proxy) server. */
+	Authorization: <type> <credentials>
+	Proxy-Authorization: <type> <credentials>
+	
+/* Types: 
+	Basic - base64-encoded, use over HTTPS/TLS because base64 is reversible
+	Bearer - tokens to access OAuth 2.0-protected resources 
+	Digest - md5 hashing 
+	HOBA - HTTP Origin-Bound Authentication
+	Mutual
+	AWS4-HMAC-SHA256 - Amazon AWS */
+
+/* To password-protect a directory on an Apache server, you need a .htaccess
+and a .htpasswd file. */
+	// .htaccess file 
+		AuthType Basic 
+		AuthName "Access to the staging site"
+		AuthUserFile /path/to/.htpasswd
+		Require valid-user 
+	// .htpasswd file 
+		aladdin:$apr1$ZjTqBB3f$IF9gdYAGlMrs2fuINjHsz.
+		user2:$apr1$O04r.y2H$/vEkesPhVInBByJUkXitA/ 
+
+//////////////////////////////////////////////////////////////////		
+// HTTP Caching
+//////////////////////////////////////////////////////////////////
+/* Response Status codes: 200(OK), 301(Moved Permanently), 404(Not Found), 206(Partial Content), 304(Not Modified) instruct the browser to use its cached copy.
+Shared cache - stores responses for reuse by more than one user 
+	e.g. an ISP web proxy
+Private cache - dedicated to a single user
+	e.g. Chrome browser 
+Cache systems: browser, proxy, gateway, CDN, reverse proxy, and load balancers */
+
+//Cache-Control header HTTP/1.1, Pragma HTTP/1.0 for backwards compatibility clients
+// no cache storage at all 
+Cache-Control: no-store
+Cache-Control: no-cache, no-store, must-revalidate 
+// response may be cached by any cache
+Cache-Control: public 
+// response intended for single user only, only private browser cache
+Cache-Control: private 
+//Expiration
+Cache-Control: max-age=31536000
+// cache must verify the status of the stale resource before using
+// expired ones should not be used 
+Cache-Control: must-revalidate
+
+//Varying responses 
+/* The Vary: response header is used to decide whether a cached response can be
+used rather than requesting a fresh one from the original server */
+//e.g. Client GET Request 
+		 Accept-Encoding: gzip,br 
+	//Server Response 
+		HTTP/1.1 200 OK
+		Content-Encoding: br 
+		Vary: Accept-Encoding
+/* Because the User-Agent header value is different ("varies") for mobile and desktop clients, caches will not be used to serve mobile content mistakenly to desktop users or vice versa. */
+Vary: User-Agent
+
+//////////////////////////////////////////////////////////////////		
+// HTTP conditional requests 
+//////////////////////////////////////////////////////////////////
+/* used to protect resources that can be downloaded and modified by 
+the client(s). For resuming a download for example.*/
+
+/* Validators are used to compare the versions on the client and the server:
+	last-modified - the date of last modification of the document 
+	entity tag/etag - a string that identifies each version */
+
+//Conditional headers 
+
+//true if the Etag(version) of the resource is equal to one listed in this header
+If-Match  
+//true if the Etag of the resource is different to each listed in this header
+If-None-Match 
+//true if the Last-Modified date of the resource is more recent than the one given
+//in this header 
+If-Modified-Since 
+//true if the Last-Modified date of the resource is older or the same than the one given
+//in this header 
+If-Unmodified-Since
+//Similar to If-Match, or If-Unmodified-Since, but can have only one single etag, or one date. If it fails, the range request fails, and instead of a 206 Partial Content response, a 200 OK is sent with the complete resource
+If-Range
+
+//client GET request 
+	GET /doc HTTP/1.1
+	If-Modified-Since: date 
+	If-None-Match: "xyz"
+	//server response 
+	HTTP/1.1 304 Not Modified 
+//If the resource has changed, the server just sends back a 200 OK response, with the new version of the resource
+	HTTP/1.1 200 OK
+	Last-Modified: date2 //new date 
+	Etag: "xyz2" //new version
+
+//Integrity of a partial download 
+//client get request 
+GET /doc HTTP/1.1
+	//server response 
+	HTTP/1.1 200 OK
+	Last-Modified: date 
+	Etag: "xyz" 
+	Accept-Ranges: bytes
+		//client resumes download 
+		GET /doc HTTP/1.1
+		Ranges: 23783-
+		If-Unmodified-Since: date 
+		If-Match: "xyz"
+			//server response 
+			HTTP/1.1 206 Partial Content 
+			Last-Modified: date
+			Etag: "xyz"
+			Accept-Ranges: bytes 
+			Content-Range: 2783-5678/5679

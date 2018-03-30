@@ -1,0 +1,1538 @@
+
+var ease = {
+    line: "linear",
+    In: "ease-in",
+    Out: "cubic-bezier(0.215, 0.610, 0.355, 1.000)",
+    OutCirc: "cubic-bezier(0.075, 0.820, 0.165, 1.000)",
+    InOut: "ease-in-out",
+    InOutBack: "cubic-bezier(0.680, -0.550, 0.265, 1.550);"
+};
+
+function ianIt(selector, css) {
+    var _css = css;
+    var selectorArr = [];
+    if ((selector != null) && (selector.length > 0) && (typeof selector !== 'string')) selectorArr = selector;
+    else selectorArr.push(selector);
+
+    for (var i = 0; i < selectorArr.length; i++)
+        $(selectorArr[i]).css(_css);
+}
+
+var anItQueue = [], anItQueueSelectors = [];
+var QueueIsWork=false;
+function _anIt(selector, css, time, delay, easing, _callback) {
+    anItQueue.push({
+        selector: selector,
+        css: css,
+        time: time,
+        delay: delay,
+        easing: easing,
+        _callback: _callback
+    });
+
+    if (!QueueIsWork) applyAnItQueue();
+}
+
+function applyAnItQueue(){
+    QueueIsWork=true;
+    requestAnimFrame(function () {
+
+        var qItem = anItQueue.shift();
+        _anIt(qItem.selector, qItem.css, qItem.time, qItem.delay, qItem.easing, qItem._callback);
+
+        if (anItQueue.length!==0) applyAnItQueue();
+        else QueueIsWork=false;
+
+    });
+}
+function anIt(selector, css, time, delay, easing, _callback) {
+
+    var applyTransitionTime=0,
+        selectorArr = [],selectorArrLen,
+        clearLastCallback = (typeof css.noClearLastCallback !== 'undefined') ? !css.noClearLastCallback : true,
+        callback = (typeof _callback !== 'undefined') ? _callback : function () {},
+        prevTimeOutId=null,
+        i=0;
+
+    if ((selector != null) && (selector.length > 0) && (typeof selector !== 'string')) selectorArr = selector;
+    else selectorArr.push(selector);
+
+    if (Modernizr.csstransitions) {
+        var _css = css,_cssTransition={},_css_arr = Object.keys(css),_css_arr_len=_css_arr.length;
+        _cssTransition["transition-duration"] = time + 'ms';
+        _cssTransition["transition-timing-function"] = easing;
+
+        _cssTransition["transition-property"] = '';
+
+        for(i=0;i<_css_arr_len;i++){
+            if (_css_arr[i]!=='noClearLastCallback') _cssTransition["transition-property"]+=_css_arr[i];
+            if (i<(_css_arr_len-1)) _cssTransition["transition-property"]+=', ';
+        }
+
+        var to = setTimeout(function () {
+            selectorArrLen=selectorArr.length;
+            var cto = setTimeout(function () {
+                _cssTransition = {};
+                _cssTransition["transition-duration"] = '';
+                _cssTransition["transition-timing-function"] = '';
+                _cssTransition["transition-property"] = '';
+                for (i = 0; i < selectorArrLen; i++)
+                    $(selectorArr[i]).css(_cssTransition);
+
+                callback();
+
+            }, time + applyTransitionTime);
+
+            for (i = 0; i < selectorArrLen; i++) {
+                var $item = $(selectorArr[i]);
+
+                if (clearLastCallback) {
+                    prevTimeOutId = $item.attr('data-aito');
+                    clearTimeout(prevTimeOutId);
+                }
+
+                $item.css(_cssTransition).attr({'data-aito': cto});
+
+                setTimeout(function(){
+                    $item.css(_css);
+                },applyTransitionTime);
+            }
+
+        }, delay);
+
+    } else {
+        selectorArrLen=selectorArr.length;
+        for (var i = 0; i < selectorArrLen; i++)
+            $(selectorArr[i]).css(css);
+
+        callback();
+    }
+}
+window.requestAnimFrame =
+    window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function (callback) {
+            window.setTimeout(callback, 1000 / 60);
+        };
+
+var sitePreloadData = [];
+
+var loaderProgressViewsObjs = {};
+
+var loaderAnimTime = 300;
+var toRenderP = 0;
+var isRenderEnd=false;
+
+function startPreload() {
+
+    loaderProgressViewsObjs.$top = $("#preloader .top");
+    loaderProgressViewsObjs.$left = $("#preloader .left");
+    loaderProgressViewsObjs.$bottom = $("#preloader .bottom");
+    loaderProgressViewsObjs.$right = $("#preloader .right");
+
+    $('img').each(function () {
+        sitePreloadData.push($(this).attr('src'));
+    });
+
+    load_res_arr(sitePreloadData, function (p) {
+        toRenderP = p;
+    }, function () {
+        toRenderP=1;
+    });
+
+   anIt(loaderProgressViewsObjs.$top,{'width':'100%'},loaderAnimTime,0,ease.line,function(){
+       anIt(loaderProgressViewsObjs.$right,{'height':'100%'},loaderAnimTime,0,ease.line,function(){
+           anIt(loaderProgressViewsObjs.$bottom,{'width':'100%'},loaderAnimTime,0,ease.line,function(){
+               anIt(loaderProgressViewsObjs.$left,{'height':'100%'},loaderAnimTime,0,ease.line,function(){
+                   anIt('#preloader', {'opacity': 0}, 500, 0, ease.Out, function () {
+                       $('#preloader').remove();
+                   });
+               })
+           })
+       })
+   })
+}
+(function addXhrProgressEvent(cash) {
+    var originalXhr = $.ajaxSettings.xhr;
+    $.ajaxSetup({
+        progress: function () {
+        },
+        xhr: function () {
+            var req = originalXhr(), that = this;
+            if (req) {
+                if (typeof req.addEventListener == "function") {
+                    req.addEventListener("progress", function (evt) {
+                        var percentLoaded;
+                        if (evt.lengthComputable) percentLoaded = parseInt((evt.loaded / evt.total), 10);
+                        that.progress(evt, percentLoaded, that.url);
+                    }, false);
+                }
+            }
+            return req;
+        }
+    });
+})(jQuery);
+
+function load_res_arr(arr, percents_fn, callback) {
+
+
+    var totalSizeInBytes = 0;
+    var progressBar = [];
+    var arrLen = arr.length;
+    // callback()
+    var headProgress = 0;
+    var headProgressCoef = 0.1;
+    load_by_ajax('HEAD', arr, function () {
+    }, HEAD_success, function () {
+        load_by_ajax('GET', arr, progressAll, function () {
+        }, callback);
+    });
+
+    var headSuccessCount = 0;
+
+    function HEAD_success(data, text, resp, path) {
+        progressBar.push({file_l: 0, file_n: path});
+        totalSizeInBytes += parseInt(resp.getResponseHeader('Content-Length'));
+
+        headProgress = (headSuccessCount / arrLen) * headProgressCoef;
+        percents_fn(headProgress);
+        headSuccessCount++;
+    }
+
+    function progressAll(evt, percent, url) {
+        var totalLoadedInBytes = 0
+        for (var i = 0; i < arrLen; i++) {
+            if (progressBar[i].file_n == url) {
+                progressBar[i].file_l = evt.loaded;
+            }
+            totalLoadedInBytes += progressBar[i].file_l
+        }
+
+        var p = (totalLoadedInBytes / totalSizeInBytes) * (1 - headProgressCoef);
+        percents_fn(headProgress + p);
+    }
+}
+
+function load_by_ajax(type, arr, progress, success, callback) {
+
+    var filesTotal = arr.length;
+    var fileLoaded = 0;
+    var errors = 0;
+    var limit = 8;
+    var next_limit;
+
+    next_limit = fileLoaded + limit;
+    load_limit(fileLoaded, fileLoaded + limit);
+
+
+    function load_limit(s, end) {
+        var _end = Math.min(filesTotal, end);
+
+        for (var i = s; i < _end; i++) {
+            ResLoad(i);
+        }
+    }
+
+    function ResLoad(fileToLoad) {
+        var path;
+        path = arr[fileToLoad];
+        $.ajax({
+            type: type,
+            url: path,
+            cache: true,
+            beforeSend: function (xhr) {
+                xhr.overrideMimeType("text/plain; charset=x-user-defined");
+            },
+            progress: function (evt, percent, url) {
+                progress(evt, percent, url)
+            },
+            success: function (data, text, resp) {
+                success(data, text, resp, path);
+                onLoad();
+            },
+            error: function () {
+                onError(fileToLoad)
+            }
+        });
+
+        function onLoad() {
+            fileLoaded++;
+
+            if (fileLoaded == filesTotal) callback();
+            if (fileLoaded == next_limit) {
+                next_limit = fileLoaded + limit;
+                if (fileLoaded < filesTotal) load_limit(fileLoaded, fileLoaded + limit);
+            }
+        }
+
+        function onError(fileToLoad) {
+            errors++;
+            if (errors < 10) {
+                ResLoad(fileToLoad)
+            }
+            else {
+                fileLoaded++;
+                if (fileLoaded == filesTotal) callback();
+                if (fileLoaded == next_limit) {
+                    next_limit = fileLoaded + limit;
+                    if (fileLoaded < filesTotal) load_limit(fileLoaded, fileLoaded + limit);
+                }
+            }
+        }
+    }
+}
+
+;(function($){
+    $(window).bind("resize", function(){
+      onResize();
+    });
+    onResize();
+}(jQuery));
+
+
+function onResize(){
+    resize();
+    scalePopup();
+}
+
+
+function scalePopup(){
+    var WW = $(window).width() ? $(window).width() : window.screen.availWidth;
+    var coef = WW / 1280;
+
+    if($(window).height()>690){
+        $("#projectsPopup .container, #projectsPopup").removeAttr("style");
+    }else{
+        $("#projectsPopup .container").removeAttr("style");
+        var newHeight = ($("#projectsPopup").height() / coef) * 0.9;
+        var oldHeight = $("#projectsPopup .container").height();
+
+        $("#projectsPopup .container").css({"transform":"scale("+(newHeight/oldHeight)+")"});
+    }
+
+}
+
+function resize(){
+
+    var WW = $(window).width() ? $(window).width() : window.screen.availWidth;
+    var coef = WW / 1280;
+
+    $("#spincube, #projectsPopup").css({"transform":"scale("+coef+")"});
+
+    if($("#clone").length){
+        $("#clone").css({"transform":"scale("+coef+")"});
+    }
+   // $("#services .icon img, #contacts .ico img").css({"transform":"scale("+(1280/WW)+")"});
+}
+
+
+$(document).ready( function(e) {
+    var offsetTop = 0;
+    $('.TWLA-services-section-2 .TWLA-unit').hover(function(){
+       cubeSlider(1,['X','Y'],$(this).find('.TWLA-unit-wrap-hover')[0],$(this).find('.TWLA-unit-wrap-default')[0],$(this).find('.TWLA-cube')[0], $.noop);
+       },function(){
+       cubeSlider(-1,['X','Y'],$(this).find('.TWLA-unit-wrap-default')[0],$(this).find('.TWLA-unit-wrap-hover')[0],$(this).find('.TWLA-cube')[0],function(){
+           ianIt($(this).find('.TWLA-unit-wrap-default')[0],{'transform':''});
+       });
+   });
+});
+
+var animBaseTime=700;
+
+function cubeSlider(_dir,orientation,next,now,cont,cb){
+   var OriginNow, OriginNext, dir, deg_dir, perspective=1000;
+
+   if(orientation[0]=='X'){
+       dir=_dir;
+       deg_dir=_dir;
+       OriginNow  = (dir==1) ? '100% 50%' : '0% 50%';
+       OriginNext = (dir==1) ? '0% 50%'   : '100% 50%';
+   } else if (orientation[0]=='Y'){
+       dir=_dir;
+       deg_dir=(-1)*_dir;
+       OriginNow  = (dir==1) ? '50% 100%'   : '50% 0%';
+       OriginNext = (dir==1) ? '50% 0%' : '50% 100%';
+   }
+
+   ianIt(next,{'transform':'translate'+orientation[0]+'('+dir*100+'%) rotate'+orientation[1]+'('+deg_dir*90+'deg)','transform-origin':OriginNext});
+   ianIt(now,{'transform-origin':OriginNow});
+   ianIt(cont,{'perspective':perspective+'px','transform-style': 'preserve-3d','z-index':500});
+
+   setTimeout(function(){
+       anIt(cont,{'transform':'scale(0.9)'},animBaseTime/5,0,ease.Out,function(){
+           anIt(cont,{'transform':'scale(1)'},animBaseTime-animBaseTime/5,0,ease.Out,function(){
+           });
+       });
+
+       anIt(next,{'transform':'translate'+orientation[0]+'(0%) rotate'+orientation[1]+'(0deg)'},animBaseTime,0,ease.Out,function(){
+       });
+
+       $(now).find('.TWLA-gradient').css({'visibility':'visible'});
+       anIt($(now).find('.TWLA-gradient')[0],{'opacity':1},animBaseTime,0,ease.Out);
+       anIt($(next).find('.TWLA-gradient')[0],{'opacity':0},animBaseTime,0,ease.Out,function(){
+           $(next).find('.TWLA-gradient').css({'visibility':'hidden'});
+       });
+
+       anIt(now,{'transform':'translate'+orientation[0]+'('+(-1*dir*100)+'%) rotate'+orientation[1]+'('+(-1*deg_dir*90)+'deg)'},animBaseTime,0,ease.Out,function(){
+           cb();
+           ianIt(cont,{'perspective':perspective+'px','transform-style': 'preserve-3d','z-index':1000});
+       });
+   },0);
+}
+
+
+var action_map_google_maps_icon_directory = "../images/action-map/";
+
+// =============================================================================================================
+
+//  STEP ONE: DECLARE THE UNIQUE SETTINGS FOR EACH OF THE MAPS
+
+// =============================================================================================================
+
+var north_america_map = {
+    lat: 39.8283,
+    lng: -98.5795, // GEO-CENTER OF US
+    html_id: "north_america_id",
+    minZoom: 4,
+    maxZoom: 6,
+    zoomControl: true
+};
+
+var central_america_map = {
+    lat: 17.0,
+    lng: -82.0,
+    minZoom: 4,
+    maxZoom: 6,
+    html_id: "central_america_id"
+};
+
+var south_america_map = {
+    lat: -15.0,
+    lng: -56.0,
+    minZoom: 3,
+    maxZoom: 6,
+    html_id: "south_america_id"
+};
+
+var europe_map = {
+    lat: 53.0,
+    lng: 23.0,
+    minZoom: 3,
+    maxZoom: 6,
+    html_id: "europe_id"
+};
+
+var asia_map = {
+    lat: 23.0,
+    lng: 87.0,
+    minZoom: 1,
+    maxZoom: 4,
+    html_id: "asia_id"
+};
+
+var africa_map = {
+    lat: 2.0,
+    lng: 16.0,
+    minZoom: 3,
+    maxZoom: 6,
+    html_id: "africa_id"
+};
+
+// =============================================================================================================
+
+//  STEP TWO: DECLARE THE SETTINGS FOR EACH OF THE PINS THAT WILL APPEAR ON THE MAPS
+
+// =============================================================================================================
+
+var north_america_markers = [];
+var central_america_markers = [];
+var south_america_markers = [];
+var europe_markers = [];
+var asia_markers = [];
+var africa_markers = [];
+
+central_america_markers.push({
+    lat: 13.7942,
+    lng: -88.8965,
+    markerImage: "orange",
+    title: "El Salvador",
+    popupInfo: am_text("<a href='/our-work/around-the-world/el-salvador'>El Salvador</a>", "<img style='float:left; padding-right:10px; padding-top:5px;' src='"+ action_map_google_maps_icon_directory + "el-salvador.jpg' /> Since 1987, Feed the Children has worked in El Salvador<br> to create communities where no child goes to bed hungry.")
+});
+
+central_america_markers.push({
+    lat: 15.7835,
+    lng: -90.2308,
+    markerImage: "orange",
+    title: "Guatemala",
+    popupInfo: am_text("<a href='/our-work/around-the-world/guatemala'>Guatemala</a>", "Since 1994, we’ve helped kids in Guatemala<br>defeat hunger and create brighter futures!")
+});
+
+central_america_markers.push({
+    lat: 18.9712,
+    lng: -72.2852,
+    markerImage: "orange",
+    title: "Haiti",
+    popupInfo: am_text("<a href='/our-work/around-the-world/haiti'>Haiti</a>", "Feed the Children serves in the West region of<br>Haiti, helping children and families rebuild<br>their lives after the earthquake.")
+});
+
+central_america_markers.push({
+    lat: 15.2000,
+    lng: -86.2419,
+    markerImage: "orange",
+    title: "Honduras",
+    popupInfo: am_text("<a href='/our-work/around-the-world/Honduras'>Honduras</a>", "In Honduras, Feed the Children works to stop<br>the cycle of poverty for more than 1,300 families<br>in 10 communities each day.")
+});
+
+central_america_markers.push({
+    lat: 12.8654,
+    lng: -85.2072,
+    markerImage: "orange",
+    title: "Nicaragua",
+    popupInfo: am_text("<a href='/our-work/around-the-world/nicaragua'>Nicaragua</a>", "Feed the Children has worked in Nicaragua for<br>22 years and is currently active in 12 different<br>communities around the country.")
+});
+
+africa_markers.push({
+    lat: -0.0236,
+    lng: 37.9062,
+    markerImage: "orange",
+    title: "Kenya",
+    popupInfo: am_text("<a href='/our-work/around-the-world/kenya'>Kenya</a>", "Since 1993, Feed the Children has fought hunger in<br>Kenya, taken in babies who’ve been abandoned and<br>provided care for children with special needs.")
+});
+
+africa_markers.push({
+    lat: -13.2543,
+    lng: 34.3015,
+    markerImage: "orange",
+    title: "Malawi",
+    popupInfo: am_text("<a href='/our-work/around-the-world/malawi'>Malawi</a>", "In over 800 communities throughout Malawi, we work<br>hard to make sure no child goes to bed hungry.")
+});
+
+africa_markers.push({
+    lat: -6.3690,
+    lng: 34.8888,
+    markerImage: "orange",
+    title: "Tanzania",
+    popupInfo: am_text("<a href='/our-work/around-the-world/tanzania'>Tanzania</a>", "More than 35,000 children in Tanzania are empowered<br>to defeat hunger because of Feed the Children.")
+});
+
+africa_markers.push({
+    lat: 1.3733,
+    lng: 32.2903,
+    markerImage: "orange",
+    title: "Uganda",
+    popupInfo: am_text("<a href='/our-work/around-the-world/uganda'>Uganda</a>", "<img style='float:left; padding-right:10px; padding-top:5px;' src='"+ action_map_google_maps_icon_directory + "uganda.jpg' />Feed the Children helps children in Northern<br>Uganda find hope for their future.")
+});
+
+asia_markers.push({
+    lat: 12.8797,
+    lng: 121.7740,
+    markerImage: "orange",
+    title: "Philippines",
+    popupInfo: am_text("<a href='/our-work/around-the-world/philippines'>Philippines</a>", "<img style='float:left; padding-right:10px; padding-top:5px;' src='"+ action_map_google_maps_icon_directory + "philippines.jpg' /> Since 1984 our work expands beyond meals<br>to developing community self-reliance.")
+});
+
+
+/*US markers*/
+
+north_america_markers.push({
+    lat: 34.034524,
+    lng: -117.59544670000002,
+    markerImage: "orange",
+    title: "Feed the Children California",
+    popupInfo: am_text("<a href='/our-work/hunger-usa/'>Feed the Children California</a>", "Distribution Center & Teacher Store<br/>2551 E. Philadelphia Ave. | Ontario, CA 91761<br/>909-930-5200 x4601 | <a href='mailto:VolunteerCA@feedthechildren.org'>VolunteerCA@feedthechildren.org</a>")
+});
+
+
+north_america_markers.push({
+    lat: 35.9943275,
+    lng: -86.58663910000001,
+    markerImage: "orange",
+    title: "La Vergne",
+    popupInfo: am_text("<a href='/our-work/hunger-usa/'>La Vergne</a>", "")
+});
+
+north_america_markers.push({
+    lat: 35.9943275,
+    lng: -86.58663910000001,
+    markerImage: "orange",
+    title: "Feed the Children Tennessee",
+    popupInfo: am_text("<a href='/our-work/hunger-usa/'>Feed the Children Tennessee</a>", "Feed the Children Tennessee<br/>310 Tech Park Dr. | La Vergne, TN 37086<br/>615-793-3438 x4401 | <a href='mailto:VolunteerTN@feedthechildren.org'>VolunteerTN@feedthechildren.org</a>")
+});
+
+north_america_markers.push({
+    lat: 41.723597,
+    lng: -85.89590799999996,
+    markerImage: "orange",
+    title: "Feed the Children Indiana",
+    popupInfo: am_text("<a href='/our-work/hunger-usa/'>Feed the Children Indiana</a>", "Distribution Center & Teacher Store<br/>22365 Elkhart East Blvd. | Elkhart, IN 46514<br/>574-262-5227 x4720| <a href='mailto:VolunteerIN@feedthechildren.org'>VolunteerIN@feedthechildren.org</a>")
+});
+
+north_america_markers.push({
+    lat: 40.67244830000001,
+    lng: -75.37740959999996,
+    markerImage: "orange",
+    title: "Feed the Children Pennsylvania",
+    popupInfo: am_text("<a href='/our-work/hunger-usa/'>Feed the Children Pennsylvania</a>", "Distribution Center & Teacher Store<br/>47 S. Commerce Way | Bethlehem, PA 18017<br/>610-419-9356 x4503 | <a href='mailto:VolunteerPA@feedthechildren.org'>VolunteerPA@feedthechildren.org</a>")
+});
+
+
+north_america_markers.push({
+    lat: 35.4675562,
+    lng: -97.61629149999999,
+    markerImage: "orange",
+    title: "Distribution Center",
+    popupInfo: am_text("<a href='/our-work/hunger-usa/'>Distribution Center</a>", "29 N. McCormick Ave. | Oklahoma City, OK 73127</br>405-949-5168 | Volunteer Services Center – <a href='mailto:VolunteerOK@feedthechildren.org'>VolunteerOK@feedthechildren.org</a><br/>405-945-4018 | Distribution Center")
+});
+
+north_america_markers.push({
+    lat: 35.137879,
+    lng:  -96.61377,
+    markerImage: "orange",
+    title: "Feed the Children Oklahoma",
+    popupInfo: am_text("<a href='/our-work/hunger-usa/'>Feed the Children Oklahoma</a>", "Corporate Offices & Teacher Store<br/>333 N. Meridian Ave.| Oklahoma City, OK 73107<br/>405-945-4029 | <a href='mailto:TeacherStore@feedthechildren.org'>TeacherStore@feedthechildren.org</a>")
+});
+
+
+// =============================================================================================================
+
+//  STEP THREE: DECLARE THE FUNCTION WHICH FORMATS THE POPUP WINDOW TEXT ON THE PINS ABOVE
+
+// =============================================================================================================
+
+
+function am_text(cityname, text) {
+
+    var html =
+        '<div class="action-map-popup-head">' + cityname + '</div>' +
+        '<div class="action-map-popup-text">' + text + '</div>';
+    return html;
+}
+
+// =============================================================================================================
+
+//  HTML/JS MAPPING: THE "all_google_maps" OBJECT IS USED TO ATTACH SCREEN BUTTONS TO GOOGLE MAP DATA
+
+// =============================================================================================================
+
+var all_google_maps = {
+    north_america: north_america_map,
+    central_america: central_america_map,
+    south_america: south_america_map,
+    europe: europe_map,
+    asia: asia_map,
+    africa: africa_map
+};
+
+// =============================================================================================================
+
+//  RESOURCE: DEFINE THE GOOGLE MAP PIN IMAGE FILES AND GIVE THEM NICE COLOR NAMES
+
+// =============================================================================================================
+
+var markerImages = {
+    magenta: {
+        url: action_map_google_maps_icon_directory + "FTC-Map-Marker.png",
+        scaledSize: new google.maps.Size(40, 40)
+    },
+    orange: {
+        url: action_map_google_maps_icon_directory + "FTC-Map-Marker.png",
+        scaledSize: new google.maps.Size(40, 40)
+    },
+    green: {
+        url: action_map_google_maps_icon_directory + "FTC-Map-Marker.png",
+        scaledSize: new google.maps.Size(40, 40)
+    },
+    blue: {
+        url: action_map_google_maps_icon_directory + "FTC-Map-Marker.png",
+        scaledSize: new google.maps.Size(40, 40)
+    },
+    uganda: {
+        url: action_map_google_maps_icon_directory + "uganda.jpg",
+        scaledSize: new google.maps.Size(40, 40)
+    }
+};
+
+
+// =============================================================================================================
+
+//  RESOURCE: SOME OF THE SETTINGS TO CUSTOMIZE GOOGLE MAPS - HERE ARE ONES CHANGED AND ONES THAT COULD BE CHANGED
+
+// =============================================================================================================
+
+var map_style = [{
+    elementType: 'geometry',
+    stylers: [{
+        color: '#ffffff'
+    }]
+}, {
+    elementType: 'labels.text.stroke',
+    stylers: [{
+        color: '#ffffff'
+    }]
+}, {
+    elementType: 'labels.text.fill',
+    stylers: [{
+        color: '#000'
+    }]
+}, {
+    featureType: 'administrative.country',
+    elementType: 'geometry.text.fill',
+    stylers: [{
+        color: '#999999'
+    }]
+}, {
+    featureType: 'administrative.country',
+    elementType: 'labels.text',
+    stylers: [{
+        visibility: 'off'
+    }]
+}, {
+    featureType: 'administrative.country',
+    elementType: 'labels.text.fill',
+    stylers: [{
+        visibility: 'off'
+    }]
+}, {
+    featureType: 'administrative.province',
+    elementType: 'geometry.text.fill',
+    stylers: [{
+        color: '#000000'
+    }]
+}, {
+    featureType: 'administrative.province',
+    elementType: 'labels.text',
+    stylers: [{
+        visibility: 'off'
+    }]
+}, {
+    featureType: 'administrative.province',
+    elementType: 'labels.text.fill',
+    stylers: [{
+        visibility: 'off'
+    }]
+}, {
+    featureType: 'administrative.locality',
+    elementType: 'labels.text.fill',
+    stylers: [{
+        "color": "#CFCFCF"
+    }]
+}, {
+    featureType: 'water',
+    elementType: 'geometry',
+    stylers: [{
+        color: '#6082b6'
+    }]
+}, {
+    featureType: 'water',
+    elementType: 'labels.text',
+    stylers: [{
+        visibility: 'off'
+    }]
+}, {
+    featureType: 'water',
+    elementType: 'labels.text.fill',
+    stylers: [{
+        visibility: 'off'
+    }]
+}, {
+    featureType: 'water',
+    elementType: 'labels.text.stroke',
+    stylers: [{
+        visibility: 'off'
+    }]
+}];
+
+// =============================================================================================================
+
+//  RESOURCE: GOOGLE MAP DISPLAY AND CONTROL SETTINGS - A DEFAULT SET THAT CAN BE OVERRIDDEN AT A MAP LEVEL
+
+// =============================================================================================================
+
+var map_default_settings = {
+    styles: map_style
+};
+
+var marker_default_settings = {
+    // STANDARD SETTINGS ACROSS ALL MARKERS GO HERE
+};
+
+
+// =============================================================================================================
+
+//  LOGIC: THESE FUNCTIONS APPLY DEFAULT AND CUSTOM SETTINGS TO GOOGLE MAP ELEMENTS
+
+// =============================================================================================================
+
+function am_get_map_settings(mapInfo) {
+    // THIS FUNCTION TAKES A DEFAULT SET OF SETTINGS FOR ALL MAPS, ADDS THAT
+    // TO THE SETTINGS DEFINED IN A GIVEN MAP, MAKES SOME ADJUSTMENTS (ZOOM),
+    // CALCULATES SOME PARMS (LATLNG FROM LAT & LNG) AND DELETES OUT ALL NON
+    // RELEVANT PARMS WHICH ARE NOT SETTINGS BEFORE RETURNING THE SET TO CREATE
+    // A MAP
+
+    var settings = $.extend({}, map_default_settings, mapInfo);
+
+    if ("zoom" in mapInfo) {
+        settings.zoom = mapInfo.zoom;
+        settings.minZoom = mapInfo.zoom;
+        settings.maxZoom = mapInfo.zoom;
+    }
+
+    settings.center = new google.maps.LatLng(mapInfo.lat, mapInfo.lng);
+
+    // DELETE PROPERTIES THAT ARE NOT SETTINGS BUT WERE INCLUDED IN $.extend()
+    delete settings.lat;
+    delete settings.lng;
+    delete settings.html_id;
+    return settings;
+}
+
+function am_get_marker_settings(mapInfo, markerInfo) {
+    // THIS FUNCTION CREATES THE SETTINGS FOR EACH MARKER. IT TAKES
+    // A DEFAULT SET OF SETTINGS, ADDS THE MARKER SPECIFIC SETTINGS AND
+    // USES THE "markerImage" PARM (IF PRESENT) TO GRAB A URL AND SCALEDSIZE
+    // FROM THE markerImages ARRAY. IT THEN CALCULATES SOME SETTING
+    // FIELDS AND DELETES SOME NON-SETTINGS FIELDS BEFORE RETURNING THE RESULT.
+
+    var settings = $.extend({}, marker_default_settings, markerInfo);
+
+    settings.map = mapInfo.mapObj; // link the marker to a map
+
+    if ("markerImage" in markerInfo && markerInfo["markerImage"] in markerImages) {
+        settings.icon = markerImages[markerInfo["markerImage"]];
+    } else {
+        settings.icon = markerImages["black"];
+    }
+
+    settings.position = new google.maps.LatLng(markerInfo.lat, markerInfo.lng);
+
+    delete settings.lat;
+    delete settings.lng;
+    delete settings.markerImage;
+    delete settings.popupInfo;
+
+    return settings;
+}
+
+// =============================================================================================================
+
+//  LOGIC: THESE FUNCTIONS GENERATE THE GOOGLE MAPS
+
+// =============================================================================================================
+
+
+// ON LOAD - INITIALIZE ALL THE MAPS
+google.maps.event.addDomListener(window, 'load', function () {
+    am_init_all_maps();
+});
+// variable to hold current active InfoWindow
+var activeInfoWindow ;	
+
+function am_init_all_maps() {
+
+    // PROGRAMMING NOTE: THIS CODE HIDES THE BUTTONS FOR THE MAPS NOT BEING GENERATED
+
+    $(document).ready(function () {
+        $('.action-map-button[data-id="south_america"]').hide();
+        $('.action-map-button[data-id="europe"]').hide();
+
+        // PROGRAMMING NOTE: COMMENT OUT THE MAPS NOT BEING GENERATED
+
+        am_init_a_map(north_america_map, north_america_markers);
+        am_init_a_map(central_america_map, central_america_markers);
+        // am_init_a_map( south_america_map,   south_america_markers );
+        // am_init_a_map( europe_map,          europe_markers );
+        am_init_a_map(asia_map, asia_markers);
+        am_init_a_map(africa_map, africa_markers);
+
+        // THE FOLLOWING LISTENER WAITS UNTIL THE NORTH AMERICA MAP LOADS THEN REFRESHES
+        // IT. THIS IS A HACK TO FORCE RENDERING THE FIRST GOOGLE MAP IMAGE
+
+        google.maps.event.addListenerOnce(north_america_map.mapObj, 'idle', function () {
+            action_map_first_time();
+        });
+
+    });
+}
+
+function am_init_a_map(mapInfo, markersInfo) {
+    mapInfo.mapObj = new google.maps.Map(
+        document.getElementById(mapInfo.html_id),
+        am_get_map_settings(mapInfo)
+    );
+
+    am_create_map_event_listeners(mapInfo);
+
+    am_put_markers_on_map(mapInfo, markersInfo);
+}
+
+
+function am_put_markers_on_map(mapInfo, markersInfo) {
+    var bounds = new google.maps.LatLngBounds();
+
+    for (var i = 0; i < markersInfo.length; i++) {
+
+        var markerInfo = markersInfo[i];
+        var settings = am_get_marker_settings(mapInfo, markerInfo);
+
+        markerInfo.markerObj = new google.maps.Marker(settings);
+        bounds.extend(settings.position);
+
+        var message = markerInfo.popupInfo;
+
+        am_attach_popup_message(mapInfo.mapObj, markerInfo.markerObj, message);
+
+    }
+
+    mapInfo.mapObj.fitBounds(bounds);
+
+}
+
+function am_attach_popup_message(map, marker, message) {
+    var popupVar = new google.maps.InfoWindow({
+        content: message
+    });
+
+    marker.addListener('click', function () {
+        popupVar.open(marker.get('map'), marker);
+    });
+
+// Hover listeners for the google map markers
+    google.maps.event.addListener(marker, 'mouseover', function() {
+
+        // Close active window if exists - [one might expect this to be default behaviour no?]				
+				if(activeInfoWindow != null) activeInfoWindow.close();
+
+                
+        popupVar.open(marker.get('map'), marker);
+
+        // Store new open InfoWindow in global variable
+				activeInfoWindow = popupVar;
+    });
+    google.maps.event.addListener(marker, 'mouseout', function() {
+    });
+// end hover listeners
+
+    map.addListener('click', function () {
+        popupVar.close();
+    });
+
+
+}
+
+
+function am_create_map_event_listeners(mapInfo) {
+
+    // KEEP THE MAP CENTERED IF THE SCREEN IS RESIZED
+    google.maps.event.addDomListener(window, "resize", function () {
+        var center = mapInfo.mapObj.getCenter();
+        google.maps.event.trigger(mapInfo.mapObj, "resize");
+        mapInfo.mapObj.setCenter(center);
+    });
+
+}
+
+
+
+// =============================================================================================================
+// END
+// =============================================================================================================
+
+// Sticky Nav
+
+jQuery(document).ready(function($) {
+
+  $(window).scroll(function(){
+    var sticky = $('.sticky');
+    var logoImg = $('.fixed .desktop-logo .logo');
+        scroll = $(window).scrollTop();
+
+        if (scroll >= $('.global-header').outerHeight()) {
+
+        sticky.addClass('fixed');
+        logoImg.attr("src","/images/FTC-Logo-Color.png");
+
+      } else {
+
+        sticky.removeClass('fixed');
+        logoImg.attr("src","/images/FTC-Logo-White.png");
+      }
+  });
+});
+
+
+// HACK TO MAKE THE HELP-NOW COLUMNS THE SAME SIZE
+// CALLED ON LOAD AND IF SOMEONE CHANGES THE COLUMN SIZE
+
+function same_height()
+{
+	var nbr = 0;
+	if ( nbr < $(".help-now-left").height() ) nbr = $(".help-now-left").height();
+	if ( nbr < $(".help-now-right").height() ) nbr = $(".help-now-right").height();
+    $(".help-now-left").height(nbr);
+    $(".help-now-left-middle-1").height(nbr);
+    $(".help-now-left-middle-2").height(nbr);
+    $(".help-now-right").height(nbr);
+}
+
+$( window ).resize(function() {
+    same_height();
+});
+
+$(document).ready( function(e) {
+    same_height();
+});
+
+
+// HANDLE THE CLICKING OF THE HELP NOW DONATION BUTTONS AND OTHER-AMOUNT FIELD
+
+function help_now_donate_clicked(id)
+{
+	$("#donate25").removeClass("active" );
+	$("#donate25 input").removeClass("active" );
+	$("#donate50").removeClass("active" );
+	$("#donate50 input").removeClass("active" );
+	$("#donate100").removeClass("active" );
+	$("#donate100 input").removeClass("active" );
+	$("#donate250").removeClass("active" );
+	$("#donate250 input").removeClass("active" );
+
+
+	if ( id == "help-now-other-amount" )
+	{
+		var temp=0;
+		// FUTURE PROCESS ON AMOUNT - VERIFY FORMAT, ETC
+	} else {
+	    $(id).addClass("active" );
+	    $(id+" input").addClass("active" );
+		$("#help-now-other-amount").val("");
+	}
+
+}
+
+$(document).ready( function(e) {
+    $("#donate25").click( function (e) { help_now_donate_clicked("donate25"); });
+    $("#donate50").click( function (e) { help_now_donate_clicked("donate50"); });
+    $("#donate100").click( function (e) { help_now_donate_clicked("donate100"); });
+    $("#donate250").click( function (e) { help_now_donate_clicked("donate250"); });
+});
+
+
+
+function action_map_first_time()
+{
+	// THIS FUNCTION MAKES SURE THE FIRST BUTTON AND FIRST MAP ARE "ACTIVE"
+    $(".action-map-button.active").removeClass("active");
+    $(".action-map-button:first-of-type").addClass("active");
+
+    $(".action-map-google.active").removeClass("active");
+    $(".action-map-google:first-of-type").addClass("active");
+
+    id = $(".action-map-google:first-of-type").prop("id").slice(0,-3);
+
+    var actual_mapInfo = all_google_maps[id];
+	action_map_map_refresh(actual_mapInfo);
+}
+
+
+// PROCESS THE USER CLICKING ON ANY OF THE AREA BUTTONS
+
+function action_map_area_clicked(t)
+{
+    var google_map_name = $(t).attr("data-id");
+    var google_map_id = "#" + google_map_name + "_id";
+
+	// CHANGE THE STATE OF THE BUTTONS (active/inactive)
+
+    $(".action-map-button.active").removeClass("active");
+    $(t).addClass("active");
+
+	// CHANGE THE DISPLAY OF THE MAP DIVs (display/hidden)
+
+    $(".action-map-google.active").removeClass("active");
+    $(google_map_id).addClass("active");
+
+	// ASK GOOGLE TO 'RESIZE' THE MAP
+
+    var actual_mapInfo = all_google_maps[google_map_name];
+	action_map_map_refresh(actual_mapInfo);
+}
+
+
+function action_map_map_refresh(mapInfo)
+{
+    var mapObj = mapInfo.mapObj;
+    var c = mapObj.getCenter();
+	google.maps.event.trigger(mapObj, 'resize');
+
+	var latlng = {
+		lat: mapInfo.lat,
+		lng: mapInfo.lng
+	};
+
+    mapObj.setCenter( latlng);
+}
+
+// ACTIVE THE CLICKING ON THE LEFT SIDE AREA BUTTONS
+// NOTE THAT WE ACTIVATE BOTH THE CLASS (WHICH IS ATTACHED TO THE LABEL TAG)
+// AND THEN THE SUBORDINATE INPUT TAG
+$(document).ready( function(e) {
+
+    $(".action-map-button").on("click", function() {
+        action_map_area_clicked(this);
+    	return false;
+    });
+
+    $(".action-map-button input").on("click", function() {
+        action_map_areas_clicked(this);
+        return false;
+    });
+
+});
+
+// activate tooltips
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+
+  //sticky header
+  $(window).scroll(function(){
+    var logo = $('.top-navbar-header');
+    var menu = $('.top-navbar .top-navbar-menu');
+    var logoImg = $('#logo');
+    scroll = $(window).scrollTop();
+
+    if (scroll >= 60) {
+        menu.addClass('fixedHeader');
+        logo.addClass('fixedLogo');
+        logoImg.attr("src","./images/aspot/FTC-Logo-Color.png");
+    } else {
+        menu.removeClass('fixedHeader');
+        logo.removeClass('fixedLogo');
+        logoImg.attr("src","./images/aspot/FTC-Logo-White.png");
+
+    }
+});
+
+//enable search window
+$(document).ready( function(e) {
+    var searchBtn = $('#searchBtn');
+    var formWrapper = $('.form-wrapper');
+    var closeSearch = $('.close-search');
+    searchBtn.on("click", function() {
+        formWrapper.css({ display: "block" });
+    });
+
+    closeSearch.on("click", function() {
+        formWrapper.css({ display: "none" });
+    });
+
+});
+
+//validate numbers only
+function validate(evt) {
+    var theEvent = evt || window.event;
+    var key = theEvent.keyCode || theEvent.which;
+    key = String.fromCharCode( key );
+    var regex = /[0-9]|\./;
+    if( !regex.test(key) ) {
+      theEvent.returnValue = false;
+      if(theEvent.preventDefault) theEvent.preventDefault();
+    }
+  }
+
+
+	// =============================================================================================================
+	// Homepage Help Now Section - Fields appear when checkbox is clicked.
+	// =============================================================================================================
+
+$(document).ready(function(){
+	$('.help-now-dedicate-button #styled-checkbox-1').change(function(){
+		$('#help-now-dedicate-fields').toggleClass('hidden');
+	});
+});
+
+
+// =============================================================================================================
+// Youtube Lazyload function
+// =============================================================================================================
+$(document).ready(function(){
+	( function() {
+
+		var youtube = document.querySelectorAll( ".youtube" );
+
+		for (var i = 0; i < youtube.length; i++) {
+
+			if(typeof youtube[i].dataset.cover !== "undefined"){
+				var source = youtube[i].dataset.cover;
+			} else {
+				var source = "https://img.youtube.com/vi/"+ youtube[i].dataset.embed +"/sddefault.jpg";
+			}
+
+
+			var image = new Image();
+					image.src = source;
+					image.addEventListener( "load", function() {
+						youtube[ i ].appendChild( image );
+					}( i ) );
+
+					youtube[i].addEventListener( "click", function() {
+
+						var iframe = document.createElement( "iframe" );
+
+								iframe.setAttribute( "frameborder", "0" );
+								iframe.setAttribute( "allowfullscreen", "" );
+								iframe.setAttribute( "src", "https://www.youtube.com/embed/"+ this.dataset.embed +"?rel=0&showinfo=0&&controls=0&autoplay=1&frameborder=0" );
+
+								this.innerHTML = "";
+								this.appendChild( iframe );
+					} );
+		};
+
+	} )();
+});
+
+// =============================================================================================================
+// Slider
+// =============================================================================================================
+$(document).ready(function(){
+	$('.carousel').carousel();
+});
+
+/*
+ * jQuery Navgoco Menus Plugin v0.2.1 (2014-04-11)
+ * https://github.com/tefra/navgoco
+ *
+ * Copyright (c) 2014 Chris T (@tefra)
+ * BSD - https://github.com/tefra/navgoco/blob/master/LICENSE-BSD
+ */
+(function($) {
+
+	"use strict";
+
+	/**
+	 * Plugin Constructor. Every menu must have a unique id which will either
+	 * be the actual id attribute or its index in the page.
+	 *
+	 * @param {Element} el
+	 * @param {Object} options
+	 * @param {Integer} idx
+	 * @returns {Object} Plugin Instance
+	 */
+	var Plugin = function(el, options, idx) {
+		this.el = el;
+		this.$el = $(el);
+		this.options = options;
+		this.uuid = this.$el.attr('id') ? this.$el.attr('id') : idx;
+		this.state = {};
+		this.init();
+		return this;
+	}; 
+
+	/**
+	 * Plugin methods
+	 */
+	Plugin.prototype = {
+		/**
+		 * Load cookie, assign a unique data-index attribute to
+		 * all sub-menus and show|hide them according to cookie
+		 * or based on the parent open class. Find all parent li > a
+		 * links add the carent if it's on and attach the event click
+		 * to them.
+		 */
+		init: function() {
+			var self = this;
+			self._load();
+			self.$el.find('ul').each(function(idx) {
+				var sub = $(this);
+				sub.attr('data-index', idx);
+				if (self.options.save && self.state.hasOwnProperty(idx)) {
+					sub.parent().addClass(self.options.openClass);
+					sub.show();
+				} else if (sub.parent().hasClass(self.options.openClass)) {
+					sub.show();
+					self.state[idx] = 1;
+				} else {
+					sub.hide();
+				}
+			});
+
+			var caret = $('<span></span>').prepend(self.options.caretHtml);
+			var links = self.$el.find("li > a");
+			self._trigger(caret, false);
+			self._trigger(links, true);
+			self.$el.find("li:has(ul) > a").prepend(caret);
+		},
+		/**
+		 * Add the main event trigger to toggle menu items to the given sources
+		 * @param {Element} sources
+		 * @param {Boolean} isLink
+		 */
+		_trigger: function(sources, isLink) {
+			var self = this;
+			sources.on('click', function(event) {
+				event.stopPropagation();
+				var sub = isLink ? $(this).next() : $(this).parent().next();
+				var isAnchor = false;
+				if (isLink) {
+					var href = $(this).attr('href');
+					isAnchor = href === undefined || href === '' || href === '#';
+				}
+				sub = sub.length > 0 ? sub : false;
+				self.options.onClickBefore.call(this, event, sub);
+
+				if (!isLink || sub && isAnchor) {
+					event.preventDefault();
+					self._toggle(sub, sub.is(":hidden"));
+					self._save();
+				} else if (self.options.accordion) {
+					var allowed = self.state = self._parents($(this));
+					self.$el.find('ul').filter(':visible').each(function() {
+						var sub = $(this),
+							idx = sub.attr('data-index');
+
+						if (!allowed.hasOwnProperty(idx)) {
+							self._toggle(sub, false);
+						}
+					});
+					self._save();
+				}
+				self.options.onClickAfter.call(this, event, sub);
+			});
+		},
+		/**
+		 * Accepts a JQuery Element and a boolean flag. If flag is false it removes the `open` css
+		 * class from the parent li and slides up the sub-menu. If flag is open it adds the `open`
+		 * css class to the parent li and slides down the menu. If accordion mode is on all
+		 * sub-menus except the direct parent tree will close. Internally an object with the menus
+		 * states is maintained for later save duty.
+		 *
+		 * @param {Element} sub
+		 * @param {Boolean} open
+		 */
+		_toggle: function(sub, open) {
+			var self = this,
+				idx = sub.attr('data-index'),
+				parent = sub.parent();
+
+			self.options.onToggleBefore.call(this, sub, open);
+			if (open) {
+				parent.addClass(self.options.openClass);
+				sub.slideDown(self.options.slide);
+				self.state[idx] = 1;
+
+				if (self.options.accordion) {
+					var allowed = self.state = self._parents(sub);
+					allowed[idx] = self.state[idx] = 1;
+
+					self.$el.find('ul').filter(':visible').each(function() {
+						var sub = $(this),
+							idx = sub.attr('data-index');
+
+						if (!allowed.hasOwnProperty(idx)) {
+							self._toggle(sub, false);
+						}
+					});
+				}
+			} else {
+				parent.removeClass(self.options.openClass);
+				sub.slideUp(self.options.slide);
+				self.state[idx] = 0;
+			}
+			self.options.onToggleAfter.call(this, sub, open);
+		},
+		/**
+		 * Returns all parents of a sub-menu. When obj is true It returns an object with indexes for
+		 * keys and the elements as values, if obj is false the object is filled with the value `1`.
+		 *
+		 * @since v0.1.2
+		 * @param {Element} sub
+		 * @param {Boolean} obj
+		 * @returns {Object}
+		 */
+		_parents: function(sub, obj) {
+			var result = {},
+				parent = sub.parent(),
+				parents = parent.parents('ul');
+
+			parents.each(function() {
+				var par = $(this),
+					idx = par.attr('data-index');
+
+				if (!idx) {
+					return false;
+				}
+				result[idx] = obj ? par : 1;
+			});
+			return result;
+		},
+		/**
+		 * If `save` option is on the internal object that keeps track of the sub-menus states is
+		 * saved with a cookie. For size reasons only the open sub-menus indexes are stored.		 *
+		 */
+		_save: function() {
+			if (this.options.save) {
+				var save = {};
+				for (var key in this.state) {
+					if (this.state[key] === 1) {
+						save[key] = 1;
+					}
+				}
+				cookie[this.uuid] = this.state = save;
+				$.cookie(this.options.cookie.name, JSON.stringify(cookie), this.options.cookie);
+			}
+		},
+		/**
+		 * If `save` option is on it reads the cookie data. The cookie contains data for all
+		 * navgoco menus so the read happens only once and stored in the global `cookie` var.
+		 */
+		_load: function() {
+			if (this.options.save) {
+				if (cookie === null) {
+					var data = $.cookie(this.options.cookie.name);
+					cookie = (data) ? JSON.parse(data) : {};
+				}
+				this.state = cookie.hasOwnProperty(this.uuid) ? cookie[this.uuid] : {};
+			}
+		},
+		/**
+		 * Public method toggle to manually show|hide sub-menus. If no indexes are provided all
+		 * items will be toggled. You can pass sub-menus indexes as regular params. eg:
+		 * navgoco('toggle', true, 1, 2, 3, 4, 5);
+		 *
+		 * Since v0.1.2 it will also open parents when providing sub-menu indexes.
+		 *
+		 * @param {Boolean} open
+		 */
+		toggle: function(open) {
+			var self = this,
+				length = arguments.length;
+
+			if (length <= 1) {
+				self.$el.find('ul').each(function() {
+					var sub = $(this);
+					self._toggle(sub, open);
+				});
+			} else {
+				var idx,
+					list = {},
+					args = Array.prototype.slice.call(arguments, 1);
+				length--;
+
+				for (var i = 0; i < length; i++) {
+					idx = args[i];
+					var sub = self.$el.find('ul[data-index="' + idx + '"]').first();
+					if (sub) {
+						list[idx] = sub;
+						if (open) {
+							var parents = self._parents(sub, true);
+							for (var pIdx in parents) {
+								if (!list.hasOwnProperty(pIdx)) {
+									list[pIdx] = parents[pIdx];
+								}
+							}
+						}
+					}
+				}
+
+				for (idx in list) {
+					self._toggle(list[idx], open);
+				}
+			}
+			self._save();
+		},
+		/**
+		 * Removes instance from JQuery data cache and unbinds events.
+		 */
+		destroy: function() {
+			$.removeData(this.$el);
+			this.$el.find("li:has(ul) > a").unbind('click');
+			this.$el.find("li:has(ul) > a > span").unbind('click');
+		}
+	};
+
+	/**
+	 * A JQuery plugin wrapper for navgoco. It prevents from multiple instances and also handles
+	 * public methods calls. If we attempt to call a public method on an element that doesn't have
+	 * a navgoco instance, one will be created for it with the default options.
+	 *
+	 * @param {Object|String} options
+	 */
+	$.fn.navgoco = function(options) {
+		if (typeof options === 'string' && options.charAt(0) !== '_' && options !== 'init') {
+			var callback = true,
+				args = Array.prototype.slice.call(arguments, 1);
+		} else {
+			options = $.extend({}, $.fn.navgoco.defaults, options || {});
+			if (!$.cookie) {
+				options.save = false;
+			}
+		}
+		return this.each(function(idx) {
+			var $this = $(this),
+				obj = $this.data('navgoco');
+
+			if (!obj) {
+				obj = new Plugin(this, callback ? $.fn.navgoco.defaults : options, idx);
+				$this.data('navgoco', obj);
+			}
+			if (callback) {
+				obj[options].apply(obj, args);
+			}
+		});
+	};
+	/**
+	 * Global var holding all navgoco menus open states
+	 *
+	 * @type {Object}
+	 */
+	var cookie = null;
+
+	/**
+	 * Default navgoco options
+	 *
+	 * @type {Object}
+	 */
+	$.fn.navgoco.defaults = {
+		caretHtml: '',
+		accordion: false,
+		openClass: 'open',
+		save: true,
+		cookie: {
+			name: 'navgoco',
+			expires: false,
+			path: '/'
+		},
+		slide: {
+			duration: 400,
+			easing: 'swing'
+		},
+		onClickBefore: $.noop,
+		onClickAfter: $.noop,
+		onToggleBefore: $.noop,
+		onToggleAfter: $.noop
+	};
+})(jQuery);
+
+/*
+     _ _      _       _
+ ___| (_) ___| | __  (_)___
+/ __| | |/ __| |/ /  | / __|
+\__ \ | | (__|   < _ | \__ \
+|___/_|_|\___|_|\_(_)/ |___/
+                   |__/
+
+ Version: 1.6.0
+  Author: Ken Wheeler
+ Website: http://kenwheeler.github.io
+    Docs: http://kenwheeler.github.io/slick
+    Repo: http://github.com/kenwheeler/slick
+  Issues: http://github.com/kenwheeler/slick/issues
+
+ */
+
+!function(a){"use strict";"function"==typeof define&&define.amd?define(["jquery"],a):"undefined"!=typeof exports?module.exports=a(require("jquery")):a(jQuery)}(function(a){"use strict";var b=window.Slick||{};b=function(){function c(c,d){var f,e=this;e.defaults={accessibility:!0,adaptiveHeight:!1,appendArrows:a(c),appendDots:a(c),arrows:!0,asNavFor:null,prevArrow:'<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button">Previous</button>',nextArrow:'<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button">Next</button>',autoplay:!1,autoplaySpeed:3e3,centerMode:!1,centerPadding:"50px",cssEase:"ease",customPaging:function(b,c){return a('<button type="button" data-role="none" role="button" tabindex="0" />').text(c+1)},dots:!1,dotsClass:"slick-dots",draggable:!0,easing:"linear",edgeFriction:.35,fade:!1,focusOnSelect:!1,infinite:!0,initialSlide:0,lazyLoad:"ondemand",mobileFirst:!1,pauseOnHover:!0,pauseOnFocus:!0,pauseOnDotsHover:!1,respondTo:"window",responsive:null,rows:1,rtl:!1,slide:"",slidesPerRow:1,slidesToShow:1,slidesToScroll:1,speed:500,swipe:!0,swipeToSlide:!1,touchMove:!0,touchThreshold:5,useCSS:!0,useTransform:!0,variableWidth:!1,vertical:!1,verticalSwiping:!1,waitForAnimate:!0,zIndex:1e3},e.initials={animating:!1,dragging:!1,autoPlayTimer:null,currentDirection:0,currentLeft:null,currentSlide:0,direction:1,$dots:null,listWidth:null,listHeight:null,loadIndex:0,$nextArrow:null,$prevArrow:null,slideCount:null,slideWidth:null,$slideTrack:null,$slides:null,sliding:!1,slideOffset:0,swipeLeft:null,$list:null,touchObject:{},transformsEnabled:!1,unslicked:!1},a.extend(e,e.initials),e.activeBreakpoint=null,e.animType=null,e.animProp=null,e.breakpoints=[],e.breakpointSettings=[],e.cssTransitions=!1,e.focussed=!1,e.interrupted=!1,e.hidden="hidden",e.paused=!0,e.positionProp=null,e.respondTo=null,e.rowCount=1,e.shouldClick=!0,e.$slider=a(c),e.$slidesCache=null,e.transformType=null,e.transitionType=null,e.visibilityChange="visibilitychange",e.windowWidth=0,e.windowTimer=null,f=a(c).data("slick")||{},e.options=a.extend({},e.defaults,d,f),e.currentSlide=e.options.initialSlide,e.originalSettings=e.options,"undefined"!=typeof document.mozHidden?(e.hidden="mozHidden",e.visibilityChange="mozvisibilitychange"):"undefined"!=typeof document.webkitHidden&&(e.hidden="webkitHidden",e.visibilityChange="webkitvisibilitychange"),e.autoPlay=a.proxy(e.autoPlay,e),e.autoPlayClear=a.proxy(e.autoPlayClear,e),e.autoPlayIterator=a.proxy(e.autoPlayIterator,e),e.changeSlide=a.proxy(e.changeSlide,e),e.clickHandler=a.proxy(e.clickHandler,e),e.selectHandler=a.proxy(e.selectHandler,e),e.setPosition=a.proxy(e.setPosition,e),e.swipeHandler=a.proxy(e.swipeHandler,e),e.dragHandler=a.proxy(e.dragHandler,e),e.keyHandler=a.proxy(e.keyHandler,e),e.instanceUid=b++,e.htmlExpr=/^(?:\s*(<[\w\W]+>)[^>]*)$/,e.registerBreakpoints(),e.init(!0)}var b=0;return c}(),b.prototype.activateADA=function(){var a=this;a.$slideTrack.find(".slick-active").attr({"aria-hidden":"false"}).find("a, input, button, select").attr({tabindex:"0"})},b.prototype.addSlide=b.prototype.slickAdd=function(b,c,d){var e=this;if("boolean"==typeof c)d=c,c=null;else if(0>c||c>=e.slideCount)return!1;e.unload(),"number"==typeof c?0===c&&0===e.$slides.length?a(b).appendTo(e.$slideTrack):d?a(b).insertBefore(e.$slides.eq(c)):a(b).insertAfter(e.$slides.eq(c)):d===!0?a(b).prependTo(e.$slideTrack):a(b).appendTo(e.$slideTrack),e.$slides=e.$slideTrack.children(this.options.slide),e.$slideTrack.children(this.options.slide).detach(),e.$slideTrack.append(e.$slides),e.$slides.each(function(b,c){a(c).attr("data-slick-index",b)}),e.$slidesCache=e.$slides,e.reinit()},b.prototype.animateHeight=function(){var a=this;if(1===a.options.slidesToShow&&a.options.adaptiveHeight===!0&&a.options.vertical===!1){var b=a.$slides.eq(a.currentSlide).outerHeight(!0);a.$list.animate({height:b},a.options.speed)}},b.prototype.animateSlide=function(b,c){var d={},e=this;e.animateHeight(),e.options.rtl===!0&&e.options.vertical===!1&&(b=-b),e.transformsEnabled===!1?e.options.vertical===!1?e.$slideTrack.animate({left:b},e.options.speed,e.options.easing,c):e.$slideTrack.animate({top:b},e.options.speed,e.options.easing,c):e.cssTransitions===!1?(e.options.rtl===!0&&(e.currentLeft=-e.currentLeft),a({animStart:e.currentLeft}).animate({animStart:b},{duration:e.options.speed,easing:e.options.easing,step:function(a){a=Math.ceil(a),e.options.vertical===!1?(d[e.animType]="translate("+a+"px, 0px)",e.$slideTrack.css(d)):(d[e.animType]="translate(0px,"+a+"px)",e.$slideTrack.css(d))},complete:function(){c&&c.call()}})):(e.applyTransition(),b=Math.ceil(b),e.options.vertical===!1?d[e.animType]="translate3d("+b+"px, 0px, 0px)":d[e.animType]="translate3d(0px,"+b+"px, 0px)",e.$slideTrack.css(d),c&&setTimeout(function(){e.disableTransition(),c.call()},e.options.speed))},b.prototype.getNavTarget=function(){var b=this,c=b.options.asNavFor;return c&&null!==c&&(c=a(c).not(b.$slider)),c},b.prototype.asNavFor=function(b){var c=this,d=c.getNavTarget();null!==d&&"object"==typeof d&&d.each(function(){var c=a(this).slick("getSlick");c.unslicked||c.slideHandler(b,!0)})},b.prototype.applyTransition=function(a){var b=this,c={};b.options.fade===!1?c[b.transitionType]=b.transformType+" "+b.options.speed+"ms "+b.options.cssEase:c[b.transitionType]="opacity "+b.options.speed+"ms "+b.options.cssEase,b.options.fade===!1?b.$slideTrack.css(c):b.$slides.eq(a).css(c)},b.prototype.autoPlay=function(){var a=this;a.autoPlayClear(),a.slideCount>a.options.slidesToShow&&(a.autoPlayTimer=setInterval(a.autoPlayIterator,a.options.autoplaySpeed))},b.prototype.autoPlayClear=function(){var a=this;a.autoPlayTimer&&clearInterval(a.autoPlayTimer)},b.prototype.autoPlayIterator=function(){var a=this,b=a.currentSlide+a.options.slidesToScroll;a.paused||a.interrupted||a.focussed||(a.options.infinite===!1&&(1===a.direction&&a.currentSlide+1===a.slideCount-1?a.direction=0:0===a.direction&&(b=a.currentSlide-a.options.slidesToScroll,a.currentSlide-1===0&&(a.direction=1))),a.slideHandler(b))},b.prototype.buildArrows=function(){var b=this;b.options.arrows===!0&&(b.$prevArrow=a(b.options.prevArrow).addClass("slick-arrow"),b.$nextArrow=a(b.options.nextArrow).addClass("slick-arrow"),b.slideCount>b.options.slidesToShow?(b.$prevArrow.removeClass("slick-hidden").removeAttr("aria-hidden tabindex"),b.$nextArrow.removeClass("slick-hidden").removeAttr("aria-hidden tabindex"),b.htmlExpr.test(b.options.prevArrow)&&b.$prevArrow.prependTo(b.options.appendArrows),b.htmlExpr.test(b.options.nextArrow)&&b.$nextArrow.appendTo(b.options.appendArrows),b.options.infinite!==!0&&b.$prevArrow.addClass("slick-disabled").attr("aria-disabled","true")):b.$prevArrow.add(b.$nextArrow).addClass("slick-hidden").attr({"aria-disabled":"true",tabindex:"-1"}))},b.prototype.buildDots=function(){var c,d,b=this;if(b.options.dots===!0&&b.slideCount>b.options.slidesToShow){for(b.$slider.addClass("slick-dotted"),d=a("<ul />").addClass(b.options.dotsClass),c=0;c<=b.getDotCount();c+=1)d.append(a("<li />").append(b.options.customPaging.call(this,b,c)));b.$dots=d.appendTo(b.options.appendDots),b.$dots.find("li").first().addClass("slick-active").attr("aria-hidden","false")}},b.prototype.buildOut=function(){var b=this;b.$slides=b.$slider.children(b.options.slide+":not(.slick-cloned)").addClass("slick-slide"),b.slideCount=b.$slides.length,b.$slides.each(function(b,c){a(c).attr("data-slick-index",b).data("originalStyling",a(c).attr("style")||"")}),b.$slider.addClass("slick-slider"),b.$slideTrack=0===b.slideCount?a('<div class="slick-track"/>').appendTo(b.$slider):b.$slides.wrapAll('<div class="slick-track"/>').parent(),b.$list=b.$slideTrack.wrap('<div aria-live="polite" class="slick-list"/>').parent(),b.$slideTrack.css("opacity",0),(b.options.centerMode===!0||b.options.swipeToSlide===!0)&&(b.options.slidesToScroll=1),a("img[data-lazy]",b.$slider).not("[src]").addClass("slick-loading"),b.setupInfinite(),b.buildArrows(),b.buildDots(),b.updateDots(),b.setSlideClasses("number"==typeof b.currentSlide?b.currentSlide:0),b.options.draggable===!0&&b.$list.addClass("draggable")},b.prototype.buildRows=function(){var b,c,d,e,f,g,h,a=this;if(e=document.createDocumentFragment(),g=a.$slider.children(),a.options.rows>1){for(h=a.options.slidesPerRow*a.options.rows,f=Math.ceil(g.length/h),b=0;f>b;b++){var i=document.createElement("div");for(c=0;c<a.options.rows;c++){var j=document.createElement("div");for(d=0;d<a.options.slidesPerRow;d++){var k=b*h+(c*a.options.slidesPerRow+d);g.get(k)&&j.appendChild(g.get(k))}i.appendChild(j)}e.appendChild(i)}a.$slider.empty().append(e),a.$slider.children().children().children().css({width:100/a.options.slidesPerRow+"%",display:"inline-block"})}},b.prototype.checkResponsive=function(b,c){var e,f,g,d=this,h=!1,i=d.$slider.width(),j=window.innerWidth||a(window).width();if("window"===d.respondTo?g=j:"slider"===d.respondTo?g=i:"min"===d.respondTo&&(g=Math.min(j,i)),d.options.responsive&&d.options.responsive.length&&null!==d.options.responsive){f=null;for(e in d.breakpoints)d.breakpoints.hasOwnProperty(e)&&(d.originalSettings.mobileFirst===!1?g<d.breakpoints[e]&&(f=d.breakpoints[e]):g>d.breakpoints[e]&&(f=d.breakpoints[e]));null!==f?null!==d.activeBreakpoint?(f!==d.activeBreakpoint||c)&&(d.activeBreakpoint=f,"unslick"===d.breakpointSettings[f]?d.unslick(f):(d.options=a.extend({},d.originalSettings,d.breakpointSettings[f]),b===!0&&(d.currentSlide=d.options.initialSlide),d.refresh(b)),h=f):(d.activeBreakpoint=f,"unslick"===d.breakpointSettings[f]?d.unslick(f):(d.options=a.extend({},d.originalSettings,d.breakpointSettings[f]),b===!0&&(d.currentSlide=d.options.initialSlide),d.refresh(b)),h=f):null!==d.activeBreakpoint&&(d.activeBreakpoint=null,d.options=d.originalSettings,b===!0&&(d.currentSlide=d.options.initialSlide),d.refresh(b),h=f),b||h===!1||d.$slider.trigger("breakpoint",[d,h])}},b.prototype.changeSlide=function(b,c){var f,g,h,d=this,e=a(b.currentTarget);switch(e.is("a")&&b.preventDefault(),e.is("li")||(e=e.closest("li")),h=d.slideCount%d.options.slidesToScroll!==0,f=h?0:(d.slideCount-d.currentSlide)%d.options.slidesToScroll,b.data.message){case"previous":g=0===f?d.options.slidesToScroll:d.options.slidesToShow-f,d.slideCount>d.options.slidesToShow&&d.slideHandler(d.currentSlide-g,!1,c);break;case"next":g=0===f?d.options.slidesToScroll:f,d.slideCount>d.options.slidesToShow&&d.slideHandler(d.currentSlide+g,!1,c);break;case"index":var i=0===b.data.index?0:b.data.index||e.index()*d.options.slidesToScroll;d.slideHandler(d.checkNavigable(i),!1,c),e.children().trigger("focus");break;default:return}},b.prototype.checkNavigable=function(a){var c,d,b=this;if(c=b.getNavigableIndexes(),d=0,a>c[c.length-1])a=c[c.length-1];else for(var e in c){if(a<c[e]){a=d;break}d=c[e]}return a},b.prototype.cleanUpEvents=function(){var b=this;b.options.dots&&null!==b.$dots&&a("li",b.$dots).off("click.slick",b.changeSlide).off("mouseenter.slick",a.proxy(b.interrupt,b,!0)).off("mouseleave.slick",a.proxy(b.interrupt,b,!1)),b.$slider.off("focus.slick blur.slick"),b.options.arrows===!0&&b.slideCount>b.options.slidesToShow&&(b.$prevArrow&&b.$prevArrow.off("click.slick",b.changeSlide),b.$nextArrow&&b.$nextArrow.off("click.slick",b.changeSlide)),b.$list.off("touchstart.slick mousedown.slick",b.swipeHandler),b.$list.off("touchmove.slick mousemove.slick",b.swipeHandler),b.$list.off("touchend.slick mouseup.slick",b.swipeHandler),b.$list.off("touchcancel.slick mouseleave.slick",b.swipeHandler),b.$list.off("click.slick",b.clickHandler),a(document).off(b.visibilityChange,b.visibility),b.cleanUpSlideEvents(),b.options.accessibility===!0&&b.$list.off("keydown.slick",b.keyHandler),b.options.focusOnSelect===!0&&a(b.$slideTrack).children().off("click.slick",b.selectHandler),a(window).off("orientationchange.slick.slick-"+b.instanceUid,b.orientationChange),a(window).off("resize.slick.slick-"+b.instanceUid,b.resize),a("[draggable!=true]",b.$slideTrack).off("dragstart",b.preventDefault),a(window).off("load.slick.slick-"+b.instanceUid,b.setPosition),a(document).off("ready.slick.slick-"+b.instanceUid,b.setPosition)},b.prototype.cleanUpSlideEvents=function(){var b=this;b.$list.off("mouseenter.slick",a.proxy(b.interrupt,b,!0)),b.$list.off("mouseleave.slick",a.proxy(b.interrupt,b,!1))},b.prototype.cleanUpRows=function(){var b,a=this;a.options.rows>1&&(b=a.$slides.children().children(),b.removeAttr("style"),a.$slider.empty().append(b))},b.prototype.clickHandler=function(a){var b=this;b.shouldClick===!1&&(a.stopImmediatePropagation(),a.stopPropagation(),a.preventDefault())},b.prototype.destroy=function(b){var c=this;c.autoPlayClear(),c.touchObject={},c.cleanUpEvents(),a(".slick-cloned",c.$slider).detach(),c.$dots&&c.$dots.remove(),c.$prevArrow&&c.$prevArrow.length&&(c.$prevArrow.removeClass("slick-disabled slick-arrow slick-hidden").removeAttr("aria-hidden aria-disabled tabindex").css("display",""),c.htmlExpr.test(c.options.prevArrow)&&c.$prevArrow.remove()),c.$nextArrow&&c.$nextArrow.length&&(c.$nextArrow.removeClass("slick-disabled slick-arrow slick-hidden").removeAttr("aria-hidden aria-disabled tabindex").css("display",""),c.htmlExpr.test(c.options.nextArrow)&&c.$nextArrow.remove()),c.$slides&&(c.$slides.removeClass("slick-slide slick-active slick-center slick-visible slick-current").removeAttr("aria-hidden").removeAttr("data-slick-index").each(function(){a(this).attr("style",a(this).data("originalStyling"))}),c.$slideTrack.children(this.options.slide).detach(),c.$slideTrack.detach(),c.$list.detach(),c.$slider.append(c.$slides)),c.cleanUpRows(),c.$slider.removeClass("slick-slider"),c.$slider.removeClass("slick-initialized"),c.$slider.removeClass("slick-dotted"),c.unslicked=!0,b||c.$slider.trigger("destroy",[c])},b.prototype.disableTransition=function(a){var b=this,c={};c[b.transitionType]="",b.options.fade===!1?b.$slideTrack.css(c):b.$slides.eq(a).css(c)},b.prototype.fadeSlide=function(a,b){var c=this;c.cssTransitions===!1?(c.$slides.eq(a).css({zIndex:c.options.zIndex}),c.$slides.eq(a).animate({opacity:1},c.options.speed,c.options.easing,b)):(c.applyTransition(a),c.$slides.eq(a).css({opacity:1,zIndex:c.options.zIndex}),b&&setTimeout(function(){c.disableTransition(a),b.call()},c.options.speed))},b.prototype.fadeSlideOut=function(a){var b=this;b.cssTransitions===!1?b.$slides.eq(a).animate({opacity:0,zIndex:b.options.zIndex-2},b.options.speed,b.options.easing):(b.applyTransition(a),b.$slides.eq(a).css({opacity:0,zIndex:b.options.zIndex-2}))},b.prototype.filterSlides=b.prototype.slickFilter=function(a){var b=this;null!==a&&(b.$slidesCache=b.$slides,b.unload(),b.$slideTrack.children(this.options.slide).detach(),b.$slidesCache.filter(a).appendTo(b.$slideTrack),b.reinit())},b.prototype.focusHandler=function(){var b=this;b.$slider.off("focus.slick blur.slick").on("focus.slick blur.slick","*:not(.slick-arrow)",function(c){c.stopImmediatePropagation();var d=a(this);setTimeout(function(){b.options.pauseOnFocus&&(b.focussed=d.is(":focus"),b.autoPlay())},0)})},b.prototype.getCurrent=b.prototype.slickCurrentSlide=function(){var a=this;return a.currentSlide},b.prototype.getDotCount=function(){var a=this,b=0,c=0,d=0;if(a.options.infinite===!0)for(;b<a.slideCount;)++d,b=c+a.options.slidesToScroll,c+=a.options.slidesToScroll<=a.options.slidesToShow?a.options.slidesToScroll:a.options.slidesToShow;else if(a.options.centerMode===!0)d=a.slideCount;else if(a.options.asNavFor)for(;b<a.slideCount;)++d,b=c+a.options.slidesToScroll,c+=a.options.slidesToScroll<=a.options.slidesToShow?a.options.slidesToScroll:a.options.slidesToShow;else d=1+Math.ceil((a.slideCount-a.options.slidesToShow)/a.options.slidesToScroll);return d-1},b.prototype.getLeft=function(a){var c,d,f,b=this,e=0;return b.slideOffset=0,d=b.$slides.first().outerHeight(!0),b.options.infinite===!0?(b.slideCount>b.options.slidesToShow&&(b.slideOffset=b.slideWidth*b.options.slidesToShow*-1,e=d*b.options.slidesToShow*-1),b.slideCount%b.options.slidesToScroll!==0&&a+b.options.slidesToScroll>b.slideCount&&b.slideCount>b.options.slidesToShow&&(a>b.slideCount?(b.slideOffset=(b.options.slidesToShow-(a-b.slideCount))*b.slideWidth*-1,e=(b.options.slidesToShow-(a-b.slideCount))*d*-1):(b.slideOffset=b.slideCount%b.options.slidesToScroll*b.slideWidth*-1,e=b.slideCount%b.options.slidesToScroll*d*-1))):a+b.options.slidesToShow>b.slideCount&&(b.slideOffset=(a+b.options.slidesToShow-b.slideCount)*b.slideWidth,e=(a+b.options.slidesToShow-b.slideCount)*d),b.slideCount<=b.options.slidesToShow&&(b.slideOffset=0,e=0),b.options.centerMode===!0&&b.options.infinite===!0?b.slideOffset+=b.slideWidth*Math.floor(b.options.slidesToShow/2)-b.slideWidth:b.options.centerMode===!0&&(b.slideOffset=0,b.slideOffset+=b.slideWidth*Math.floor(b.options.slidesToShow/2)),c=b.options.vertical===!1?a*b.slideWidth*-1+b.slideOffset:a*d*-1+e,b.options.variableWidth===!0&&(f=b.slideCount<=b.options.slidesToShow||b.options.infinite===!1?b.$slideTrack.children(".slick-slide").eq(a):b.$slideTrack.children(".slick-slide").eq(a+b.options.slidesToShow),c=b.options.rtl===!0?f[0]?-1*(b.$slideTrack.width()-f[0].offsetLeft-f.width()):0:f[0]?-1*f[0].offsetLeft:0,b.options.centerMode===!0&&(f=b.slideCount<=b.options.slidesToShow||b.options.infinite===!1?b.$slideTrack.children(".slick-slide").eq(a):b.$slideTrack.children(".slick-slide").eq(a+b.options.slidesToShow+1),c=b.options.rtl===!0?f[0]?-1*(b.$slideTrack.width()-f[0].offsetLeft-f.width()):0:f[0]?-1*f[0].offsetLeft:0,c+=(b.$list.width()-f.outerWidth())/2)),c},b.prototype.getOption=b.prototype.slickGetOption=function(a){var b=this;return b.options[a]},b.prototype.getNavigableIndexes=function(){var e,a=this,b=0,c=0,d=[];for(a.options.infinite===!1?e=a.slideCount:(b=-1*a.options.slidesToScroll,c=-1*a.options.slidesToScroll,e=2*a.slideCount);e>b;)d.push(b),b=c+a.options.slidesToScroll,c+=a.options.slidesToScroll<=a.options.slidesToShow?a.options.slidesToScroll:a.options.slidesToShow;return d},b.prototype.getSlick=function(){return this},b.prototype.getSlideCount=function(){var c,d,e,b=this;return e=b.options.centerMode===!0?b.slideWidth*Math.floor(b.options.slidesToShow/2):0,b.options.swipeToSlide===!0?(b.$slideTrack.find(".slick-slide").each(function(c,f){return f.offsetLeft-e+a(f).outerWidth()/2>-1*b.swipeLeft?(d=f,!1):void 0}),c=Math.abs(a(d).attr("data-slick-index")-b.currentSlide)||1):b.options.slidesToScroll},b.prototype.goTo=b.prototype.slickGoTo=function(a,b){var c=this;c.changeSlide({data:{message:"index",index:parseInt(a)}},b)},b.prototype.init=function(b){var c=this;a(c.$slider).hasClass("slick-initialized")||(a(c.$slider).addClass("slick-initialized"),c.buildRows(),c.buildOut(),c.setProps(),c.startLoad(),c.loadSlider(),c.initializeEvents(),c.updateArrows(),c.updateDots(),c.checkResponsive(!0),c.focusHandler()),b&&c.$slider.trigger("init",[c]),c.options.accessibility===!0&&c.initADA(),c.options.autoplay&&(c.paused=!1,c.autoPlay())},b.prototype.initADA=function(){var b=this;b.$slides.add(b.$slideTrack.find(".slick-cloned")).attr({"aria-hidden":"true",tabindex:"-1"}).find("a, input, button, select").attr({tabindex:"-1"}),b.$slideTrack.attr("role","listbox"),b.$slides.not(b.$slideTrack.find(".slick-cloned")).each(function(c){a(this).attr({role:"option","aria-describedby":"slick-slide"+b.instanceUid+c})}),null!==b.$dots&&b.$dots.attr("role","tablist").find("li").each(function(c){a(this).attr({role:"presentation","aria-selected":"false","aria-controls":"navigation"+b.instanceUid+c,id:"slick-slide"+b.instanceUid+c})}).first().attr("aria-selected","true").end().find("button").attr("role","button").end().closest("div").attr("role","toolbar"),b.activateADA()},b.prototype.initArrowEvents=function(){var a=this;a.options.arrows===!0&&a.slideCount>a.options.slidesToShow&&(a.$prevArrow.off("click.slick").on("click.slick",{message:"previous"},a.changeSlide),a.$nextArrow.off("click.slick").on("click.slick",{message:"next"},a.changeSlide))},b.prototype.initDotEvents=function(){var b=this;b.options.dots===!0&&b.slideCount>b.options.slidesToShow&&a("li",b.$dots).on("click.slick",{message:"index"},b.changeSlide),b.options.dots===!0&&b.options.pauseOnDotsHover===!0&&a("li",b.$dots).on("mouseenter.slick",a.proxy(b.interrupt,b,!0)).on("mouseleave.slick",a.proxy(b.interrupt,b,!1))},b.prototype.initSlideEvents=function(){var b=this;b.options.pauseOnHover&&(b.$list.on("mouseenter.slick",a.proxy(b.interrupt,b,!0)),b.$list.on("mouseleave.slick",a.proxy(b.interrupt,b,!1)))},b.prototype.initializeEvents=function(){var b=this;b.initArrowEvents(),b.initDotEvents(),b.initSlideEvents(),b.$list.on("touchstart.slick mousedown.slick",{action:"start"},b.swipeHandler),b.$list.on("touchmove.slick mousemove.slick",{action:"move"},b.swipeHandler),b.$list.on("touchend.slick mouseup.slick",{action:"end"},b.swipeHandler),b.$list.on("touchcancel.slick mouseleave.slick",{action:"end"},b.swipeHandler),b.$list.on("click.slick",b.clickHandler),a(document).on(b.visibilityChange,a.proxy(b.visibility,b)),b.options.accessibility===!0&&b.$list.on("keydown.slick",b.keyHandler),b.options.focusOnSelect===!0&&a(b.$slideTrack).children().on("click.slick",b.selectHandler),a(window).on("orientationchange.slick.slick-"+b.instanceUid,a.proxy(b.orientationChange,b)),a(window).on("resize.slick.slick-"+b.instanceUid,a.proxy(b.resize,b)),a("[draggable!=true]",b.$slideTrack).on("dragstart",b.preventDefault),a(window).on("load.slick.slick-"+b.instanceUid,b.setPosition),a(document).on("ready.slick.slick-"+b.instanceUid,b.setPosition)},b.prototype.initUI=function(){var a=this;a.options.arrows===!0&&a.slideCount>a.options.slidesToShow&&(a.$prevArrow.show(),a.$nextArrow.show()),a.options.dots===!0&&a.slideCount>a.options.slidesToShow&&a.$dots.show()},b.prototype.keyHandler=function(a){var b=this;a.target.tagName.match("TEXTAREA|INPUT|SELECT")||(37===a.keyCode&&b.options.accessibility===!0?b.changeSlide({data:{message:b.options.rtl===!0?"next":"previous"}}):39===a.keyCode&&b.options.accessibility===!0&&b.changeSlide({data:{message:b.options.rtl===!0?"previous":"next"}}))},b.prototype.lazyLoad=function(){function g(c){a("img[data-lazy]",c).each(function(){var c=a(this),d=a(this).attr("data-lazy"),e=document.createElement("img");e.onload=function(){c.animate({opacity:0},100,function(){c.attr("src",d).animate({opacity:1},200,function(){c.removeAttr("data-lazy").removeClass("slick-loading")}),b.$slider.trigger("lazyLoaded",[b,c,d])})},e.onerror=function(){c.removeAttr("data-lazy").removeClass("slick-loading").addClass("slick-lazyload-error"),b.$slider.trigger("lazyLoadError",[b,c,d])},e.src=d})}var c,d,e,f,b=this;b.options.centerMode===!0?b.options.infinite===!0?(e=b.currentSlide+(b.options.slidesToShow/2+1),f=e+b.options.slidesToShow+2):(e=Math.max(0,b.currentSlide-(b.options.slidesToShow/2+1)),f=2+(b.options.slidesToShow/2+1)+b.currentSlide):(e=b.options.infinite?b.options.slidesToShow+b.currentSlide:b.currentSlide,f=Math.ceil(e+b.options.slidesToShow),b.options.fade===!0&&(e>0&&e--,f<=b.slideCount&&f++)),c=b.$slider.find(".slick-slide").slice(e,f),g(c),b.slideCount<=b.options.slidesToShow?(d=b.$slider.find(".slick-slide"),g(d)):b.currentSlide>=b.slideCount-b.options.slidesToShow?(d=b.$slider.find(".slick-cloned").slice(0,b.options.slidesToShow),g(d)):0===b.currentSlide&&(d=b.$slider.find(".slick-cloned").slice(-1*b.options.slidesToShow),g(d))},b.prototype.loadSlider=function(){var a=this;a.setPosition(),a.$slideTrack.css({opacity:1}),a.$slider.removeClass("slick-loading"),a.initUI(),"progressive"===a.options.lazyLoad&&a.progressiveLazyLoad()},b.prototype.next=b.prototype.slickNext=function(){var a=this;a.changeSlide({data:{message:"next"}})},b.prototype.orientationChange=function(){var a=this;a.checkResponsive(),a.setPosition()},b.prototype.pause=b.prototype.slickPause=function(){var a=this;a.autoPlayClear(),a.paused=!0},b.prototype.play=b.prototype.slickPlay=function(){var a=this;a.autoPlay(),a.options.autoplay=!0,a.paused=!1,a.focussed=!1,a.interrupted=!1},b.prototype.postSlide=function(a){var b=this;b.unslicked||(b.$slider.trigger("afterChange",[b,a]),b.animating=!1,b.setPosition(),b.swipeLeft=null,b.options.autoplay&&b.autoPlay(),b.options.accessibility===!0&&b.initADA())},b.prototype.prev=b.prototype.slickPrev=function(){var a=this;a.changeSlide({data:{message:"previous"}})},b.prototype.preventDefault=function(a){a.preventDefault()},b.prototype.progressiveLazyLoad=function(b){b=b||1;var e,f,g,c=this,d=a("img[data-lazy]",c.$slider);d.length?(e=d.first(),f=e.attr("data-lazy"),g=document.createElement("img"),g.onload=function(){e.attr("src",f).removeAttr("data-lazy").removeClass("slick-loading"),c.options.adaptiveHeight===!0&&c.setPosition(),c.$slider.trigger("lazyLoaded",[c,e,f]),c.progressiveLazyLoad()},g.onerror=function(){3>b?setTimeout(function(){c.progressiveLazyLoad(b+1)},500):(e.removeAttr("data-lazy").removeClass("slick-loading").addClass("slick-lazyload-error"),c.$slider.trigger("lazyLoadError",[c,e,f]),c.progressiveLazyLoad())},g.src=f):c.$slider.trigger("allImagesLoaded",[c])},b.prototype.refresh=function(b){var d,e,c=this;e=c.slideCount-c.options.slidesToShow,!c.options.infinite&&c.currentSlide>e&&(c.currentSlide=e),c.slideCount<=c.options.slidesToShow&&(c.currentSlide=0),d=c.currentSlide,c.destroy(!0),a.extend(c,c.initials,{currentSlide:d}),c.init(),b||c.changeSlide({data:{message:"index",index:d}},!1)},b.prototype.registerBreakpoints=function(){var c,d,e,b=this,f=b.options.responsive||null;if("array"===a.type(f)&&f.length){b.respondTo=b.options.respondTo||"window";for(c in f)if(e=b.breakpoints.length-1,d=f[c].breakpoint,f.hasOwnProperty(c)){for(;e>=0;)b.breakpoints[e]&&b.breakpoints[e]===d&&b.breakpoints.splice(e,1),e--;b.breakpoints.push(d),b.breakpointSettings[d]=f[c].settings}b.breakpoints.sort(function(a,c){return b.options.mobileFirst?a-c:c-a})}},b.prototype.reinit=function(){var b=this;b.$slides=b.$slideTrack.children(b.options.slide).addClass("slick-slide"),b.slideCount=b.$slides.length,b.currentSlide>=b.slideCount&&0!==b.currentSlide&&(b.currentSlide=b.currentSlide-b.options.slidesToScroll),b.slideCount<=b.options.slidesToShow&&(b.currentSlide=0),b.registerBreakpoints(),b.setProps(),b.setupInfinite(),b.buildArrows(),b.updateArrows(),b.initArrowEvents(),b.buildDots(),b.updateDots(),b.initDotEvents(),b.cleanUpSlideEvents(),b.initSlideEvents(),b.checkResponsive(!1,!0),b.options.focusOnSelect===!0&&a(b.$slideTrack).children().on("click.slick",b.selectHandler),b.setSlideClasses("number"==typeof b.currentSlide?b.currentSlide:0),b.setPosition(),b.focusHandler(),b.paused=!b.options.autoplay,b.autoPlay(),b.$slider.trigger("reInit",[b])},b.prototype.resize=function(){var b=this;a(window).width()!==b.windowWidth&&(clearTimeout(b.windowDelay),b.windowDelay=window.setTimeout(function(){b.windowWidth=a(window).width(),b.checkResponsive(),b.unslicked||b.setPosition()},50))},b.prototype.removeSlide=b.prototype.slickRemove=function(a,b,c){var d=this;return"boolean"==typeof a?(b=a,a=b===!0?0:d.slideCount-1):a=b===!0?--a:a,d.slideCount<1||0>a||a>d.slideCount-1?!1:(d.unload(),c===!0?d.$slideTrack.children().remove():d.$slideTrack.children(this.options.slide).eq(a).remove(),d.$slides=d.$slideTrack.children(this.options.slide),d.$slideTrack.children(this.options.slide).detach(),d.$slideTrack.append(d.$slides),d.$slidesCache=d.$slides,void d.reinit())},b.prototype.setCSS=function(a){var d,e,b=this,c={};b.options.rtl===!0&&(a=-a),d="left"==b.positionProp?Math.ceil(a)+"px":"0px",e="top"==b.positionProp?Math.ceil(a)+"px":"0px",c[b.positionProp]=a,b.transformsEnabled===!1?b.$slideTrack.css(c):(c={},b.cssTransitions===!1?(c[b.animType]="translate("+d+", "+e+")",b.$slideTrack.css(c)):(c[b.animType]="translate3d("+d+", "+e+", 0px)",b.$slideTrack.css(c)))},b.prototype.setDimensions=function(){var a=this;a.options.vertical===!1?a.options.centerMode===!0&&a.$list.css({padding:"0px "+a.options.centerPadding}):(a.$list.height(a.$slides.first().outerHeight(!0)*a.options.slidesToShow),a.options.centerMode===!0&&a.$list.css({padding:a.options.centerPadding+" 0px"})),a.listWidth=a.$list.width(),a.listHeight=a.$list.height(),a.options.vertical===!1&&a.options.variableWidth===!1?(a.slideWidth=Math.ceil(a.listWidth/a.options.slidesToShow),a.$slideTrack.width(Math.ceil(a.slideWidth*a.$slideTrack.children(".slick-slide").length))):a.options.variableWidth===!0?a.$slideTrack.width(5e3*a.slideCount):(a.slideWidth=Math.ceil(a.listWidth),a.$slideTrack.height(Math.ceil(a.$slides.first().outerHeight(!0)*a.$slideTrack.children(".slick-slide").length)));var b=a.$slides.first().outerWidth(!0)-a.$slides.first().width();a.options.variableWidth===!1&&a.$slideTrack.children(".slick-slide").width(a.slideWidth-b)},b.prototype.setFade=function(){var c,b=this;b.$slides.each(function(d,e){c=b.slideWidth*d*-1,b.options.rtl===!0?a(e).css({position:"relative",right:c,top:0,zIndex:b.options.zIndex-2,opacity:0}):a(e).css({position:"relative",left:c,top:0,zIndex:b.options.zIndex-2,opacity:0})}),b.$slides.eq(b.currentSlide).css({zIndex:b.options.zIndex-1,opacity:1})},b.prototype.setHeight=function(){var a=this;if(1===a.options.slidesToShow&&a.options.adaptiveHeight===!0&&a.options.vertical===!1){var b=a.$slides.eq(a.currentSlide).outerHeight(!0);a.$list.css("height",b)}},b.prototype.setOption=b.prototype.slickSetOption=function(){var c,d,e,f,h,b=this,g=!1;if("object"===a.type(arguments[0])?(e=arguments[0],g=arguments[1],h="multiple"):"string"===a.type(arguments[0])&&(e=arguments[0],f=arguments[1],g=arguments[2],"responsive"===arguments[0]&&"array"===a.type(arguments[1])?h="responsive":"undefined"!=typeof arguments[1]&&(h="single")),"single"===h)b.options[e]=f;else if("multiple"===h)a.each(e,function(a,c){b.options[a]=c});else if("responsive"===h)for(d in f)if("array"!==a.type(b.options.responsive))b.options.responsive=[f[d]];else{for(c=b.options.responsive.length-1;c>=0;)b.options.responsive[c].breakpoint===f[d].breakpoint&&b.options.responsive.splice(c,1),c--;b.options.responsive.push(f[d])}g&&(b.unload(),b.reinit())},b.prototype.setPosition=function(){var a=this;a.setDimensions(),a.setHeight(),a.options.fade===!1?a.setCSS(a.getLeft(a.currentSlide)):a.setFade(),a.$slider.trigger("setPosition",[a])},b.prototype.setProps=function(){var a=this,b=document.body.style;a.positionProp=a.options.vertical===!0?"top":"left","top"===a.positionProp?a.$slider.addClass("slick-vertical"):a.$slider.removeClass("slick-vertical"),(void 0!==b.WebkitTransition||void 0!==b.MozTransition||void 0!==b.msTransition)&&a.options.useCSS===!0&&(a.cssTransitions=!0),a.options.fade&&("number"==typeof a.options.zIndex?a.options.zIndex<3&&(a.options.zIndex=3):a.options.zIndex=a.defaults.zIndex),void 0!==b.OTransform&&(a.animType="OTransform",a.transformType="-o-transform",a.transitionType="OTransition",void 0===b.perspectiveProperty&&void 0===b.webkitPerspective&&(a.animType=!1)),void 0!==b.MozTransform&&(a.animType="MozTransform",a.transformType="-moz-transform",a.transitionType="MozTransition",void 0===b.perspectiveProperty&&void 0===b.MozPerspective&&(a.animType=!1)),void 0!==b.webkitTransform&&(a.animType="webkitTransform",a.transformType="-webkit-transform",a.transitionType="webkitTransition",void 0===b.perspectiveProperty&&void 0===b.webkitPerspective&&(a.animType=!1)),void 0!==b.msTransform&&(a.animType="msTransform",a.transformType="-ms-transform",a.transitionType="msTransition",void 0===b.msTransform&&(a.animType=!1)),void 0!==b.transform&&a.animType!==!1&&(a.animType="transform",a.transformType="transform",a.transitionType="transition"),a.transformsEnabled=a.options.useTransform&&null!==a.animType&&a.animType!==!1},b.prototype.setSlideClasses=function(a){var c,d,e,f,b=this;d=b.$slider.find(".slick-slide").removeClass("slick-active slick-center slick-current").attr("aria-hidden","true"),b.$slides.eq(a).addClass("slick-current"),b.options.centerMode===!0?(c=Math.floor(b.options.slidesToShow/2),b.options.infinite===!0&&(a>=c&&a<=b.slideCount-1-c?b.$slides.slice(a-c,a+c+1).addClass("slick-active").attr("aria-hidden","false"):(e=b.options.slidesToShow+a,
+d.slice(e-c+1,e+c+2).addClass("slick-active").attr("aria-hidden","false")),0===a?d.eq(d.length-1-b.options.slidesToShow).addClass("slick-center"):a===b.slideCount-1&&d.eq(b.options.slidesToShow).addClass("slick-center")),b.$slides.eq(a).addClass("slick-center")):a>=0&&a<=b.slideCount-b.options.slidesToShow?b.$slides.slice(a,a+b.options.slidesToShow).addClass("slick-active").attr("aria-hidden","false"):d.length<=b.options.slidesToShow?d.addClass("slick-active").attr("aria-hidden","false"):(f=b.slideCount%b.options.slidesToShow,e=b.options.infinite===!0?b.options.slidesToShow+a:a,b.options.slidesToShow==b.options.slidesToScroll&&b.slideCount-a<b.options.slidesToShow?d.slice(e-(b.options.slidesToShow-f),e+f).addClass("slick-active").attr("aria-hidden","false"):d.slice(e,e+b.options.slidesToShow).addClass("slick-active").attr("aria-hidden","false")),"ondemand"===b.options.lazyLoad&&b.lazyLoad()},b.prototype.setupInfinite=function(){var c,d,e,b=this;if(b.options.fade===!0&&(b.options.centerMode=!1),b.options.infinite===!0&&b.options.fade===!1&&(d=null,b.slideCount>b.options.slidesToShow)){for(e=b.options.centerMode===!0?b.options.slidesToShow+1:b.options.slidesToShow,c=b.slideCount;c>b.slideCount-e;c-=1)d=c-1,a(b.$slides[d]).clone(!0).attr("id","").attr("data-slick-index",d-b.slideCount).prependTo(b.$slideTrack).addClass("slick-cloned");for(c=0;e>c;c+=1)d=c,a(b.$slides[d]).clone(!0).attr("id","").attr("data-slick-index",d+b.slideCount).appendTo(b.$slideTrack).addClass("slick-cloned");b.$slideTrack.find(".slick-cloned").find("[id]").each(function(){a(this).attr("id","")})}},b.prototype.interrupt=function(a){var b=this;a||b.autoPlay(),b.interrupted=a},b.prototype.selectHandler=function(b){var c=this,d=a(b.target).is(".slick-slide")?a(b.target):a(b.target).parents(".slick-slide"),e=parseInt(d.attr("data-slick-index"));return e||(e=0),c.slideCount<=c.options.slidesToShow?(c.setSlideClasses(e),void c.asNavFor(e)):void c.slideHandler(e)},b.prototype.slideHandler=function(a,b,c){var d,e,f,g,j,h=null,i=this;return b=b||!1,i.animating===!0&&i.options.waitForAnimate===!0||i.options.fade===!0&&i.currentSlide===a||i.slideCount<=i.options.slidesToShow?void 0:(b===!1&&i.asNavFor(a),d=a,h=i.getLeft(d),g=i.getLeft(i.currentSlide),i.currentLeft=null===i.swipeLeft?g:i.swipeLeft,i.options.infinite===!1&&i.options.centerMode===!1&&(0>a||a>i.getDotCount()*i.options.slidesToScroll)?void(i.options.fade===!1&&(d=i.currentSlide,c!==!0?i.animateSlide(g,function(){i.postSlide(d)}):i.postSlide(d))):i.options.infinite===!1&&i.options.centerMode===!0&&(0>a||a>i.slideCount-i.options.slidesToScroll)?void(i.options.fade===!1&&(d=i.currentSlide,c!==!0?i.animateSlide(g,function(){i.postSlide(d)}):i.postSlide(d))):(i.options.autoplay&&clearInterval(i.autoPlayTimer),e=0>d?i.slideCount%i.options.slidesToScroll!==0?i.slideCount-i.slideCount%i.options.slidesToScroll:i.slideCount+d:d>=i.slideCount?i.slideCount%i.options.slidesToScroll!==0?0:d-i.slideCount:d,i.animating=!0,i.$slider.trigger("beforeChange",[i,i.currentSlide,e]),f=i.currentSlide,i.currentSlide=e,i.setSlideClasses(i.currentSlide),i.options.asNavFor&&(j=i.getNavTarget(),j=j.slick("getSlick"),j.slideCount<=j.options.slidesToShow&&j.setSlideClasses(i.currentSlide)),i.updateDots(),i.updateArrows(),i.options.fade===!0?(c!==!0?(i.fadeSlideOut(f),i.fadeSlide(e,function(){i.postSlide(e)})):i.postSlide(e),void i.animateHeight()):void(c!==!0?i.animateSlide(h,function(){i.postSlide(e)}):i.postSlide(e))))},b.prototype.startLoad=function(){var a=this;a.options.arrows===!0&&a.slideCount>a.options.slidesToShow&&(a.$prevArrow.hide(),a.$nextArrow.hide()),a.options.dots===!0&&a.slideCount>a.options.slidesToShow&&a.$dots.hide(),a.$slider.addClass("slick-loading")},b.prototype.swipeDirection=function(){var a,b,c,d,e=this;return a=e.touchObject.startX-e.touchObject.curX,b=e.touchObject.startY-e.touchObject.curY,c=Math.atan2(b,a),d=Math.round(180*c/Math.PI),0>d&&(d=360-Math.abs(d)),45>=d&&d>=0?e.options.rtl===!1?"left":"right":360>=d&&d>=315?e.options.rtl===!1?"left":"right":d>=135&&225>=d?e.options.rtl===!1?"right":"left":e.options.verticalSwiping===!0?d>=35&&135>=d?"down":"up":"vertical"},b.prototype.swipeEnd=function(a){var c,d,b=this;if(b.dragging=!1,b.interrupted=!1,b.shouldClick=b.touchObject.swipeLength>10?!1:!0,void 0===b.touchObject.curX)return!1;if(b.touchObject.edgeHit===!0&&b.$slider.trigger("edge",[b,b.swipeDirection()]),b.touchObject.swipeLength>=b.touchObject.minSwipe){switch(d=b.swipeDirection()){case"left":case"down":c=b.options.swipeToSlide?b.checkNavigable(b.currentSlide+b.getSlideCount()):b.currentSlide+b.getSlideCount(),b.currentDirection=0;break;case"right":case"up":c=b.options.swipeToSlide?b.checkNavigable(b.currentSlide-b.getSlideCount()):b.currentSlide-b.getSlideCount(),b.currentDirection=1}"vertical"!=d&&(b.slideHandler(c),b.touchObject={},b.$slider.trigger("swipe",[b,d]))}else b.touchObject.startX!==b.touchObject.curX&&(b.slideHandler(b.currentSlide),b.touchObject={})},b.prototype.swipeHandler=function(a){var b=this;if(!(b.options.swipe===!1||"ontouchend"in document&&b.options.swipe===!1||b.options.draggable===!1&&-1!==a.type.indexOf("mouse")))switch(b.touchObject.fingerCount=a.originalEvent&&void 0!==a.originalEvent.touches?a.originalEvent.touches.length:1,b.touchObject.minSwipe=b.listWidth/b.options.touchThreshold,b.options.verticalSwiping===!0&&(b.touchObject.minSwipe=b.listHeight/b.options.touchThreshold),a.data.action){case"start":b.swipeStart(a);break;case"move":b.swipeMove(a);break;case"end":b.swipeEnd(a)}},b.prototype.swipeMove=function(a){var d,e,f,g,h,b=this;return h=void 0!==a.originalEvent?a.originalEvent.touches:null,!b.dragging||h&&1!==h.length?!1:(d=b.getLeft(b.currentSlide),b.touchObject.curX=void 0!==h?h[0].pageX:a.clientX,b.touchObject.curY=void 0!==h?h[0].pageY:a.clientY,b.touchObject.swipeLength=Math.round(Math.sqrt(Math.pow(b.touchObject.curX-b.touchObject.startX,2))),b.options.verticalSwiping===!0&&(b.touchObject.swipeLength=Math.round(Math.sqrt(Math.pow(b.touchObject.curY-b.touchObject.startY,2)))),e=b.swipeDirection(),"vertical"!==e?(void 0!==a.originalEvent&&b.touchObject.swipeLength>4&&a.preventDefault(),g=(b.options.rtl===!1?1:-1)*(b.touchObject.curX>b.touchObject.startX?1:-1),b.options.verticalSwiping===!0&&(g=b.touchObject.curY>b.touchObject.startY?1:-1),f=b.touchObject.swipeLength,b.touchObject.edgeHit=!1,b.options.infinite===!1&&(0===b.currentSlide&&"right"===e||b.currentSlide>=b.getDotCount()&&"left"===e)&&(f=b.touchObject.swipeLength*b.options.edgeFriction,b.touchObject.edgeHit=!0),b.options.vertical===!1?b.swipeLeft=d+f*g:b.swipeLeft=d+f*(b.$list.height()/b.listWidth)*g,b.options.verticalSwiping===!0&&(b.swipeLeft=d+f*g),b.options.fade===!0||b.options.touchMove===!1?!1:b.animating===!0?(b.swipeLeft=null,!1):void b.setCSS(b.swipeLeft)):void 0)},b.prototype.swipeStart=function(a){var c,b=this;return b.interrupted=!0,1!==b.touchObject.fingerCount||b.slideCount<=b.options.slidesToShow?(b.touchObject={},!1):(void 0!==a.originalEvent&&void 0!==a.originalEvent.touches&&(c=a.originalEvent.touches[0]),b.touchObject.startX=b.touchObject.curX=void 0!==c?c.pageX:a.clientX,b.touchObject.startY=b.touchObject.curY=void 0!==c?c.pageY:a.clientY,void(b.dragging=!0))},b.prototype.unfilterSlides=b.prototype.slickUnfilter=function(){var a=this;null!==a.$slidesCache&&(a.unload(),a.$slideTrack.children(this.options.slide).detach(),a.$slidesCache.appendTo(a.$slideTrack),a.reinit())},b.prototype.unload=function(){var b=this;a(".slick-cloned",b.$slider).remove(),b.$dots&&b.$dots.remove(),b.$prevArrow&&b.htmlExpr.test(b.options.prevArrow)&&b.$prevArrow.remove(),b.$nextArrow&&b.htmlExpr.test(b.options.nextArrow)&&b.$nextArrow.remove(),b.$slides.removeClass("slick-slide slick-active slick-visible slick-current").attr("aria-hidden","true").css("width","")},b.prototype.unslick=function(a){var b=this;b.$slider.trigger("unslick",[b,a]),b.destroy()},b.prototype.updateArrows=function(){var b,a=this;b=Math.floor(a.options.slidesToShow/2),a.options.arrows===!0&&a.slideCount>a.options.slidesToShow&&!a.options.infinite&&(a.$prevArrow.removeClass("slick-disabled").attr("aria-disabled","false"),a.$nextArrow.removeClass("slick-disabled").attr("aria-disabled","false"),0===a.currentSlide?(a.$prevArrow.addClass("slick-disabled").attr("aria-disabled","true"),a.$nextArrow.removeClass("slick-disabled").attr("aria-disabled","false")):a.currentSlide>=a.slideCount-a.options.slidesToShow&&a.options.centerMode===!1?(a.$nextArrow.addClass("slick-disabled").attr("aria-disabled","true"),a.$prevArrow.removeClass("slick-disabled").attr("aria-disabled","false")):a.currentSlide>=a.slideCount-1&&a.options.centerMode===!0&&(a.$nextArrow.addClass("slick-disabled").attr("aria-disabled","true"),a.$prevArrow.removeClass("slick-disabled").attr("aria-disabled","false")))},b.prototype.updateDots=function(){var a=this;null!==a.$dots&&(a.$dots.find("li").removeClass("slick-active").attr("aria-hidden","true"),a.$dots.find("li").eq(Math.floor(a.currentSlide/a.options.slidesToScroll)).addClass("slick-active").attr("aria-hidden","false"))},b.prototype.visibility=function(){var a=this;a.options.autoplay&&(document[a.hidden]?a.interrupted=!0:a.interrupted=!1)},a.fn.slick=function(){var f,g,a=this,c=arguments[0],d=Array.prototype.slice.call(arguments,1),e=a.length;for(f=0;e>f;f++)if("object"==typeof c||"undefined"==typeof c?a[f].slick=new b(a[f],c):g=a[f].slick[c].apply(a[f].slick,d),"undefined"!=typeof g)return g;return a}});

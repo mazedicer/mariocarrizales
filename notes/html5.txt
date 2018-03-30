@@ -1,0 +1,165 @@
+HTML5 API
+
+DataTranster Object
+
+	Properties:
+		
+		dropEffect (string): none, copy, link, and move. Allowed by the effectAllowed attribute
+		
+		affectAllowed (string): none, copy, copyLink, copyMove, linkMove, move, all, uninitialized
+				
+			none: the item can't be dropped
+				
+			copy: make a copy of source at new location
+				
+			link: a link to the source at new location
+				
+			copyLink: copy or link operation is ok
+				
+			linkMove: link or move operation is ok
+				
+			all: all operations are ok
+				
+			uninitialized: default if effect has not been set which is all
+				
+		files (FileList): Contains a list of all the local files available on the data transfer.
+		
+			file properties:
+
+				files[i].name: name of file
+				
+				files[i].size: size of file
+				
+			file methods:
+				
+				file.item(index): returns a File obj at index
+				
+		types (StringList): Returns a DOMStringList listing the formats that were set in the dragstart event. In addition, if any files are being dragged, then one of the types will be the string “Files”.
+		
+	Methods:
+
+		addElement(element): Adds the given element to the list of elements used to render the drag feedback. It will affect which node the drag and dragend events are fired at. The default target is the node that was dragged.
+		
+		clearData([format]): Removes the data of the specified formats. Removes all data if the argument is omitted.
+		
+		getData(format): Returns the specified data. If there is no such data, returns the empty string.
+		
+		setData(format, data): Set the data for a given type. If data for the type does not exist, it is added at the end, such that the last item in the types list will be the new format. If data for the type already exists, the existing data is replaced in the same position. That is, the order of the types list is not changed when replacing data of the same type.
+		
+		setDragImage(element, x, y): If the node is an HTML img element, an HTML canvas element or a XUL image element, the image data is used. Otherwise, image should be a visible node and the drag image will be created from this. If image is null, any custom drag image is cleared and the default is used instead.
+		
+/////////////////////////////////////////////////////////////////////////
+
+TOUCH
+
+The following events can be attached to any element on the page and the event object will contain touch point data:
+
+	element.addEventListener()
+	
+	document.body.addEventListener('touchstart', function(e){}, false)
+
+touchstart: user makes contact with touch surface
+
+touchmove: user moves touch point
+
+touchend: user removes a touch point from the surface
+
+touchenter: touch point enters the bound-to element
+
+touchleave: touch point leaves bound-to element
+
+touchcancel: touch point no longer registers on the surface
+
+Event Object properties during touch
+
+changedTouches: list of touch objects
+
+	var touchobj = e.changedTouches[0] 
+	// reference first touch point (ie: first finger)
+	startx = parseInt(touchobj.clientX) 
+	// get x position of touch point relative to left edge of browser
+	statusdiv.innerHTML = 'Status: touchstart<br /> ClientX: ' + startx + 'px'
+	e.preventDefault()
+	//prevents scrolling of the window
+
+targetTouches: touch points in the same target element
+	
+	ex. touchstart is bound to DIV, targetTouches will only contain fingers /touches made inside that div
+	
+	length: get number ot touches/fingers
+	
+	targetTouches[]: list of touches
+	
+touches: all touches / finger in contact with the touch surface
+
+type: event that triggered event object, such as touchstart, touchmove, etc.
+
+target: target element of the touches associated with event
+
+	var touchlist = e.touches
+	for (var i=0; i<touchlist.length; i++){ 
+		// loop through all touch points 		
+		currently in contact with surface
+		//do something with each Touch object (point)
+	}
+
+Touch Object
+
+properties - 
+
+	identifier - index
+	
+	screenX - x coordinate of touch point relative to left edge of screen
+	
+	screenY - y coordinate of touch point relative to top edge of screen
+	
+	clientX	- as screenX but viewport (does not include scroll offsets)
+	
+	clientY - as screenY but viewport (does not include scroll offsets)
+
+	pageX - as screenX but viewport (include scroll offsets)
+	
+	pageY - as screenY but viewport (include scroll offsets)
+	
+	radiusX - touching area (finger, stylus) on the x-axis
+	
+	radiusY - same as radiusY on the y-axis
+	
+	rotationAngle - angle(degrees)of touch area being rotated clockwise
+	
+	force - force of touch point 0 = no force, 1 = force
+	
+	target - element touch point landed on not necessary the element touch event was bonded-on
+		
+		In the following example:
+		"this" always returns BODY
+		touchObj.target returns element finger/touch landed on a DIV, SPAN, etc inside the BODY
+
+		document.body.addEventListener('touchstart', function(e){
+		 var touchobj = e.changedTouches[0]
+		 console.log(this.tagName) // returns BODY
+		 console.log(touchobj.target) // returns element touch point landed on
+		}, false)
+
+Furthermore
+
+Touches: list of touch points on the surface
+
+changedTouches: list of touches in an event such as touchmove because Touches will not know which touch points are moving
+
+targetTouches: touch points on the surface and started on the bound-to event, say a DIV, SPAN, etc.
+
+When I put a finger down, all three lists will have the same information. It will be in changedTouches because putting the finger down is what caused the event
+
+When I put a second finger down, touches will have two items, one for each finger. targetTouches will have two items only if the finger was placed in the same node as the first finger. changedTouches will have the information related to the second finger, because it’s what caused the event
+
+If I put two fingers down at exactly the same time, it’s possible to have two items in changedTouches, one for each finger
+
+If I move my fingers, the only list that will change is changedTouches and will contain information related to as many fingers as have moved (at least one).
+
+When I lift a finger, it will be removed from touches, targetTouches and will appear in changedTouches since it’s what caused the event
+
+Removing my last finger will leave touches and targetTouches empty, and changedTouches will contain information for the last finger
+
+
+	

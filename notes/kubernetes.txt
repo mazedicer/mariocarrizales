@@ -1,0 +1,266 @@
+Kubernetes 
+cluster
+Container orchestrator
+	-Master Node
+		-The API Server: allows interaction
+			-etcd : simple key:value store, used as database to store cluster data such as job schedule, pod details,
+				state info, etc.
+			-kubectl : cli for  kubernetes to interact with the master node 
+				-kubeconfig
+			-Work Nodes : where applications operate (Docker images). Communicate back with the master node handled by the kubelet process, executes pod containers, mounts pod volumes, aware of pod/node states, reports back to the 
+				master.
+			-Kube-proxy process : network proxy, load balancer for the service on a single work node. 
+				Handles network routing for TCP/UDP packets, connection forwarding.
+			-Docker Daemon : allows you to run containers inside pods inside nodes, containers share storage, linux
+				namespace, ip address, etc.
+		-Scheduler: watches created pods who do not have a node assigned yet and assignes the pod to a node 
+		-Controller Manager: threads that run tasks in a cluster. Roles compiled into a single binary.
+			-Node controller(worker states)
+			-Replication controller(maintains the correct number of pods for the replicated controllers)
+			-EndPoint controller joins services and pods together
+			-Service account and token controllers handle access management
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+Nodes
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+Can be a physical computer or virtual machine
+Requires: 1. Kubelet 2. Container tooling (Docker) 3. kube-proxy 4. Supervisord(restarts components)
+
+Minikube
+Light Kubernetes implementation that creates a VM on your local machine
+Deploys simple cluster containing only one node 
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+Pods
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+Simplest unit that represents one running process on your cluster.
+One single unit of deployments
+Ephemeral, disposable
+Create, deploy, delete.			
+	contains:
+		-Docker application container 
+		-Storage resources
+		-unique network IP
+		-option
+States: pending,running,succeeded, failed,  crashloopbackoff
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+Controllers 
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+Reliability, Scaling, Load Balancing 
+ReplicaSet controller: ensures that specified # of replicas for a pod are running at all times
+Deployment controller: provides declarative updates for pods and ReplicaSets described in a .yml file
+	-pod management : ReplicaSets allows to deploy a number of pods, and check their status as a single unit 
+	-scaling : ReplicaSet scale out the pods, and allows for the deployment to handle more traffic, pod updates and 
+		rollbacks
+	-pause and resume: pause deployment, make changes, resume deployment 
+DaemonSets controller: ensures that all nodes run a copy of a specific pod 
+	As nodes are added/removed from cluser, it will add/removed required pods
+Jobs : supervisor process for pods carrying out batch jobs to completion
+	Run as a cron-job 
+Service : network connectivity allows communication between deployment pods 
+	e.g. frontend pod -> backend service -> backend pods 
+	Internal: IP within the cluster 
+	External: node ip, nodePort
+	Load balancer: expose app to the internet 
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+Labels, selectors, namespaces
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------	
+Key:value pairs attached to objects such as pods
+	e.g. "release":"stable", "environment":"dev"
+Selectors: =, !=, IN, NOTIN, EXISTS
+Kubectl
+Namespaces: allows teams to access resources, with accountability, divide cluster resoruces
+		provide scope for names
+		e.g. cart team, catalog team 
+		default namespace when you launch kubernetes
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+Kubelet 
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------	
+communication with API server to see if pods have been assigned to nodes 
+executes pod containers via a container engine 
+mounts and runs pod volumes and secrets 
+executes health checks to id pod/node status 
+makes sure the podspect(yaml file sets provided by the kube-apiserver) and ensures the containers described are 
+	running and healthy 
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+kube-proxy 
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------	
+user space mode
+iptables mode 
+ipvs mode 
+Kube-proxy watches the API server for the addition and removal of services 
+For each new service, kube-proxy opens a randomly chosen port on the local node 
+connections made to the chosen port are proxied to one of the corresponding back-end pods 
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+Install
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------	
+MAC 
+> docker version
+Install Virtual Box 
+Install Kubectl with the curl command 
+chmod +x ./kubectl 
+sudo mv ./kubectl /usr/local/bin/kubectl 
+> kubectl version 
+Install Minikube with the curl command && +x minikube && sudo mv /usr/local/bin/
+> minikube version 
+
+PC
+PowerShell
+> docker version 
+Install HyperV
+in Virtual Switch, create Minikube
+in Network Sharing > Ethernet > Properties > Sharing(tab) > Internet connection sharing > share > select Minikube 
+Install Kubernetes kubectl in C:\Kube
+Install Minikube in C:\Kube 
+Add to Environment Variables: kube, and add to path ;%KUBE
+> cd C:\kube 
+C:\kube> minikube version 
+C:\kube> kubectl version 
+C:\kube> minikube start --kubernetes-version="v1.8.0" --vm-driver="hyperv" --hyperv-virtual-switch="Minikube"
+> kubectl get pods 
+> minikube stop 
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+Running an application 
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------	
+> minikube start 
+> virtualbox
+> kubectl get nodes 
+NAME:minikube 
+STATUS: Ready
+ROLES: <none>
+AGE: 31s 
+VERSION: v1.8.0
+
+run deployment called hw 
+> kubectl run hw --image=mario/helloworld --port=80
+return deployments 
+> kubectl get deployments 
+return replicasets 
+> kubectl get rs 
+return pods 
+> kubectl get pods 
+> kubectl expose deployment hw --type=NodePort
+service "hw" exposed 
+> kubectl get services 
+NAME: hw 
+TYPE: NodePort 
+CLUSTER-IP: 10.0.0.252
+EXTERNAL-IP: <none>
+PORT(S): 80:32611/TCP 
+AGE: 6s 
+
+open helloworld in browser 
+> minikube service hw 
+
+return everything deployments, replica sets, pods, services 
+deploy/hw 
+rs/hw-669bccbddc
+po/hw-669bccbddc-67w72
+svc/hw 
+> kubectl get all 
+
+show deployment yaml file 
+> kubectl get deploy/hw -o yaml 
+
+show services 
+> kubectl get services 
+
+create deployment and service together 
+> kubectl create -f hw-all.yml 
+
+scale replica sets to run 3 pods 
+> kubectl scale --replicas=3 deploy/hw 
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+Labels 
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------	
+can be used for services, deployments, pods, etc. 
+> kubectl get pods --show-labels
+
+re-lable
+> kubectl label po/hw app=helloworldapp --overwrite
+pod "hw" labeled 
+> kubectl get pods --show-labels
+
+delete label 
+> kubectl label pod/hw app-
+
+search by labels with selectors 
+create pod with labels 
+> kubectl create -f sample-infrastructure-with-labels.yml 
+> kubectl get pods 
+> kubectl get pods --show-labels
+
+return pods in production 
+> kubectl get pods --selector env=production
+
+return dev lead 
+> kubectl get pods --selector dev-lead=mario 
+
+search multiple labels using =, !=
+> kubectl get pods --selector dev-lead=mario, env!=staging 
+
+search using IN 
+-l = --selector  
+> kubectl get pods -l 'release-version in (1.0,2.0)'
+
+delete by label mario 
+> kubectl delete pods -l dev-lead=mario 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

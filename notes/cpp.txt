@@ -1,0 +1,576 @@
+//Compilers
+//GNU C/C++ compiler
+// .cpp, .cp
+
+//libraries
+/* # target pre-processor
+namespace std features of the c++ standard library
+*/
+#include <iostream>
+using namespace std;
+
+//starting function
+int main(){
+	//code
+	return 0;
+}
+
+//Printing text
+cout << "text" << endl;
+//input text from user
+int num;
+cin >> num;
+
+//Variables
+/* case-sensitive
+<type: int,string> <name> = <value>; */
+
+////////////////////////////////////////////////////
+//CONDITIONALS & LOOPS
+////////////////////////////////////////////////////
+/* very much like javascript */
+
+////////////////////////////////////////////////////
+//DATA TYPES, ARRAYS, POINTERS
+////////////////////////////////////////////////////
+/* signed : hold negative and positive numbers
+unsigned : hold only positive numbers 
+short : half of default size
+long : twice default size
+float: 4 bytes
+double: 8 bytes
+long double : double(8 byte) or 16 bytes  
+char : 1 byte, ASCII in single quotes
+char test = 'S';
+If a Boolean value is assigned to an integer, true becomes 
+1 and false becomes 0.
+If an integer value is assigned to a Boolean, 
+0 becomes false and any value that has a non-zero value 
+becomes true.
+////////////////////////////////////////////////////
+//ARRAYS
+////////////////////////////////////////////////////
+/* holds variables of the same type */
+int arr[5];
+int arrb[5] = {0,1,2,3,4};
+int arr[] = {0,1,2,3,4};
+arr[2] = 11;
+//multi-dimensional
+int arr[3][4];
+//array of 2 rows, 3 columns
+int x[2][3] = {
+  {2, 3, 4}, // 1st row
+  {8, 9, 10} // 2nd row
+};
+cout << x[0][2] //4
+////////////////////////////////////////////////////
+//POINTERS
+////////////////////////////////////////////////////
+/* & access address */
+int *ip;  // pointer to an integer
+double *dp;   // pointer to a double
+float *fp;  // pointer to a float
+char *ch;  // pointer to a character
+int score = 5;
+int *scorePtr;
+scorePtr = &score;
+cout << scorePtr << endl; //Outputs "0x29fee8"
+cout << *scorePtr << endl; //Outputs 5
+////////////////////////////////////////////////////
+//MEMORY
+////////////////////////////////////////////////////
+/* Stack : local variables 
+Heap : unused program memory */
+// allocates memory for storing integers on Heap
+// and returns the memory address 
+new int; 
+//example
+int *p = new int;
+*p = 5;
+/* The pointer p is stored in the stack as a local 
+variable, and holds the heap's allocated address as 
+its value. The value of 5 is stored at that address in 
+the heap. */
+//free up memory from the heap  
+delete pointer;
+//avoid dangling pointers (pointers point to non-existent
+//memory locations
+int *pointer = NULL;
+//example
+int *p = NULL; // Pointer initialized with null
+p = new int[20]; // Request memory
+delete [] p; // Delete array pointed to by p
+////////////////////////////////////////////////////
+//FUNCTIONS
+////////////////////////////////////////////////////
+/* <return type> <function name>( <type> <name>, ... ){
+	body
+}*/
+void printSomething(int x, int y=10){
+	cout << x << " is parameter int\n\n";
+}
+int main(){
+	printSomething();
+	return 0;
+}
+//overloading functions must differ in argument type
+//and/or number of arguments NOT return type 
+void printNumber(int a){
+	cout << a;
+}
+void printNumber(float a){
+	cout << a;
+}
+//pass by value
+void myFunction(int x){
+	x=100;
+}
+int main(){
+	int var=20;
+	myFunction(var);
+	cout << var;
+}
+//outputs 20 
+//pass by reference 
+void myFunction(int *x){
+	*x=100;
+}
+int main(){
+	int var=20;
+	myFunction(&var);
+	cout << var;
+}
+//outputs 100
+////////////////////////////////////////////////////
+//CLASSES & OBJECTS
+////////////////////////////////////////////////////
+/*the following three dimensions describe any object 
+in object oriented programming: 
+identity, attributes, behavior
+Access specifiers:
+public: accessible from anywhere
+private: accessible from within the class only 
+protected: accessible from derived classes*/
+#include <iostream>
+#include <string>
+using namespace std;
+class myClass {
+	private:
+		string name;
+	public:
+		//constructor has same name as the class 
+		void myClass(string x){
+			setName(x);
+		}
+		void setName(string x){
+			name=x;
+		}
+		void getName(){
+			return name;
+		}
+};
+int main(){
+	myClass my_class("John");
+	//my_class.setName("John");
+	cout << my_class.getName();
+	return 0;
+}
+//outputs John 
+//header & implementation files 
+// MyClass.h
+#ifndef MYCLASS_H
+#define MYCLASS_H
+class MyClass
+{
+  public:
+    MyClass();
+  protected:
+  private:
+};
+
+#endif // MYCLASS_H
+//MyClass.cpp 
+#include "MyClass.h"
+MyClass::MyClass()
+{
+   //code
+}
+/* :: scope resolution operator used for the 
+constructor definition
+#ifndef : if not defined 
+#define : define 
+avoid re-adding the class 
+#endif : end if statement */
+//Destructor
+class MyClass {
+  public: 
+	//destructor for releasing resources
+    ~MyClass() {
+     // some code
+    }
+};
+//example header file with destructor 
+class MyClass{
+	private:
+	public:
+		MyClass();
+		~MyClass();
+		void myPrint();
+};
+//implementation file 
+#include "MyClass.h"
+#include <iostream>
+using namespace std;
+MyClass::MyClass(){
+	cout << "Constructor" << endl;
+}
+MyClass::~MyClass(){
+	cout << "Destructor" << endl;
+}
+void MyClass::myPrint(){
+	cout << "Hello" << endl;
+}
+//main file
+#include <iostream>
+#include "MyClass.h"
+using namespace std;
+int main(){
+	MyClass my_class;
+	my_class.myPrint();
+	return 0;
+}
+/*outputs 
+Constructor
+Destructor
+Hello 
+*/
+/*Defining a destructor is not mandatory; 
+if you don't need one, you don't have to define one.
+cannot take parameters and cannot be overloaded.*/
+//with pointer use -> (arrow) NOT . (dot)
+MyClass my_class;
+MyClass *my_class_pointer=&my_class;
+my_class_pointer->myPrint();
+//constants 
+//All constant variables must be initialized at the 
+//time of their creation
+//Defining constant objects and functions ensures that 
+//corresponding data members cannot be unexpectedly 
+//modified.
+const MyClass my_class;
+//When you've used const to declare an object, 
+//you can't change its data members during the 
+//object's lifetime
+/*Only non-const objects can call non-const functions
+A constant object can't call regular functions. 
+Hence, for a constant object to work you need a 
+constant function*/
+//MyClass.h file 
+class MyClass{
+	public:
+		void myPrint() const;
+};
+//MyClass.cpp file 
+#include "MyClass.h"
+#include <iostream>
+using namespace std;
+void MyClass::myPrint() const {
+	cout << "Hello" << endl;
+}
+int main(){
+	const MyClass my_class;
+	my_class.myPrint();
+}
+//outputs Hello 
+//member initializer list 
+class MyClass{
+	private:
+		int reg_var;
+		const int const_var;
+	public:
+		MyClass(int a,int b)
+		:reg_var(a),const_var(b){}
+//MyClass.h file
+class MyClass{
+	private:
+		int reg_var;
+		const int const_var;
+	public:
+		MyClass(int a,int b);
+};
+//MyClass.cpp file 
+MyClass::MyClass(int a,int b)
+	:reg_var(a),const_var(b){
+		cout << reg_var << endl;
+		cout << const_var << endl;
+	}
+int main(){
+	MyClass my_class(42,10);
+}
+/*outputs
+42
+10*/
+//composition
+//object composition involves using classes as 
+//member variables in other classes
+//Birthday.h file 
+class Birthday{
+	private:
+		int month;
+		int day;
+		int year;
+	public:
+		Birthday(int m,int d,int y)
+		:month(m),day(d),year(y) {}
+		void printDate(){
+			cout << month << "/" << day 
+			<< "/" << year << endl;
+		}
+};
+//Person. file 
+#include <string>
+#include "Birthday.h"
+class Person{
+	private:
+		string name;
+		Birthday birthday;
+	public:
+		Person(string n,Birthday b)
+		:name(n),birthday(b){}
+		void printInfo(){
+			cout << name << endl;
+			birthday.printDate();
+		}
+};
+//main.cpp file
+#include <iostream>
+#include "Birthday.h"
+#include "Person.h"
+using namespace std;
+int main(){
+	Birthday my_birthday(4,27,1978);
+	Person me("Mario", my_birthday);
+	me.printInfo();
+}
+/*output 
+Mario 
+4/27/1978
+*/
+//friend 
+class MyClass {
+ public:
+  MyClass() {
+   regVar = 0;
+  }
+ private:
+  int regVar;
+  //this function is non-member function/external
+  //function 
+  friend void someFunc(MyClass &obj);
+};
+//the function has access to private class variables 
+void someFunc(MyClass &obj) {
+  obj.regVar = 42;
+  cout << obj.regVar;
+}
+//this 
+class MyClass {
+ public:
+  MyClass(int a) : var(a)
+  { }
+  void printInfo() {
+   cout << var<<endl;
+   cout << this->var<<endl;
+   cout << (*this).var<<endl; 
+  }
+ private:
+  int var;
+};
+/*output the same result */
+//operator overloading 
+class MyClass {
+ public:
+  int var;
+  MyClass() {}
+  MyClass(int a)
+  : var(a) {}
+  MyClass operator+(MyClass &obj) {
+   MyClass res;
+   res.var=this->var+obj.var;
+   return res; 
+  }
+};
+int main() {
+  MyClass obj1(12), obj2(55);
+  MyClass res = obj1+obj2;
+  cout << res.var;
+}
+//Outputs 67
+////////////////////////////////////////////////////
+//INHERITANCE
+////////////////////////////////////////////////////
+/*The Base class is specified using a colon and an 
+access specifier: public means, that all public 
+members of the base class are public in the derived 
+class. 
+Protected Inheritance: public and protected members 
+of the base class become protected members of the 
+derived class.
+Private Inheritance: public and protected members 
+of the base class become private members of the 
+derived class.
+A derived class inherits all base class methods with 
+the following exceptions:
+- Constructors, destructors
+- Overloaded operators
+- The friend functions
+A class can be derived from multiple classes by 
+specifying the base classes in a comma-separated list. 
+For example: class Daughter: public Mother, 
+public Father*/
+class Daughter:public Mother {
+	public:
+		Daughter(){};
+};
+//polymorphism
+//a single function can have a number of different 
+//implementations.
+class Enemy{
+	protected:
+		int attack_power;
+	public:
+		virtual void attack(){}
+		void setAttackPower(int a){
+			attack_power=a;
+		}
+};
+class Ninja:public Enemy{
+	public:
+		void attack(){
+			cout << "Ninja!" << attack_power << endl;
+		}
+};
+class Monster:public Enemy{
+	public:
+		void attack(){
+			cout << "Monster!" << attack_power << endl;
+		}
+};
+//Ninja and Monster inherit from Enemy, so all Ninja 
+//and Monster objects are Enemy objects. This allows 
+//us to do the following:
+int main(){
+	Ninja enemy_ninja;
+	Monster enemy_monster;
+	Enemy *enemy_1=&enemy_ninja;
+	Enemy *enemy_2=&enemy_monster;
+	enemy_1->setAttackPower(10);
+	enemy_2->setAttackPower(20);
+	enemy_ninja.attack();
+	enemy_monster.attack();
+}
+/*output 
+Ninja! 10
+Monster! 20
+*/
+//virtual functions 
+//Every derived class will override the virtual attack() 
+//function and have a separate implementation
+/*The virtual member functions without definition 
+are known as pure virtual functions. They basically 
+specify that the derived classes define that function 
+on their own.
+Every derived class inheriting from a class with a 
+pure virtual function must override that function. 
+You cannot create objects of the base class with a 
+pure virtual function.
+Running the following code will return an error:*/
+Enemy e; // Error
+
+class Enemy {
+	public:
+		virtual void attack() = 0;
+};
+/*These classes are called abstract. They are classes 
+that can only be used as base classes, and thus are 
+allowed to have pure virtual functions.
+You might think that an abstract base class is useless, 
+but it isn't. It can be used to create pointers and 
+take advantage of all its polymorphic abilities. 
+For example, you could write:*/
+Ninja n;
+Monster m;
+Enemy *e1 = &n;
+Enemy *e2 = &m;
+
+e1->attack();
+e2->attack();
+////////////////////////////////////////////////////
+//TEMPLATES
+////////////////////////////////////////////////////
+template <class T>
+T sum(T a, T b) {
+	return a+b;
+}
+int main() {
+    int x=7, y=15;
+    cout << sum(x, y) << endl;
+}
+// Outputs 22
+template <class T, class U>
+T smaller(T a, U b) {
+	return (a < b ? a : b);
+}
+int main () {
+  int x=72;
+  double y=15.34;
+  cout << smaller(x, y) << endl;
+}
+// Outputs 15
+//classes 
+template <class T>
+class Pair {
+ private:
+  T first, second;
+ public:
+  Pair (T a, T b):
+   first(a), second(b){
+  }
+  T bigger();
+};
+template <class T>
+T Pair<T>::bigger() {
+  return (first>second ? first : second);
+}
+Pair <int> obj(11, 22);
+cout << obj.bigger();
+// Outputs 22
+Pair <double> obj(23.43, 5.68);
+cout << obj.bigger();
+// Outputs 23.43
+//specialization template 
+template <class T>
+class MyClass {
+	public:
+		MyClass (T x) {
+			cout <<x<<" -  not a char"<<endl;
+		}
+};
+template < >
+class MyClass<char> {
+	public:
+		MyClass (char x) {
+			cout <<x<<" is a char!"<<endl;
+		}
+};
+int main () {
+  MyClass<int> ob1(42);
+  MyClass<double> ob2(5.47);
+  MyClass<char> ob3('s');
+}
+/* Output: 
+42 - not a char
+5.47 - not a char
+s is a char!
+*/
+

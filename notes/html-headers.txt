@@ -1,0 +1,21 @@
+<?php
+//file transfer
+header('Content-Description: File Transfer'); 
+header('Content-Type: application/octet-stream'); 
+header('Content-Disposition: attachment; filename="FILENAME"'); 
+header('Content-Transfer-Encoding: binary'); 
+header('Expires: 0'); 
+header('Cache-Control: must-revalidate, post-check=0, pre-check=0'); 
+header('Pragma: public'); 
+header('Content-Length: ' . filesize("PATH/TO/FILE")); 
+ob_clean(); 
+flush(); 
+readfile(PATH/TO/FILE);      
+exit();  
+
+//example from w3school
+header("Content-type: application/pdf");
+// It will be called downloaded.pdf
+header("Content-Disposition: attachment; filename='downloaded.pdf'");
+// The PDF source is in original.pdf
+readfile("original.pdf");

@@ -1,0 +1,337 @@
+linux file system
+/ROOT
+  |_ /BIN
+	Essential Binaries/commands/utilities available to all users
+	CAT, CHGRP, CHMOD, CP, DATA, DD, DF, DMESG, ECHO, FALSE, HOSTNAME, KILL, LN,
+	LOGIN, LS, MKDIR, MKNOD, MORE, MOUNT,MV, PS, PWD, RM, RMDIF, SED, SH, STTY,
+	SU, SYNCH, TRUE, UMOUNT, UNAME
+
+  |_ /BOOT
+	Static Files of Boot Loader/boot up
+	KERNEL, SYSTEM.MAP, VMLINUZ, INITRD, GRUB, MODULE.INFO, BOOT
+
+  |_ /ETC
+	Host Specific System Config/apache servers/dhcp/fs table
+	CSH.LOGIN, EXPORTS, FSTAB, FTPUSERS, GATEWAYS, GETTYDEFS, GROUP, HOST.CONF
+	HOSTS, HOSTS.ALLOW, HOSTS.DENY, HOSTS.EQUIV, HOSTS.LPD, INETD.CONF, INITAB
+	ISSUE, LS.SO.CONF, MOTD, MTAB, MTOOLS, NETWORKS, PASSWD, PRINTCAP, PROFILE,
+	PROTOCOLS, RESOLV.CONF, RPC, SECURETTY, SERVICES, SHELLS, SYSLOG.CONF
+
+	|_ /OPT
+	   Config File for Addon Application Software
+
+	|_ /PROFILE
+	   a file with System wide script, read when logging in, global
+
+	|_ /SKEL
+	    a dir Skeleton directory, standard config files
+	    /public_html-files for personal web pages
+	    .bashrc-read each time a shell is started
+	    .vimrc-vi
+
+  |_ /USR
+	Shareable and readonly data, for all users, resource directory
+
+	|_ /LOCAL
+	|    Local Software
+	|   /BIN, /GAMES, /INCLUDE, /LIB, /MAN, /SBIN, /SHARE, /SRC
+	|
+	|_ /SHARE
+	|    Static Data Shareable Among All Architechtures
+	|	|
+	|	|_ /MAN
+	|	    Manual Pages
+	|	    /MAN1 (User Programs), /...2(System Calls), /3(lib functions)
+	|	    /4(special file), /5(file formats), /6(games), /7(misc),
+	|	    /8(system admin)
+	|	
+	|_ /BIN
+	|    Most User Commands
+	|
+	|_ /INCLUDE
+	|    Standard Include Files For 'C'prog.
+	|
+	|_ /LIB
+	|    OBJ, BIN, LIB, FILES FOR PROG. AND PACKAGES
+	|
+ 	|_ /SBIN
+	    NON Essential Binaries
+
+
+  |_ /VAR
+	Variable Data Files, install in seperate partition
+	/CACHE
+	    Application Cache Data
+	/LIB
+	    Variable state information remains after reboot
+	/YP
+	    Data for NIS Services
+	/LOCK
+	    Lock files for shared resources
+	/OPT
+	    Variable data of packages installed
+	/RUN
+	    Info of system since it was booted
+	/TMP
+	    Available for prog.
+	/SPOOL
+	    Data awaiting processing
+	    /LPD, /MQUEUE, /NEWS, /RWHO, /UUCP
+	/LOG
+	    Log files and dir
+	    LASTLOG, MESSAGES, WTMP
+
+  |_ /SBIN
+	System binaries/commands only for root
+	FASTBOOT, FASTHALT, FDISK, FSCK, GETTY, HALT, IFCONFIG, INIT, MKFS, MKSWAP,
+	REBOOT, ROUTE, SWAPON, SWAPOFF, UPDATE
+
+
+  |_ /TMP
+	Temporary files deleted on bootup
+
+  |_ /DEV
+	Location of special or device files [contains make dev]
+
+  |_ /HOME
+	Users home directories	
+	.xinitrc.template
+
+  |_ /LIB
+	Library and Kernel Modules/ similar to .dll files/share libraries
+
+  |_ /LIB64
+	Library and Kernel Modules/ similar to .dll files/share libraries
+
+  |_ /MNT
+	Mount files for temporary filesystems, for adding hard drives
+
+  |_ /OPT
+	Add-on application software/programs or software manuf install in this 
+	directory
+
+  |_ /ROOT
+	Home dir. for root users
+
+  |_ /SRV 
+	web server installs, www folder, ftp, samba
+
+  |_ /MEDIA
+	for removeable media
+
+  |_ /PROC 
+	system information
+
+  |_ /RUN 
+	running services,certificates
+
+  |_ /SYS 
+        provides information in the form of a tree structure on hardware buses,
+	hardware devices, active devices, and their drives
+-------------------------------------------------------------------------
+
+Read 4, Write 2, Execute 1, No Access 0
+
+sticky bit 1777
+
+777 = rwx on ugo, 664 = rw rw r
+
+----------------------------------------------------------------------------
+
+customize your shell
+
+edit the .bashrc
+  create shortcuts - alias dir='ls', alias cls='clear'
+
+Environment variables
+   view with env command
+Examples:
+   DOMAIN="google.com"
+   export DOMAIN
+   then DOMAIN will be in any new shell
+   echo $DOMAIN shows the value of the variable DOMAIN //google.com
+
+------------------------------------------------------------------------------
+
+LAMP Server install on open suse
+
+Applications > System tools > YaST > Software management > check apache2, example pages, modules, php5, phpmyadmin, php5-mysql driver, mysql-community-server, all php necessary mods.
+
+Applications > Accessories > GNOME Terminal
+su -
+ps -ef | grep httpd //verify if running
+apache2ctl configtest //test
+vi /etc/apache2/httpd.config //config file
+
+rcapache2 start //start apache
+
+-----------------------------------------------------------------------------
+
+mount
+
+sudo fdisk -l //lists disks and devices
+
+create a mount point //directory on your file system to use for the mount
+
+mkdir mount
+mkdir mount/thumb
+ls mount/thumb
+sudo mount -t auto /dev/sd1 /home/user/mount/thumb
+
+sudo umount mount/thumb //unmount
+
+-------------------------------------------------------------------------
+
+find command
+
+find / //root directory 
+find /home/user //search user
+find /x -name filename //search by name (case sensitive)
+find /x -iname filename // case insensitive
+
+---------------------------------------------------------------------------
+Linux installation
+
+
+partitions
+> select file system ext3
+
+dev/sda
+	Free
+
+/boot //system
+swap //virtual memory partition, swaping from hd to memory
+/var //Variable Data Files, program data, temp data files, if root crashes
+/home // user data to be saved if root crashes
+select free space and give it to root /
+
+Boot loader - select which system u want to boot
+
+GRUB - Gran unified boot loader
+
+Network Config
+eth0 DHCP
+get ip automatically or manually enter
+
+trusted devices eth0
+allowincoming www, ftp, ssh, dhcp, mail, skip telnet
+
+-----------------------------------------------------------------
+
+tty - teletype/terminal
+bash - standard linux shell
+GPL - general public license
+xvidtune - utility to configure the screen dimension
+lpr - command to submit a print job berkley3
+grep - search for files that contain certain patterns
+whoami - check user if root
+stdout - number assigned is 1
+vi dd -deletes line
+CIFS - implementation of smb over tcp/ip
+~/.bashrc //only file read when non-login shell is started
+KDM - default login manager for SLES
+
+/sbin/fdisk - modifies the partition
+
+/mnt/ used for integrating a file system
+
+Tab key helps complete commands from bash shell
+
+less - program that displays one screen of information at a time
+
+UNIX was rewritten in C
+
+head,tail commands show 10 lines
+
+Verbose = show kernel diagnostics messages during system startup
+
+/dev/ttyS0 - name of first serial port device file
+
+ssh host  - secure remote login
+
+nmap - for simple port scan more sutable than netcat
+
+pipe can hold 4 KB of unprocessed data
+
+kinternet = gui to dial to the internet
+
+Runlevel 5 - multiuser mode with network and display manager
+
+Kernel functions - I/O Control, Device Control, Process Mgmt
+
+apropos - command to search the man pages by keyword
+
+PAM - Pluggable Authentication Modules
+
+KDE - desktop standard for SLES 9
+
+Device files represent links between hardware components or device drivers in the kernel and the applications
+
+X-server config utility - xf86config
+X-server login screen can be relayed to remote host
+
+stderr is assigned 2
+
+.profile - user's private login script
+
+Actions > Log Out - quit GNOME
+
+/etc/fstab - make corresponding entries in this file to mount directories at startup and use mount -a to have the system read the changes
+
+/bin/dd = copy files byte-wise
+
+windows manager - specialized client applications
+
+export - turn shell var into environment var
+
+4096 - max characters a path can hold including slashes
+
+X-window system is called X11
+
+rcp - copy files from one machine to another
+
+tcpdump - diag tool to analyze data packets through a network interface connected to the network
+
+DISPLAY - env var store display name for your system
+
+~ tilde= shortcut to get to home directory of the user
+
+traceroute - follow route taken by an IP datagram to the given target host.
+
+BUGS - man pages that contain problems with the commands
+
+SYNOPSYS - man pages has the description of the command syntax
+
+~/.bash_profile - first user-level configuration file that bash tries to find
+
+unmount -f - unmount file systems that the kernel thinks are busy
+
+F2 - select graphical display mode for installation
+
+vmstat - analyze ststem performance
+
+YaST - place to install software in Linux
+
+bourne shell - /bin/sh
+
+_ underscore - seperation character between individual directory names
+
+bash -r - restricted
+mkfs - creates most FS
+mkfs.xfs -d agcount=4 -l size=32m /dev/hdc9
+command to create an optimized FS
+
+etc/security/limits.conf - conf file for the PAM, on the system usage by the user
+
+/etc/printcap - file contains info of every local or remote printer
+
+Set Group ID(SGID) - an s shows for group
+
+sudo mount -t xfs /mnt - t indicates file system type
+
+AES - Advance Encryption Standard - symmetrical key algorithm that ciphers a block length of 128 bits using a key length of 128, 192, or 256 bits. AES is reversible.
+
+route - modify IP routing table, --add add route, --del delete route, -gw gateway
+
+rpm -qc --dump //display info regarding the config files stored in a package
+

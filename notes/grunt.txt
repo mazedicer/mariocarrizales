@@ -1,0 +1,191 @@
+task runner
+
+cmd> npm install -g grunt-cli //installs command line interface globally
+
+cmd> cd Desktop/Demo 
+
+cmd> npm init //package.json file
+
+cmd> npm install grunt --save-dev
+
+/////////////////////////////////
+
+package.json
+
+{
+	"devDependencies": {
+		"grunt": "^9.4.5"
+	}
+}
+
+cmd> npm install grunt-contrib-uglify --save-dev 
+
+/////////////////////////////////
+
+package.json
+
+{
+	"devDependencies": {
+		"grunt": "^9.4.5",
+		"grunt-contrib-uglify": "^8.9.1"
+	}
+}
+
+cmd> npm install grunt-contrib-cssmin --save-dev 
+
+/////////////////////////////////
+
+package.json
+
+{
+	"devDependencies": {
+		"grunt": "^9.4.5",
+		"grunt-contrib-uglify": "^8.9.1",
+		"grunt-contrib-cssmin": "^8.9.1"
+	}
+}
+
+//Gruntfile.js is were you write the tasks in 
+//Gruntfile.js file in root
+
+module.exports = function( grunt ){
+
+	grunt.initConfig( {
+		//basic seting and info 
+		pkg: grunt.file.readJSON( 'package.json' ),
+		//configuration task cssmin 
+		cssmin: {
+			combine: {
+				files: {
+					'html/css/main.css': [ 
+						'html/css/1st.css',
+						'html/css/2nd.css'
+					]
+				}
+			}
+		}
+	} );
+	
+	//load plugin
+	
+	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
+	//register the default task - will run automatically when running grunt 
+	grunt.registerTask( 'default', [ 'cssmin', function(){
+		grunt.log.write( 'grunt is running' );
+	} ] );
+
+};
+
+cmd> grunt //will run tasks 
+
+//Watch changes
+
+//install:
+grunt-contrib-concat //merge files 
+grunt-contrib-watch //watch when files are changed and run tasks 
+
+//use watch with tasks such as cssmin, concat, etc.
+
+watch: {
+	js: {
+		files: [ 'js/**/*.js' ],
+		tasks: [ 'concat' ]
+	},
+	css: {
+		files: [ 'css/**/*.css' ],
+		tasks: [ 'concat' ]
+	}
+}
+
+grunt.registerTask( 'default', [ 'concat', 'watch' ] );
+
+///////////////////////////////////////////////////////
+//LESS TO CSS 
+///////////////////////////////////////////////////////
+cmd> npm install -D grunt-contrib-less
+//GruntFile.js 
+//this file you add tasks 
+module.exports = ( grunt )=>{
+	//grunt init configuration
+	grunt.initConfig({
+		//jshint task 
+		jshint: {
+			//directories and file types to operate on
+			files: [ "*.js", "lib/*.js", "test/*.js" ],
+			//setup options such as ES6 support
+			options: {
+				esnext: true, //ES6 support 
+				globals: { jQuery: true }
+			}
+		},
+		//less task 
+		less: {
+			production: {
+				files: {
+					'public/css/styles.css': [ 'less/*.less' ]
+				}
+			}
+		},
+		//watch task 
+		watch: {
+			css: {
+				files: [ 'less/*.less' ],
+				tasks: [ 'css' ]
+			},
+			scripts: {
+				files: [ "*.js", "lib/*.js", "test/*.js" ],
+				tasks: [ 'jshint' ]
+			}
+		}
+	});
+	//load tasks 
+	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
+	grunt.loadNpmTasks( 'grunt-contrib-less' );
+	grunt.loadNpmTasks( 'grunt-contrib-watch' );
+	//register less task  
+	grunt.registerTask( 'css', [ 'less' ] );
+	//register default tasks 
+	//this will run jshint and less tasks by default 
+	grunt.registerTask( 'default', [ 'jshint', 'css' ] );
+	
+};
+//run the css task 
+cmd>grunt css 
+//run jshint and css 
+cmd>grunt 
+//run grunt watch on new terminal 
+cmd>grunt watch 
+
+///////////////////////////////////////////////////////
+//AUTOMATION
+///////////////////////////////////////////////////////
+//in package.json scripts: {} object
+//start, install, test, publish pre-installed
+"scripts": {
+	"prestart": "grunt", //will start grunt first and then..
+	"start": "node app", //will start app.js file 
+	"predev": "grunt",
+	"dev": "open http://localhost:3000 & node-dev app & grunt watch"
+	}
+//in console 
+cmd>npm start //will run scripts 
+//running custom script dev 
+cmd>npm run dev 
+
+///////////////////////////////////////////////////////
+//DEBUG with node-inspector
+///////////////////////////////////////////////////////
+cmd>npm install -D node-inspector 
+//in package.json scripts add :
+"scripts": {
+	"predebug": "grunt",
+	//open another browser window with debugger 
+	"debug": "open http://localhost:3000 & open http://localhost:8080/debug?port=5858",
+	"postdebug": "node-inspector & node --debug app",
+	"prestart": "grunt", //will start grunt first and then..
+	"start": "node app", //will start app.js file 
+	"predev": "grunt",
+	"dev": "open http://localhost:3000 & node-dev app & grunt watch"
+}
+//run debug commmand
+cmd>npm debug 

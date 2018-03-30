@@ -1,0 +1,544 @@
+npm install -S pug
+
+//template.pug 
+p #{name}'s Pug source code! 
+
+//index.js 
+const pug = require( 'pug' );
+//compile the template.pug file 
+const compiledFunction = pug.compileFile( 'template.pug' );
+//render sent data 
+console.log(
+	compiledFunction( { name: 'Tim' } )
+);
+//<p>Tim's Pug source code!</p>
+
+/* pug.render() compile+render.
+Use cache option with render to avoid re-rendering.*/
+console.log(
+	pug.renderFile( 'template.pug', { name: 'Tim' } )
+)
+
+
+PLAIN TEXT
+
+	p this is plain old <em>text</em> content.
+
+PLAIN TEXT PIPED
+	
+	p 
+		| The pipe characer always goes first
+		| not counting indent.
+		
+////////////////////////////////////////////////
+//Tags 
+////////////////////////////////////////////////
+ul //start tag 
+  li Item A //indented tags get nested
+  li Item B
+  li Item C
+/*
+<ul>
+  <li>Item A</li>
+  <li>Item B</li>
+  <li>Item C</li>
+</ul>
+*/
+
+//Tags inline :
+a: img 
+//<a><img /></a>
+
+
+////////////////////////////////////////////////
+//Attributes 
+////////////////////////////////////////////////
+a( href='google.com' ) Google
+//<a href="google.com">Google</a>
+a( class='button', href='google.com' ) Google //commas are optional
+//<a class="button" href="google.com">Google</a>
+
+//Attributes multiline 
+input(
+	type='checkbox'
+	name='agreement'
+	checked 
+)
+//<input type="checkbox" name="agreement" checked="checked" />
+
+//Attributes in Angular2
+/* Use '' or "" to wrap a (click) is a function in Angular2 not attributes */
+div( class='div-class', (click)='play()' ) //will not work 
+div( class='div-class', '(click)'='play()' ) //will work 
+
+//Attributes unescaped 
+/* by default, all attributes are escaped to prevent cross site scripting.
+Use != (not equal) to unescape.*/
+div( escaped="<code>" ) //<div escaped="&lt;code&gt;></div>
+div( unescaped!="<code>" ) //<div unescaped="<code>"></div>
+
+//Attributes id 
+a#main-link //<a id="main-link"></a>
+/* no tag name will default to a div tag */
+#content //<div id="content"></div>
+
+//Attributes style 
+a( style={ color: 'red', background: 'green' } )
+//<a style="color:red;background:green;"></a>
+
+//Attributes class 
+/* no tag name will default to a div tag */
+.content //<div class="content"></div>
+a.button  //<a class="button"></a>
+- var classes = [ 'foo', 'bar', 'baz' ]
+a( class=classes )
+//<a class="foo bar baz"></a>
+//class can also be repeated
+a.bang( class=classes class=['bing'] )
+//<a class="bang foo bar baz bing"></a>
+
+//Attributes conditional classes 
+- var currentUrl = '/about'
+a( class={ active: currentUrl === '/' } href='/' ) Home
+//<a href="/">Home</a>
+a( class={ active: currentUrl === '/about' } href='/about' ) About
+//<a class="active" href="/about">About</a>
+
+//Attributes &attributes
+/* allows you to explode an object into an element's attributes */
+div#foo( data-bar='foo' )&attributes( { 'data-foo': 'bar' } )
+//<div id="foo" data-bar="foo" data-foo="bar"></div>
+
+//Javascript inline 
+- var auth = true 
+body( class=auth ? 'authed' : 'anon' )
+//<body class="auth"></body>
+
+////////////////////////////////////////////////
+//Case 
+////////////////////////////////////////////////
+/* can be combined with fallthrough, break */
+- var friends = 10
+case friends 
+	when 0
+		p you have no friends 
+	when 1
+		p you have a friend 
+	default 
+		p you have #{friends} friends 
+//<p>you have 10 firends</p>
+
+//case block expansion
+case friends 
+	when 0: p you have no friends 
+	when 1: p ...
+	default: p you have ...
+
+////////////////////////////////////////////////
+//Code 
+////////////////////////////////////////////////
+//code unbuffered -
+- for( var x = 0; x < 3; X++ )
+	li item
+/*
+<li>item</li>
+<li>item</li>
+<li>item</li>
+*/
+
+-
+	var list = [ "uno", "dos", "tres", "cuatro", "cinco" "seis" ]
+each item in list 
+	li= item 
+/*
+<li>uno</li>
+<li>dos</li>
+<li>tres</li>
+...
+*/
+
+//code buffered =
+p
+	= 'this code is <escaped>!'
+//<p>this code is &lt;escaped&gt;!</p>
+
+//code buffered with javascript inline 
+p= 'this code is ' + '<escaped>!'
+
+//code buffered unescaped !=
+p 
+	!= 'this code is <strong>not</strong> escaped!
+//<p>this code is <strong>not</strong> escaped!</p>
+
+////////////////////////////////////////////////
+//Comments 
+////////////////////////////////////////////////
+//just some paragraphs 
+p foo 
+p bar 
+/*
+<!-- just some paragraphs -->
+<p>foo</p>
+<p>bar</p>
+*/
+
+//no output  - 
+//- will not output within markup 
+p foo 
+p bar 
+/*
+<p>foo</p>
+<p>bar</p>
+*/
+//comments block 
+body
+	//
+		comments for your html readers.
+		use as much text as you want.
+/*
+<body>
+	<!-- comment sfor your html readers.
+		use as much text as you want. -->
+</body>
+*/
+////////////////////////////////////////////////
+//Conditionals 
+////////////////////////////////////////////////
+- var user = { description: 'foo bar baz' }
+- var auth = false 
+#user 
+	if user.description
+		h2.green Description
+		p.description= user.description
+	else if auth 
+		h2.blue Description
+		p.description.
+			User has no description,
+			why not add one...
+	else 
+		h2.red Description
+		p.description User has no description
+/*
+<div id="user">
+	<h2 class="gree">Description</h2>
+	<p class=description">foo bar baz</p>
+</div>
+*/
+
+////////////////////////////////////////////////
+//Doctype 
+////////////////////////////////////////////////
+doctype html 
+//<!DOCTYPE html>
+doctype xml 
+//<?xml version="1.0" encoding="utf-8" ?>
+
+var pug = require( './' );
+var source = 'img( src="foo.png" )';
+pug.render( source );
+//<img src="foo.png" />
+pug.render( source, { doctype: 'xml' } );
+//<img src="foo.png"></img>
+pug.render( source, { doctype: 'html' } );
+//<img src="foo.png">
+
+////////////////////////////////////////////////
+//Includes 
+////////////////////////////////////////////////
+/* allows you to insert content from one pug file to another */
+//index.pug 
+doctype html 
+html 
+	include includes/head.pug //including head.pug here 
+	body 
+		h1 my site 
+		p welcome to my super lame site.
+		include includes/footer.pug  
+//includes/head.pug 
+head 
+	title my site 
+	script( src='/javascript/jquery.js' )
+	script( src='/javascript/app.js' )
+//includes/footer.pug 
+footer#footer 
+	p copyright (c) foobar 
+	
+//includes style 
+doctype
+	head 
+		style 
+			include style.css //raw text from style.css file 
+//includes script 
+body 
+	h1 my site 
+	p welcome to ...
+	script 
+		include script.js 
+
+////////////////////////////////////////////////
+//Inheritance 
+////////////////////////////////////////////////
+/* use block <name-of-block> in parent template to be replaced with 
+extends <parent-template> and block <name-of-block-to-replace> or default block */
+//layout.pug 
+html 
+	head
+		title my site 
+		block scripts 
+	body 
+		block content 
+		block footer 
+//index.pug 
+extends layout.pug 
+block scripts 
+	script( src='jquery.js' )
+	script( src='/pets.js' )
+
+block content 
+	h1= title 
+	- var pets = [ 'cat', 'dog' ]
+	each petName in pets 
+		include pet.pug 
+//pet.pug 
+p= petName 
+
+//inheritance overriding 
+//sub-layout.pug 
+extends layout.pug 
+block content 
+	.sidebar 
+		block sidebar 
+			p nothing 
+	.primary 
+		block primary 
+			p nothing 
+//page.pug 
+extends sub-layout.pug 
+block content 
+	.sidebar 
+		block sidebar 
+			p other 
+	.primary 
+		block primary 
+			p other 
+	
+//inheritance append/prepend 
+/* in this example, the block head will be inherited and more scripts will be added/appended
+the word block is optional */
+//layout.pug 
+html 
+	head 
+		block head 
+			script( src='/vendor/jquery.js' )
+			script( src='/vendor/caustic.js' )
+	body 
+		block content 
+//index.pug 
+extends layout.pug 
+//block append head 
+// the word block is optional
+append head 
+	script( src='/vendor/three.js' )
+	script( src='/vendor/game.js' )
+	
+////////////////////////////////////////////////
+//Interpolation 
+////////////////////////////////////////////////
+/* #{ variable } */
+- var title = "Title here";
+- var author = "Mario";
+- var theGreat = "<span>escape!</span>";
+h1= title 
+p Written with love by #{ author.toUpperCase() }
+p This will be safe: #{ theGreat }
+/*
+<h1>Title here</h1>
+<p>Written with love by MARIO</p>
+<p>This will be safe: &lt;span&gt;escape&lt;/span&gt;</p>
+*/
+//interpolation unescaped !{ variable }
+- var riskybusiness = "<em>not escaped</em>"
+.quote
+p Joel: !{riskybusiness}
+//<div class="quote"><p><em>not escaped</em></p></div>
+
+//interpolation within pug #[ tag(attributes) innerTEXT ]
+p.
+  This is a very long and boring paragraph that spans multiple lines.
+  Suddenly there is a #[strong strongly worded phrase] that cannot be
+  #[em ignored].
+p.
+  And here's an example of an interpolated tag with an attribute:
+  #[q(lang="es") ¡Hola Mundo!]
+/*
+<p>This is a very long and boring paragraph that spans multiple lines. Suddenly there is a <strong>strongly worded phrase</strong> that cannot be
+  <em>ignored</em>.</p>
+<p>And here's an example of an interpolated tag with an attribute:
+  <q lang="es">¡Hola Mundo!</q></p>
+*/
+
+//interpolation inline tags use whitespace pipe 
+p
+  | If I don't write the paragraph with tag interpolation, tags like
+  strong strong
+  | and
+  em em
+  | might produce unexpected results.
+p.
+  If I do, whitespace is #[strong respected] and #[em everybody] is happy.
+  /*
+  <p>If I don't write the paragraph with tag interpolation, tags like<strong>strong</strong>and<em>em</em>might produce unexpected results.</p>
+<p>If I do, whitespace is <strong>respected</strong> and <em>everybody</em> is happy.</p>
+  */
+  
+////////////////////////////////////////////////
+//Iteration 
+////////////////////////////////////////////////
+/* each|for / while */
+ul
+	each val in [ 1,3,4,5,6 ]
+		li= val 
+/*
+<ul>
+	<li>1</li>
+	<li>2</li>
+	...
+</ul>
+*/
+
+//with index 
+ul 
+	each val, index in [ 'zero', 'one', 'two' ]
+		li= index + ': ' + val 
+/*
+<ul>
+  <li>0: zero</li>
+  <li>1: one</li>
+  <li>2: two</li>
+</ul>
+*/
+//with object and keys 
+ul
+  each val, index in {1:'one',2:'two',3:'three'}
+    li= index + ': ' + val
+/*
+<ul>
+  <li>1: one</li>
+  <li>2: two</li>
+  <li>3: three</li>
+</ul>
+*/
+//iterator conditional
+- var values = [];
+ul
+  each val in values.length ? values : ['There are no values']
+    li= val
+/*
+<ul>
+  <li>There are no values</li>
+</ul>
+*/
+//iterator while 
+- var n = 0;
+ul
+  while n < 4
+    li= n++
+/*
+<ul>
+  <li>0</li>
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+</ul>
+*/
+////////////////////////////////////////////////
+//Mixins 
+////////////////////////////////////////////////
+/* create reusable blocks of code */
+//create mixin list 
+mixin list 
+	ul 
+		li foo 
+		li bar 
+//use list mixin 
++list 
++list 
+/*
+<ul>
+  <li>foo</li>
+  <li>bar</li>
+</ul>
+<ul>
+  <li>foo</li>
+  <li>bar</li>
+</ul>
+*/
+//with arguments 
+mixin pet( name )
+	li.pet= name 
+ul 
+	+pet( 'cat' )
+	+pet( 'dog' )
+	+pet( 'pig' )
+/*
+<ul>
+  <li class="pet">cat</li>
+  <li class="pet">dog</li>
+  <li class="pet">pig</li>
+</ul>
+*/
+//mixin block inheritance
+mixin article( title )
+	.article 
+		.article-wrapper
+			h1= title 
+			if block
+				block 
+			else 
+				p no content provided
+
++article( "My title" )
++article( "My title with content provided" )
+	p this is my 
+	p provided content block 
+/*
+<div class="article">
+  <div class="article-wrapper">
+    <h1>My title</h1>
+    <p>No content provided</p>
+  </div>
+</div>
+<div class="article">
+  <div class="article-wrapper">
+    <h1>My title with content provided</h1>
+    <p>this is my</p>
+    <p>provided content block</p>
+  </div>
+</div>
+*/
+
+//mixin attributes 
+mixin link( href, name )
+/* - attributes == {class: "btn"} implicit argument passed to the mixin 
+The values in attributes by default are already escaped! You should use != to avoid escaping them a second time
+*/
+a( class!=attributes.class, href=href )= name 
+
++link( '/foo', 'foo' )( class="btn" )
+//<a class="btn" href="/foo">foo</a>
+
+//mixin rest argument syntax 
+mixin list( id, ...items )
+	ul( id=id )
+		each in items 
+			li= item 
+
++list( 'my-list', 1,2,3,4 )
+/*
+<ul id="my-list">
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+  <li>4</li>
+</ul>
+*/

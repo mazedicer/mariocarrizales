@@ -1,0 +1,119 @@
+//////////////////////////////////////////////////////
+//DIRECTORY STRUCTURE
+//////////////////////////////////////////////////////
+
+Ghost
+Ghost/content
+Ghost/content/data
+Ghost/content/images
+Ghost/content/plugins
+Ghost/content/themes
+Ghost/content/themes/CustomTheme
+//homepage, controls display of posts
+Ghost/content/themes/CustomTheme/index.hbs
+//display of single post
+Ghost/content/themes/CustomTheme/post.hbs
+//wrapper template file
+Ghost/content/themes/CustomTheme/default.hbs
+//partial files for templating
+Ghost/content/themes/CustomTheme/partials
+//assets files, css, js, fonts, images, etc.
+Ghost/content/themes/CustomTheme/assets
+Ghost/content/themes/CustomTheme/assets/css
+//stylesheet file
+Ghost/content/themes/CustomTheme/assets/css/style.css
+Ghost/content/themes/CustomTheme/assets/fonts
+Ghost/content/themes/CustomTheme/assets/js
+
+//////////////////////////////////////////////////////
+//COMMENTS
+//////////////////////////////////////////////////////
+
+{{! comment here }}
+
+//////////////////////////////////////////////////////
+//INTERPOLATION
+//////////////////////////////////////////////////////
+
+{{variable}}
+
+//output style and meta data into <head> tags
+{{ghost_head}}
+
+/*output class names for:
+home-template : home page
+archive-template : posts
+post-template : single post*/
+
+<body class="{{body_class}}">
+
+//main content display
+
+{{{body}}}
+
+//output scripts and data
+{{ghost_foot}}
+</body>
+
+//////////////////////////////////////////////////////
+//TEMPLATING
+//////////////////////////////////////////////////////
+
+//to use the default template into index.hbs and post.hbs
+{{!< default}}
+
+//to use template files from partials
+
+//header.hbs
+{{> header}}
+
+//footer.hbs
+{{> footer}}
+
+//////////////////////////////////////////////////////
+//ITERATE POSTS
+//////////////////////////////////////////////////////
+{{#foreach posts}}
+output for each post
+{{/foreach}}
+
+//moment.js date library
+{{date format='dddd DD MMM YYYY'}}
+
+//outputs full content of a post
+//you can add words="n" parameter
+{{content}}
+
+//output short post
+{{excerpt}}
+
+//tags
+{{#if tags}}
+Tags: {{tags separator=" | "}}
+{{/if}}
+
+//pagination
+{{#if pagination}}
+{{{pagination}}}
+{{/if}}
+
+//index.hbs
+{{!< default}}
+{{#foreach posts}}
+{{date format='dddd DD MMM YYYY'}}
+{{title}}
+{{content}}
+{{#if tags}}
+Tags: {{tags separator=" | "}}
+{{/if}}
+{{/foreach}}
+{{#if pagination}}
+{{{pagination}}}
+{{/if}}
+
+
+
+
+
+
+

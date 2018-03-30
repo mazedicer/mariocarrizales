@@ -1,0 +1,237 @@
+To Check MYSQL mode
+SELECT @@GLOBAL.sql_mode global, @@SESSION.sql_mode session
+Disabling STRICT_TRANS_TABLES mode
+However to allow the format 0000-00-00 00:00:00you have to disable STRICT_TRANS_TABLES mode in mysql config file or by command
+By command
+SET sql_mode = '';
+or
+SET GLOBAL sql_mode = '';
+Using the keyword GLOBAL requires super previliges and it affects the operations all clients connect from that time on
+if above is not working than go to /etc/mysql/my.cnf (as per ubuntu) and comment out STRICT_TRANS_TABLES
+Also, if you want to permanently set the sql mode at server startup then include SET sql_mode='' in my.cnf on Linux or MacOS. For windows this has to be done in my.ini file.
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//STORED PROCEDURES
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+DELIMETER $$
+CREATE PROCEDURE getAllProducts()
+	BEGIN
+	SELECT * FROM products;
+	END $$
+DELIMETER ;
+
+/*calling the stored procedure*/
+CALL getAllProducts();
+
+/* A variable that begins with the @ sign is session variable. 
+It is available and accessible until the session ends.
+A variable has its own scope that defines its lifetime. If you declare a variable inside a stored procedure, 
+it will be out of scope when the END statement of stored procedure reached.*/
+
+DECLARE total_count INT DEFAULT 0;
+DECLARE x, y INT DEFAULT 0;
+SET total_count = 10;
+
+//use in statement 
+SELECT COUNT(*) INTO total_count
+FROM products
+
+// if statement 
+DELIMETER $$
+CREATE DEFINER=`root`@`127.0.0.1` PROCEDURE `GetUserName`(INOUT user_name varchar(16), IN user_id varchar(16))
+	BEGIN
+		DECLARE uname varchar(16);
+		SELECT name INTO uname
+		FROM user
+		WHERE userid = user_id;
+		IF user_id = "scott123" 
+		THEN
+			SET user_name = "Scott";
+		ELSEIF user_id = "ferp6734" 
+		THEN
+			SET user_name = "Palash";
+		ELSEIF user_id = "diana094" 
+		THEN
+			SET user_name = "Diana";
+		END IF;
+	END
+Execute the procedure:
+
+CALL GetUserName(@A,'scott123')$$
+SELECT @A;
+
+//example 2  CASE
+DELIMITER $$
+CREATE PROCEDURE `hr`.`my_proc_CASE`(INOUT no_employees INT, IN salary INT)
+	BEGIN
+		CASE
+		WHEN (salary>10000) 
+			THEN (SELECT COUNT(job_id) INTO no_employees 
+		FROM jobs 
+		WHERE min_salary>10000);
+		WHEN (salary<10000) 
+			THEN (SELECT COUNT(job_id) INTO no_employees 
+		FROM jobs 
+		WHERE min_salary<10000);
+			ELSE (SELECT COUNT(job_id) INTO no_employees 
+		FROM jobs WHERE min_salary=10000);
+		END CASE;
+	END$$
+	
+//Number of employees whose salary greater than 10000 :
+
+mysql> CALL my_proc_CASE(@C,10001);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT @C;
++------+
+| @C   |
++------+
+|    2 |
++------+
+1 row in set (0.00 sec)
+
+//example 3 LOOP
+DELIMITER $$
+CREATE PROCEDURE `my_proc_LOOP` (IN num INT)
+	BEGIN
+		DECLARE x INT;
+		SET x = 0;
+		loop_label: LOOP
+		INSERT INTO number VALUES (rand());
+			SET x = x + 1;
+		IF x >= num 
+		THEN
+			LEAVE loop_label;
+		END IF;
+		END LOOP;
+	END$$
+
+//example 4 REPEAT
+DELIMITER $$
+CREATE PROCEDURE my_proc_REPEAT (IN n INT)
+	BEGIN
+		SET @sum = 0;
+		SET @x = 1;  
+		REPEAT   
+		IF mod(@x, 2) = 0 
+		THEN   
+			SET @sum = @sum + @x;   
+		END IF;   
+			SET @x = @x + 1;   
+		UNTIL @x > n 
+		END REPEAT;
+	END $$	
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//TRIGGERS
+//////////////////////////////////////////////////////////////////////////////////////////////////
+/* 
+You cannot associate a trigger with a TEMPORARY table or a view.
+To execute multiple statements, use the BEGIN ... END compound statement construct. 
+This also enables you to use the same statements that are permissible within stored routines.
+Within the trigger body, you can refer to columns in the subject table (the table associated with the trigger) 
+by using the aliases OLD and NEW. OLD.col_name refers to a column of an existing row before it is updated or deleted. 
+NEW.col_name refers to the column of a new row to be inserted or an existing row after it is updated.
+DEFINER clause specifies the MySQL account to be used when checking access privileges at trigger activation time. 
+If a user value is given, it should be a MySQL account specified as 'user_name'@'host_name', CURRENT_USER, or CURRENT_USER(). 
+The default DEFINER value is the user who executes the CREATE TRIGGER statement. 
+This is the same as specifying DEFINER = CURRENT_USER explicitly.
+CREATE
+    [DEFINER = { user | CURRENT_USER }]
+    TRIGGER trigger_name
+    trigger_time trigger_event
+    ON tbl_name FOR EACH ROW
+    trigger_body
+trigger_time: { BEFORE | AFTER }
+trigger_event: { INSERT | UPDATE | DELETE }
+trigger_body: statement to execute when the trigger activates.
+The following trigger acts as an accumulator, summing the values inserted into one 
+of the columns of the table */
+mysql> CREATE TABLE account 
+		(acct_num INT, amount DECIMAL(10,2));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TRIGGER ins_sum BEFORE INSERT 
+		ON account
+		FOR EACH ROW SET @sum = @sum + NEW.amount;
+Query OK, 0 rows affected (0.01 sec)
+/* The statement following FOR EACH ROW defines the trigger body; that is, the statement to execute each time the trigger 
+activates, which occurs once for each row affected by the triggering event. In the example, 
+the trigger body is a simple SET that accumulates into a user variable the values inserted into the amount column. 
+The statement refers to the column as NEW.amount which means “the value of the amount column to 
+be inserted into the new row.”
+To use the trigger, set the accumulator variable to zero, execute an INSERT statement, 
+and then see what value the variable has afterward:*/
+mysql> SET @sum = 0;
+mysql> INSERT INTO account VALUES(137,14.98),(141,1937.50),(97,-100.00);
+mysql> SELECT @sum AS 'Total amount inserted';
++-----------------------+
+| Total amount inserted |
++-----------------------+
+|               1852.48 |
++-----------------------+
+/* Example
+subscribers table */
+CREATE DATABASE test;
+CREATE TABLE `subscribers` (
+  `id` int(11) NOT NULL,
+  `fname` varchar(200) NOT NULL,
+  `email` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+ALTER TABLE `subscribers` ADD PRIMARY KEY (`id`);
+ALTER TABLE `subscribers` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+/* audit_subscriber table which will be updated by trigger*/
+CREATE TABLE `audit_subscribers` (
+  `id` int(11) NOT NULL,
+  `subscriber_name` varchar(200) NOT NULL,
+  `action_performed` varchar(400) NOT NULL,
+  `date_added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+ALTER TABLE `audit_subscribers` ADD PRIMARY KEY (`id`);
+ALTER TABLE `audit_subscribers` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+/* trigger before a subscriber insert*/
+DELIMITER $$
+CREATE TRIGGER `before_subscriber_insert` BEFORE INSERT ON `subscribers` FOR EACH ROW 
+BEGIN
+    INSERT INTO audit_subscribers
+    SET action_performed  = 'Inserted a new subscriber',
+    subscriber_name       =  new.fname;
+END
+$$
+DELIMITER ;
+/*MySQL trigger syntax starts with DELIMITER $$. Delimiters are used in start of a mysql trigger or procedure 
+because in SQL we use semicolon (;) in each statement as a delimiter. In a mysql trigger or 
+procedure we have to write multiple SQL statement and each statement ends with a semicolon.
+To tell MySQL that a semicolon is not the end of our trigger, we changed delimiter from semicolon to $$. 
+So MySQL knows that our trigger is starting with $$ and ends with $$. 
+Trigger will execute before insert of a new subscriber.*/
+DELIMITER $$
+CREATE TRIGGER `after_subscriber_delete` AFTER DELETE ON `subscribers` 
+FOR EACH ROW 
+BEGIN
+    INSERT INTO audit_subscribers
+    SET action_performed  = 'Deleted a subscriber',
+    subscriber_name       =  OLD.fname;
+END
+$$
+DELIMITER ;
+/*The trigger above executes after a subscriber is deleted. It is executed for each row and  action_performed and 
+subscriber name is inserted into audit_subscriber table, current date is inserted in to date_added column. 
+Here we used OLD.fname that means existing name of subscriber.
+*/
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//FIND COLUMN IN SCHEMA
+//////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT 
+    table_name, 
+    column_name, 
+    data_type,
+    ordinal_position
+
+FROM  INFORMATION_SCHEMA.COLUMNS 
+
+WHERE table_schema = 'testing_db_conekt2me'   
+  AND column_name LIKE 'Preliminary_Design_Approval_Sent_to_Customer' ;
+  

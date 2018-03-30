@@ -1,0 +1,599 @@
+/* everything in react is a component.
+can only return one html element: e.g. <div></div>
+{} anything in curly-braces gets executed as javascript.
+render everything all the time any change that will reflect in a visual way.
+*/
+//client.js 
+import React from 'react';
+import ReactDom from 'react-dom';
+import Layout from './components/Layout';
+const app = document.getElementById( 'app' );
+ReactDom.render( <Layout/>, app )
+
+//components/Layout.js
+import React from 'react';
+import Header from './Header';
+import Footer from './Footer';
+export default class Layout extends React.Component{
+	render(){
+		return(
+			<div>
+				<Header />
+				<Footer />
+			</div>
+		);
+	}
+}
+//components/Header.js 
+import React from 'react';
+imprt Title from './Header/Title';
+export default class Header extends React.Component{
+	render(){
+		return(
+			<Title />
+		);
+	}
+}
+//components/Header/Title.js 
+import React from 'react';
+export default class Title extends React.Component{
+	render(){
+		return(
+			<h1>Welcome!</h1>
+		);
+	}
+}
+//components/Footer.js
+import React from 'react';
+import Header from './Header';
+export default class Footer extends React.Component{
+	render(){
+		return(
+			<footer>Header</footer>
+		);
+	}
+}
+
+/* passing data around components 
+state: default is null.
+	created in the constructor.
+	this.state = { key : value }.
+	this.setState( { key : value } ) updates the state.
+	only used if a component has an internal value that only effects its component.
+	
+props: 
+	the below example shows a prop title from Layout to Header component to Title component.
+		Layout
+			const title = "Welcome!";
+			return (
+				<div>
+					<Header title={title} />
+					<Footer />
+				</div>
+			)
+		Header 
+			return (
+				<div>
+					<Title title={this.props.title} />
+				</div>
+			)
+		Title 
+			return (
+				<h1>{this.props.title}</h1>
+			)
+*/
+
+/* events 
+	need to get state to change.
+	pass the function as a prop:
+		changeTitle( title ){
+			this.setState( { title } ); Non ES6 = this.setState( { title: title } )
+		}
+		<div>
+			<Header changeTitle={this.changeTitle.bind(this)} title={this.sate.title} />
+		</div>
+		make sure to bind the function to the parent class (in this case Layout class)
+	at Header Component:
+		handleChange( e ){
+			const title = e.target.value;
+			this.props.changeTitle( title ); <-- gettin from Layout component 
+		}
+		render(){
+			return (
+				<div>
+					<Title title={this.props.title} />
+					<input onChange={this.handleChange.bind(this)} /> <-- bind to Header class
+				</div>
+			)
+		}
+*/
+
+/* ROUTES */
+cmd> npm install -S react-router
+cmd> npm install -S history@1 //version 1.17
+cmd> npm install
+//package.json
+"script": {
+	"dev": "webpack-dev-server --content-base src --inline --hot"
+}
+cmd> npm run dev 
+
+//client.js 
+import React from 'react';
+import ReactDom from 'react-dom';
+import { Router, Route, IndexRoute, hashHistory } from 'react-router';
+import Archives from './components/Archves';
+import Featured from './components/Featured';
+import Layout from './components/Layout';
+import Settings from './components/Settings';
+const app = document.getElementById( 'app' );
+ReactDom.render( 
+	<Router history={hashHistory}/>, 
+		<Route path="/" component={Layout}>
+		<IndexRoute component={Featured}></IndexRoute>
+		<Route path="archives" component={Archives}>
+		<Route path="settings" component={Settings}>
+	</Route>
+	</Router>,
+app )
+
+//components/Layout.js
+import React from 'react';
+import { Link } from 'react-router';
+export default class Layout extends React.Component{
+	navigate(){
+		this.props.history.pushState( null, "/" ); //goes back to home page 
+	}
+	render(){
+		return(
+			<div>
+				<h1>News.net</h1>
+				{this.props.children}
+				<Link to="archives">Archives</Link>
+				<Link to="settings">Settings</Link>
+				<button onclick={this.navigate.bind(this)}>Featured</button>
+			</div>
+		);
+	}
+}
+
+/* REDUX
+manages application state.
+simplify data, travel back to previous store states
+multiple reducers that modify pieces of data independent of one-another before going into store 
+One store
+	never mutate, new version 
+	multiple properties
+		todo (reducer)
+		favorites (reducer) 
+		settings (reducer) 
+	
+
+Provider component listening to store  
+	App Component
+		Smart (aware of redux) components pass data as props to 
+			Dumb components 
+*/
+cmd> npm install -S redux 
+//components/client.js 
+
+/*setup a reducer to:
+	1. receives state & action 
+	2. modify state depending of action type
+	3. returns modified state 
+*/
+import { combineReducers, createStore } from 'redux';
+
+const userReducer = ( state={}, action ) => {
+	switch( action.type ){
+		case "CHANGE_NAME":
+			state = { ...state, name: action.payload }
+			break;
+		case "CHANGE_AGE":
+			state = { ...state, age: action.payload }
+			break;
+	}
+	return state;
+};
+
+const tweetsReducer = ( state={}, action ) => {
+	//code here 
+	return state;
+}
+
+const reducer = combineReducers( {
+	user: userReducer,
+	tweets: tweetsReducer
+} )
+
+const store = createStore( reducers );
+
+//listen to store when changed 
+store.subscribe( () => {
+	console.log( "store changed", store.getState() )
+})
+//dispatch events 
+store.dispatch( { type: "CHANGE_NAME", payload: "Mario" } )
+store.dispatch( { type: "CHANGE_AGE", payload: 39 } )
+
+/* MIDDLEWARE */
+import { applyMiddleware, createStore } from 'redux';
+const reducer = ( initialState=0, action ) => {
+	switch( action.type ){
+		case "INC":
+			return initialState + 1;
+			break;
+		case "E":
+			throw new Error( "Error" );
+	}
+	return initialState;
+};
+
+const logger = ( store ) => ( next ) => ( action ) => {
+	console.log( "action fired", action );
+}
+
+const error = ( store ) => ( next ) => ( action ) => {
+	try{
+		next( action );
+	}catch( e ){
+		console.log( "Error", e );
+	}
+}
+
+const middleware = applyMiddleware( logger, error );
+
+const store = createStore( reducers, 1, middleware ); //add third agument middleware
+
+//listen to store when changed 
+store.subscribe( () => {
+	console.log( "store changed", store.getState() )
+})
+//dispatch events 
+store.dispatch( { type: "INC" } )
+store.dispatch( { type: "DEC" } )
+store.dispatch( { type: "E" } )
+
+/* acync xhr requests with axios 
+React is a view layer.
+ */
+import { applyMiddleware, createStore } from 'redux';
+import axios from 'axios'; //xhr request 
+import logger from 'redux-logger';
+import thunk from 'redux-thunk'; //allows for multiple syncronous actions 
+
+const initialState = {
+	fetching: false,
+	fetched: false,
+	users: [],
+	error: null
+}
+const reducer = ( state=initialState, action ) => {
+	switch( action.type ){
+		case "FETCH_USERS_START":
+			return {...state, fetching: true };
+			break;
+		case "FETCH_USERS_ERROR":
+			return {...state, fetching: false, error: action.payload };
+			break;
+		case "RECEIVE_USERS":
+			treturn {...state, fetching: false, fetched: true, users: action.payload };
+			break;
+	}
+	return state;
+};
+
+const middleware = applyMiddleware( thunk, logger() );
+
+const store = createStore( reducers, middleware );
+
+//listen to store when changed 
+store.subscribe( () => {
+	console.log( "store changed", store.getState() )
+})
+//dispatch a function with multiple dispatches
+store.dispatch( ( dispatch ) => {
+	dispatch( { type: "FETCH_USERS_START" } )
+	axios.get( "http://rest.learncode.academy/api/wstern/users" )
+	.then( ( response) => {
+		dispatch( { type: "RECEIVE_USERS", payload: response.data } )
+	} )
+	.catch( ( err ) => {
+		dispatch( { type: "FETCH_USERS_ERROR", payload: err } )
+	})
+	//do something and dispatch something else 
+	dispatch( { type: "BAR" } )
+} )
+/* using redux-promise-middleware for cleaner automated dispatches instead of the 
+ones made manually above. 
+Make sure to match the action value types thrown by redux.
+*/
+import promise from 'redux-promise-middleware';
+const middleware = applyMiddleware( promise(), thunk, logger() );
+
+store.dispatch({
+	type: "FETCH_USERS",
+	payload: axios.get( "http://rest.learncode.academy/api/wstern/users" )
+})
+
+/* Tying all together
+Layout of Redux React project
+ */
+//src/js/client.js 
+import React from 'react';
+export default class Layout extends React.Component {
+	render(){
+		return null;
+	}
+}
+//src/js/store.js
+import { applyMiddleware, createStore } from 'redux'
+import logger from 'redux-logger'
+import thunk from 'redux-thunk'
+import promise from 'redux-promise-middleware'
+import reducer fro './reducers'
+const middleware = applyMiddleware( promise(), thunk, logger() )
+export default createStore( reducer, middleware )
+//src/js/reducers/index.js 
+import { combineReducers } from 'redux'
+import tweets from ',/tweetsReducer'
+import users from './userReducer'
+export default combineReducers({
+	tweets,
+	user,
+})
+//src/js/reducers/tweetsReducer.js 
+const initialState = {
+	tweets: [],
+	fetching: false,
+	fetched: false,
+	error: null,
+}
+export default function reduce(  state=initialState, action ){
+	switch( action.type ){
+		//case..return..
+	}
+	return state;
+}
+//src/js/reducers/userReducer.js 
+const initialState = {
+	user: {
+		id: null,
+		name: null,
+		age: null,
+	},
+	fetching: false,
+	fetched: false,
+	error: null,
+}
+export default function reduce(  state=initialState, action ){
+	switch( action.type ){
+		//case..return..
+	}
+	return state;
+}
+//src/js/actions/userActions.js 
+export function fetchUser(){
+	return {
+		type: "FETCH_USER_FULFILLED",
+		payload: {
+			name: "Mario",
+			age: 39,
+		}
+	}
+}
+export function setUserName( name ){
+	return {
+		type: "SET_USER_NAME",
+		payload: name,
+	}
+}
+/* continue with the rest... same format for 
+src/js/actions/tweetsActions.js 
+and to use the actions: */
+import * as user from '../userActions' //this will import all the functions
+import { setUserName } from '../userActions' //this will import one function 
+//to use 
+user.setUserName( name )
+
+/*react-redux
+any component can import data from the store and dispatch actions 
+*/ 
+cmd> npm install -S react-redux 
+//client.js 
+import ReactDom from 'react-dom'
+import { Provider } from 'react-redux'
+import Layout from './components/Layout'
+import store from './store'
+const app = document.getElementById( 'app' )
+ReactDom.render( 
+	<Provider store={ store }>
+		<Layout />
+	</Provider>, app 
+);
+/*src/js/components/Layout.js 
+make sure to have 'transform-decorators-legacy' in webpack config plugins
+in order to use @connect */
+import React from 'react'
+import { connect } from 'react-redux'
+import { fetchUser } from './actions/userActions'
+import { fetchTweets } from './actions/tweetsActions'
+@connect(
+	( store ) => {
+		return {
+			user: store.user.user, 
+			userFetched: store.user.fetched, 
+			tweets: store.tweets.tweets, 
+		};
+	}
+)
+export default class Layout extends React.Component{
+	componentWillMount(){
+		this.props.dispatch( fetchUser() )
+	}
+	fetchTweets(){
+		this.props.dispatch( fetchTweets() )
+	}
+	render(){
+		const { user, tweets } = this.props; //unpacking
+		if( !tweets.length ){
+			return <button onclick={this.fetchTweets.bind(this)}>Load Tweets</button>
+		}
+		const mappedTweets = tweets.map( tweet => <li>{tweet.text}</li> )
+		return <div>
+				<h1>{user.name}</h1>
+				<ul>{mappedTweets}</ul>
+			</div>
+	}
+}
+
+/* MobX
+add data layer to React View Layer 
+*/
+cmd> npm i -S mobx mobx-react 
+
+//.babelrc
+{
+	"presets": [ 'react', 'es2015' ],
+	"plugins": [ 'transform-decorators-legacy', 'transform-class-properties' ]
+}
+//src/js/main.js
+import "../css/main.css"
+import React from "react"
+import ReactDom from "react-dom"
+import TodoList from "./TodoList"
+import TodoStore from "./TodoStore"
+const app = document.getElementById( "app" )
+ReactDom.render( <TodoList store={store} />, app )
+
+//src/js/TodoStore.js 
+import { observable, computed } from "mobx" //when observable objects change, events are fired automatically
+
+class Todo {
+	@observable value
+	@observable id 
+	@observable complete 
+	constructor( value ){
+		this.value = value 
+		this.id = Date.now()
+		this.complete = false 
+	}
+}
+
+export class TodoStore {
+	@observable todos = []
+	@observable filter = ""
+	@computed get filterTodos(){
+		var matchesFilter = new RegExp( this.filter, "i" )
+		return this.todos.filter( todo => !this.filter || matchesFilter.test( todo.value ) )
+	}
+	createTodo( value ){
+		this.todos.push( new Todo( value ) )
+	}
+	clearComplete = () => {
+		const incompleteTodos = this.todos.filter( todo => !todo.complete )
+		this.todos.replace( incompleteTodos )
+	}
+}
+//var store = window.store = new TodoStore //make available for testing 
+export default new TodoStore 
+
+/*
+autorun( () => { console.log( store.filter ); console.log( store.todos[0] ) } )
+*/
+//src/js/TodoList.js 
+import React from "react"
+import { observer } from "mobx-react"
+@observer //decorator 
+export default class TodoList extends React.Component {
+	createNew( e ){
+		if( e.which === 13 ){
+			this.props.store.createTodo( e.target.value )
+			e.target.value = ""
+		}
+	}
+	toggleComplete( todo ){
+		todo.complete = !todo.complete 
+	}
+	filter( e ){
+		this.props.store.filter = e.target.value 
+	}
+	render(){
+		const { filter, filteredTodos, clearComplete, todos } this.props.store 
+		const todoLis = filteredTodos.map( todo => 
+		( 
+			<li key={todo.id}>
+			<input type="checkbox" 
+				value={todo.complete} 
+				checked={todo.complete}
+				onchange={this.toggleComplete.bind(this, todo)}	/> 
+				{todo.value}
+			</li> 
+		) 
+		)
+		return <div>
+			<h1>Todos</h1>
+			<input className="create" onkeypress={this.createNew.bind(this)} />
+			<input classname="filter" value={filter} onchange={this.filter.bind(this)}
+			<ul>{todoLis}</ul>
+			<a href="#" onclic={this.props.store.clearComplete}>Clear Complete</a>
+		</div>
+	}
+}
+
+/* MongoDB */
+//run script to insert data into mongoDB 
+cmd> babel-node loadTestData.js 
+CollectionX 4
+CollectionY 2
+//index.js 
+import { MongoClient } from 'mongodb'; //read from mongo
+import assert from 'assert'; //not get errors 
+import config from '../config';//config file to connect 
+let mdb; //empty objec for mongo 
+MongoClient.connect( config.mongodbUri, ( err, db ) => {
+	asser.equal( null, err ); //raise error 
+	mdb = db; //assign the connection to mdb 
+} )
+router.get( '/names/:nameIds', ( req, res ) => {
+	const nameIds = req.params.nameIds.split( ',' ).map( Number );
+	let names = {};
+	mdb.collection( 'name' ).find( { id: { $in: nameIds } } )
+	.each( ( err, name ) => {
+		assert.equal( null, err );
+		if( !name ) { //no more names 
+			res.send( { name } );
+			return;
+		}
+		names[ name.id ] = name;
+	});
+});
+router.get( 'contest/:contestId', ( req, res ) => {
+	mdb.collection( 'contest' )
+	.findOne( { id: Number( req.params.contestId ) } )
+	.then( contest => res.send( contest ) )
+	.catch( console.error );
+} );
+export default router;
+
+//Constest.js 
+componentDidMount(){
+	this.props.fetchNames( this.props.nameIds );
+}
+
+<ul className="list-group">
+	{ this.props.nameIds.map( nameId =>
+		<li className="list-group-item">{nameId}</li>
+	) }
+</ul>
+
+//App.js 
+fetchNames = ( nameIds ) => {
+	api.fetchNames( nameIds ).then( names => { this.setState( { names } ) })
+}
+//api.js 
+import axios from 'axios';
+export const fetchNames = nameIds => {
+	return axios.get( `/api/names/${nameIds.join(',')}` )
+		.then( resp => resp.data.names );
+}

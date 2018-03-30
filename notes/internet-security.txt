@@ -1,0 +1,128 @@
+linux file system
+/ROOT
+  |_ /BIN
+	Essential Binaries/commands/utilities available to all users
+	CAT, CHGRP, CHMOD, CP, DATA, DD, DF, DMESG, ECHO, FALSE, HOSTNAME, KILL, LN,
+	LOGIN, LS, MKDIR, MKNOD, MORE, MOUNT,MV, PS, PWD, RM, RMDIF, SED, SH, STTY,
+	SU, SYNCH, TRUE, UMOUNT, UNAME
+
+  |_ /BOOT
+	Static Files of Boot Loader/boot up
+	KERNEL, SYSTEM.MAP, VMLINUZ, INITRD, GRUB, MODULE.INFO, BOOT
+
+  |_ /ETC
+	Host Specific System Config/apache servers/dhcp/fs table
+	CSH.LOGIN, EXPORTS, FSTAB, FTPUSERS, GATEWAYS, GETTYDEFS, GROUP, HOST.CONF
+	HOSTS, HOSTS.ALLOW, HOSTS.DENY, HOSTS.EQUIV, HOSTS.LPD, INETD.CONF, INITAB
+	ISSUE, LS.SO.CONF, MOTD, MTAB, MTOOLS, NETWORKS, PASSWD, PRINTCAP, PROFILE,
+	PROTOCOLS, RESOLV.CONF, RPC, SECURETTY, SERVICES, SHELLS, SYSLOG.CONF
+
+	|_ /OPT
+	   Config File for Addon Application Software
+
+	|_ /PROFILE
+	   System wide script, read when logging in, global
+
+  |_ /USR
+	Shareable and readonly data, for all users, resource directory
+
+	|_ /LOCAL
+	|    Local Software
+	|   /BIN, /GAMES, /INCLUDE, /LIB, /MAN, /SBIN, /SHARE, /SRC
+	|
+	|_ /SHARE
+	|    Static Data Shareable Among All Architechtures
+	|	|
+	|	|_ /MAN
+	|	    Manual Pages
+	|	    /MAN1 (User Programs), /...2(System Calls), /3(lib functions)
+	|	    /4(special file), /5(file formats), /6(games), /7(misc),
+	|	    /8(system admin)
+	|	
+	|_ /BIN
+	|    Most User Commands
+	|
+	|_ /INCLUDE
+	|    Standard Include Files For 'C'prog.
+	|
+	|_ /LIB
+	|    OBJ, BIN, LIB, FILES FOR PROG. AND PACKAGES
+	|
+ 	|_ /SBIN
+	    NON Essential Binaries
+
+
+  |_ /VAR
+	Variable Data Files
+	/CACHE
+	    Application Cache Data
+	/LIB
+	    Variable state information remains after reboot
+	/YP
+	    Data for NIS Services
+	/LOCK
+	    Lock files for shared resources
+	/OPT
+	    Variable data of packages installed
+	/RUN
+	    Info of system since it was booted
+	/TMP
+	    Available for prog.
+	/SPOOL
+	    Data awaiting processing
+	    /LPD, /MQUEUE, /NEWS, /RWHO, /UUCP
+	/LOG
+	    Log files and dir
+	    LASTLOG, MESSAGES, WTMP
+
+  |_ /SBIN
+	System binaries/commands only for root
+	FASTBOOT, FASTHALT, FDISK, FSCK, GETTY, HALT, IFCONFIG, INIT, MKFS, MKSWAP,
+	REBOOT, ROUTE, SWAPON, SWAPOFF, UPDATE
+
+
+  |_ /TMP
+	Temporary files deleted on bootup
+
+  |_ /DEV
+	Location of special or device files [contains make dev]
+
+  |_ /HOME
+	Users home directories	
+
+  |_ /LIB
+	Library and Kernel Modules/ similar to .dll files/share libraries
+
+  |_ /LIB64
+	Library and Kernel Modules/ similar to .dll files/share libraries
+
+  |_ /MNT
+	Mount files for temporary filesystems, for adding hard drives
+
+  |_ /OPT
+	Add-on application software/programs or software manuf install in this 
+	directory
+
+  |_ /ROOT
+	Home dir. for root users
+
+  |_ /SRV 
+	web server installs, www folder, ftp, samba
+
+  |_ /MEDIA
+	for removeable media
+
+  |_ /PROC 
+	system information
+
+  |_ /RUN 
+	running services,certificates
+
+-------------------------------------------------------------------------
+
+Read 4, Write 2, Execute 1, No Access 0
+
+sticky bit 1777
+
+777 = rwx on ugo, 664 = rw rw r
+

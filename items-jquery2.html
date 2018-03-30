@@ -1,0 +1,1699 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:fb="http://ogp.me/ns/fb#">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Advance Search</title>
+<meta name="keywords" content="electronis advanced search, advance search" />
+<META Name="Description" Content="Advance Search For Electronics" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+
+<style type="text/css">
+
+#search_attributes_div {
+	width:670px;
+	height:250px;
+	border:1px solid #CCC;
+	padding:3px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	background-color:#CCCCCC;
+}
+.atts_div {
+	float:left;
+	width:650px;
+	height:auto;
+	display:none;
+}
+.atts_div h3 {
+	padding:0px;
+	margin:0px;
+
+}
+.atts_div h4 {
+	padding:0px;
+	margin:0px;
+
+}
+#results {
+	background-color:#FFFFFF;
+	float:left;
+	width:670px;
+	height:auto;
+
+}
+</style>
+
+<link href="http://mcbrg.com/css/mcbe.css" rel="stylesheet" />
+
+<link rel="icon" href="http://www.mcbrg.com/images/layout/mcbe.ico" type="image/x-icon" /> 
+<link rel="shortcut icon" href="http://www.mcbrg.com/images/layout/mcbe.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="location">
+<span class="controls">
+<a href="http://mcbrg.com">Home</a> > Advance Search</span>
+</div><!-- end of location -->
+<div class="category_product rounded_corners" style="background-color:#FFF;">
+<h3>Select Product Type</h3>
+Product Type <select id="select_item" name="select_item" onchange="javascript:clearCheckboxes();displayAttsMenu(this.options[this.selectedIndex].value); ">
+<option  value="" selected="selected">
+<option id="audio_crd" value="audio_crd">Audio Card
+<option id="cable" value="cable">Cable
+<option id="drive" value="drive">CD/DVD/BR/Drive
+<option id="comp_case" value="comp_case">Computer Case
+<option id="cooling" value="cooling">Cooling
+<option id="cpu" value="cpu">CPU
+<option id="ext_drive" value="ext_drive">External Drive
+<option id="hard_drv" value="hard_drv">Hard Drive
+<option id="headphones" value="headphones">Headphones
+<option id="security" value="security">Home/Office Security
+<option id="bundle" value="bundle">Mobo/RAM/CPU Bundle
+<option id="mobile" value="mobile">Mobile Cellphones/Accessories/Calculators
+<option id="monitor" value="monitor">Monitor
+<option id="mobo" value="mobo">Motherboard
+<option id="nic" value="nic">Network
+<option id="devices" value="devices">Peripheral Devices (mouse, key, webcam, hub)
+<option id="power" value="power">Power Supply
+<option id="projector" value="projector">Projector
+<option id="memram" value="memram">RAM
+<option id="net_router" value="net_router">Router
+<option id="speakers" value="speakers">Speakers
+<option id="net_switch" value="net_switch">Switch
+<option id="ssd" value="ssd">SSD Drive
+<option id="tools" value="tools">Tools
+<option id="usb_mem" value="usb_mem">USB Memory
+<option id="vid_card" value="vid_card">Video Card
+</select><br />
+<input type="checkbox" class="search_att" id="price" name="price" value="1">Price  
+<input type="text" id="price_val" name="price_val"  value="" size="7" maxlength="7"> Min. Level (ex. $40, enter 40) <br />
+<input type="checkbox" class="search_att" name="product_brand" id="product_brand">Brand
+<input type="hidden" name="product_brand_val" id="product_brand_val" value="">
+<select name="brand_select" id="brand_select" onchange="javascript: updateProductBrand(this.options[this.selectedIndex].value);">
+<option  value="">
+<option  value="Acer">Acer
+<option  value="Activision Blizzard Inc">Activision Blizzard Inc
+<option  value="Adesso">Adesso
+<option  value="Adobe">Adobe
+<option  value="Aiptek Inc">Aiptek Inc
+<option  value="Altec Lancing LLC">Altec Lancing LLC
+<option  value="AMD">AMD
+<option  value="Antec">Antec
+<option  value="AOC International">AOC International
+<option  value="Arkon">Arkon
+<option  value="Asus">Asus
+<option  value="Athenateck">Athenateck
+<option  value="ATI">ATI
+<option  value="Axis">Axis
+<option  value="Belkin">Belkin
+<option  value="Blackberry">Blackberry
+<option  value="BlueAnt">BlueAnt
+<option  value="Bluetrek">Bluetrek
+<option  value="Bracketron">Bracketron
+<option  value="Buffalo Technology">Buffalo Technology
+<option  value="Cables To Go">Cables To Go
+<option  value="Cables Unlimited">Cables Unlimited
+<option  value="Case Logic">Case Logic
+<option  value="Celtronix">Celtronix
+<option  value="Cellular Innovations">Cellular Innovations
+<option  value="Cisco">Cisco
+<option  value="Clickfree">Clickfree
+<option  value="Clingo">Clingo
+<option  value="Contour Design">Contour Design
+<option  value="Coolmaster">Coolmaster
+<option  value="Corel">Corel
+<option  value="Corsair">Corsair
+<option  value="CP Tech">CP Tech
+<option  value="Creative Labs">Creative Labs
+<option  value="Crucial Tech">Crucial Tech
+<option  value="Cyber Acoustics">Cyber Acoustics
+<option  value="D-Link">D-Link
+<option  value="Diamond AMD">Diamond AMD
+<option  value="DLO">DLO
+<option  value="Electronic Arts">Electronic Arts
+<option  value="Emerge Tech">Emerge Tech
+<option  value="EVGA">EVGA
+<option  value="Fellowes">Fellowes
+<option  value="Galaxy Technology">Galaxy Technology
+<option  value="Genius">Genius
+<option  value="Gigabyte">Gigabyte
+<option  value="GoldX">GoldX
+<option  value="Griffin Technology">Griffin Technology
+<option  value="Hitachi">Hitachi
+<option  value="HP">HP
+<option  value="i.sound">i.sound
+<option  value="IHOME">IHOME
+<option  value="iLuv">iLuv
+<option  value="Imation">Imation
+<option  value="Intel">Intel
+<option  value="Intel Pentium">Intel Pentium
+<option  value="Interlink">Interlink
+<option  value="Intuit">Intuit
+<option  value="Inwin">Inwin
+<option  value="IOGear">IOGear
+<option  value="Iomega">Iomega
+<option  value="Jabra">Jabra
+<option  value="Kanguru Solutions">Kanguru Solutions
+<option  value="Keebox">Keebox
+<option  value="Kensington">Kensington
+<option  value="Keytronic">Keytronic
+<option  value="Kingston">Kingston
+<option  value="LaCie">LaCie
+<option  value="Lenmar">Lenmar
+<option  value="Lenovo">Lenovo
+<option  value="LevelOne">LevelOne
+<option  value="LG">LG
+<option  value="Lifeworks">Lifeworks
+<option  value="Limited Luxury Cases">Limited Luxury Cases
+<option  value="Linksys">Linksys
+<option  value="LiteOn">LiteOn
+<option  value="Logitech">Logitech
+<option  value="LucasArts">LucasArts
+<option  value="M-Audio">M-Audio
+<option  value="MacAlly">MacAlly
+<option  value="Marware">Marware
+<option  value="Memorex">Memorex
+<option  value="Microsoft">Microsoft
+<option  value="Mitaki-Japan">Mitaki-Japan
+<option  value="Motorola">Motorola
+<option  value="MSI">MSI
+<option  value="Mustek">Mustek
+<option  value="NEC">NEC
+<option  value="Netgear">Netgear
+<option  value="OCZ Technology">OCZ Technology
+<option  value="Optoma">Optoma
+<option  value="Otterbox">Otterbox
+<option  value="Plantronics">Plantronics
+<option  value="Plexor">Plexor
+<option  value="PNY">PNY
+<option  value="Samsung">Samsung
+<option  value="SanDisk">SanDisk
+<option  value="Seagate">Seagate
+<option  value="Siig">Siig
+<option  value="Sony">Sony
+<option  value="Square Enix">Square Enix
+<option  value="StarTech">StarTech
+<option  value="Steren">Steren
+<option  value="Symantec">Symantec
+<option  value="Targus">Targus
+<option  value="Texas Instruments">Texas Instruments
+<option  value="The Joy Factory">The Joy Factory
+<option  value="Thermaltake">Thermaltake
+<option  value="Topics Entertainment">Topics Entertainment
+<option  value="Toshiba">Toshiba
+<option  value="Transcend Information">Transcend Information
+<option  value="TRENDnet">TRENDnet
+<option  value="Tripp Lite">Tripp Lite
+<option  value="Ubisoft">Ubisoft
+<option  value="Ultra Products">Ultra Products
+<option  value="Verbatim">Verbatim
+<option  value="Visiontek">Visiontek
+<option  value="Wacom">Wacom
+<option  value="Western Digital">Western Digital
+<option  value="Wilson Electronics">Wilson Electronics
+<option  value="Xentris">Xentris
+<option  value="XFX">XFX
+<option  value="Zalman USA">Zalman USA
+<option  value="Zotak">Zotak
+</select>
+<div id="audio_crd_att" class="atts_div">
+<input type="checkbox" class="search_att" id="audio_pci_att" name="audio_pci_att" value="1"/>PCI 
+<input type="hidden" id="audio_pci_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="audio_pci_x_att" name="audio_pci_x_att" value="1"/>PCI Express 
+<input type="hidden" id="audio_pci_x_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="audio_usb_att" name="audio_usb_att" value="1"/>USB 
+<input type="hidden" id="audio_usb_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="audio_channel_att" name="audio_channel_att" value="1"/>Channels 
+<input type="text" name="audio_channel_att_val" id="audio_channel_att_val"  value="" size="2" maxlength="2"><br />
+<input type="checkbox" class="search_att" id="audio_bit_rate_att" name="audio_bit_rate_att" value="1"/>Bit-Rate/Sound Quality 
+<input type="text" name="audio_bit_rate_att_val" id="audio_bit_rate_att_val"  value="" size="2" maxlength="2">  (ex. 8/16/24, enter 8 for 8bit, 16 for 16bit, etc.)<br />
+<input type="checkbox" class="search_att" id="audio_ofc_att" name="audio_ofc_att" value="1"/>OFC(Optical Fiber Connect) 
+<input type="hidden" name="audio_ofc_att_val" id="audio_ofc_att_val"  value="">
+</div>
+
+<div id="cable_att" class="atts_div">
+<input type="checkbox" class="search_att" id="cable_kvm_dvi_usb_att" name="cable_kvm_dvi_usb_att" value="1"/>2PC DVI USB2.0 KVM Switch
+<input type="hidden" id="cable_kvm_dvi_usb_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_kvm_vga_ps2_att" name="cable_kvm_vga_ps2_att" value="1"/>2PC VGA PS2 KVM Switch
+<input type="hidden" id="cable_kvm_vga_ps2_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_kvm_vga_usb_att" name="cable_kvm_vga_usb_att" value="1"/>2PC VGA USB KVM Switch
+<input type="hidden" id="cable_kvm_vga_usb_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_3_5mm_head_ext_att" name="cable_3_5mm_head_ext_att" value="1"/>3.5mm Headphone Extension
+<input type="hidden" id="cable_3_5mm_head_ext_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_3_5mm__25inch_att" name="cable_3_5mm__25inch_att" value="1"/>3.5mm to .25inch Plug Adaptor
+<input type="hidden" id="cable_3_5mm__25inch_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_3_5mm_stereo_att" name="cable_3_5mm_stereo_att" value="1"/>3.5mm Stereo
+<input type="hidden" id="cable_3_5mm_stereo_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_cat5_att" name="cable_cat5_att" value="1"/>CAT5/RJ45
+<input type="hidden" id="cable_cat5_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_coax_att" name="cable_coax_att" value="1"/>Coax
+<input type="hidden" id="cable_coax_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_display_port_att" name="cable_display_port_att" value="1"/>Display Port 
+<input type="hidden" id="cable_display_port_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_display_port_dvi_att" name="cable_display_port_dvi_att" value="1"/>Display Port to DVI
+<input type="hidden" id="cable_display_port_dvi_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_dvi_att" name="cable_dvi_att" value="1"/>DVI 
+<input type="hidden" id="cable_dvi_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_fire_att" name="cable_fire_att" value="1"/>FireWire/IEEE 1394
+<input type="hidden" id="cable_fire_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_hdmi_att" name="cable_hdmi_att" value="1"/>HDMI 
+<input type="hidden" id="cable_hdmi_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_hdmi_vga_att" name="cable_hdmi_vga_att" value="1"/>HDMI to VGA
+<input type="hidden" id="cable_hdmi_vga_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_ide_att" name="cable_ide_att" value="1"/>IDE 
+<input type="hidden" id="cable_ide_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_micro_hdmi_hdmi_att" name="cable_micro_hdmi_hdmi_att" value="1"/>micro-HDMI to HDMI
+<input type="hidden" id="cable_micro_hdmi_hdmi_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_net_att" name="cable_net_att" value="1"/>Network 
+<input type="hidden" id="cable_net_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_ofc_att" name="cable_ofc_att" value="1"/>OFC(Optical Fiber Connect) 
+<input type="hidden" id="cable_ofc_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_pow_att" name="cable_pow_att" value="1"/>Power 
+<input type="hidden" id="cable_pow_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_rca_att" name="cable_rca_att" value="1"/>RCA
+<input type="hidden" id="cable_rca_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_sata_att" name="cable_sata_att" value="1"/>SATA 
+<input type="hidden" id="cable_sata_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_usb_usb_att" name="cable_usb_usb_att" value="1"/>USB > USB 
+<input type="hidden" id="cable_usb_usb_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_usb_min_usb_att" name="cable_usb_min_usb_att" value="1"/>USB > miniUSB 
+<input type="hidden" id="cable_usb_min_usb_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_usb_share_att" name="cable_usb_share_att" value="1"/>USB PC-to-PC Share
+<input type="hidden" id="cable_usb_share_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_usb_ide_sata_att" name="cable_usb_ide_sata_att" value="1"/>USB to IDE and SATA adapter
+<input type="hidden" id="cable_usb_ide_sata_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_vga_att" name="cable_vga_att" value="1"/>VGA 
+<input type="hidden" id="cable_vga_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_vga_mini_dp_att" name="cable_vga_mini_dp_att" value="1"/>VGA to mini Display Port
+<input type="hidden" id="cable_vga_mini_dp_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="cable_length_att" name="cable_length_att" value="1"/>Length 
+<input type="text" name="cable_length_att_val" id="cable_length_att_val"  value="" size="3" maxlength="3"> in feet (ex. 6ft enter 6) 
+</div>
+
+<div id="drive_att" class="atts_div">
+<input type="checkbox" class="search_att" id="drive_ide_att" name="drive_ide_att" value="1"/>IDE 
+<input type="hidden" id="drive_ide_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="drive_sata_att" name="drive_sata_att" value="1"/>SATA 
+<input type="hidden" id="drive_sata_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="drive_cd_att" name="drive_cd_att" value="1"/>CD 
+<input type="hidden" id="drive_cd_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="drive_dvd_att" name="drive_dvd_att" value="1"/>DVD 
+<input type="hidden" id="drive_dvd_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="drive_blu_ray_att" name="drive_blu_ray_att" value="1"/>Blue Ray 
+<input type="hidden" id="drive_blu_ray_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="drive_drive_spd_att" name="drive_drive_spd_att" value="1"/>Speed 
+<input type="text" name="drive_drive_spd_att_val" id="drive_drive_spd_att_val"  value="" size="2" maxlength="2">Min. (ex. 4X/8X/16X, 4X enter 4, 8X enter 8, etc.)
+</div>
+
+<div id="comp_case_att" class="atts_div">
+<input type="checkbox" class="search_att" id="comp_case_pow_att" name="comp_case_pow_att" value="1"/>Power Supply 
+<input type="text" name="comp_case_pow_att_val" id="comp_case_pow_att_val"  value="" size="4" maxlength="4"> in Watts (ex. 500W enter 500)<br />
+<input type="checkbox" class="search_att" id="comp_case_atx_att" name="comp_case_atx_att" value="1"/>ATX 
+<input type="hidden" id="comp_case_atx_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="comp_case_micro_atx_att" name="comp_case_micro_atx_att" value="1"/>Micro-ATX 
+<input type="hidden" id="comp_case_micro_atx_att_val" value=""><br />
+<input type="checkbox" class="search_att" id="comp_case_mini_itx_att" name="comp_case_mini_itx_att" value="1"/>Mini-ITX 
+<input type="hidden" id="comp_case_mini_itx_att_val" value=""><br />
+<input type="checkbox" class="search_att" id="comp_case_tooless_att" name="comp_case_tooless_att" value="1"/>Tooless
+<input type="hidden" id="comp_case_tooless_att_val" value=""><br />
+<input type="checkbox" class="search_att" id="comp_case_blk_att" name="comp_case_blk_att" value="1"/>Black Color (Part/Whole)
+<input type="hidden" id="comp_case_blk_att_val" value=""><br />
+<input type="checkbox" class="search_att" id="comp_case_white_att" name="comp_case_white_att" value="1"/>White Color (Part/Whole)
+<input type="hidden" id="comp_case_white_att_val" value=""><br />
+<input type="checkbox" class="search_att" id="comp_case_other_att" name="comp_case_other_att" value="1"/>Other Color (Part/Whole) 
+<input type="hidden" id="comp_case_other_att_val" value="">
+</div>
+
+<div id="cooling_att" class="atts_div">
+<input type="checkbox" class="search_att" id="lga1155_cpu_fan_att" name="lga1155_cpu_fan_att" value="1"/>LGA1155/i7/i5
+<input type="hidden" id="lga1155_cpu_fan_att_val" value=""><br />
+<input type="checkbox" class="search_att" id="lga775_cpu_fan_att" name="lga775_cpu_fan_att" value="1"/>LGA775/Pentium 4/D/Dual-core/Duo/Core2 Quad/Xeon/Celeron
+<input type="hidden" id="lga775_cpu_fan_att_val" value=""><br />
+<input type="checkbox" class="search_att" id="phenom_ii_cpu_fan_att" name="phenom_ii_cpu_fan_att" value="1"/>AM3/Phenom II
+<input type="hidden" id="phenom_ii_cpu_fan_att_val" value=""><br />
+<input type="checkbox" class="search_att" id="am2_cpu_fan_att" name="am2_cpu_fan_att" value="1"/>AM2/Athlon 64/FX/X2/Opteron/Cempron/Phenom
+<input type="hidden" id="am2_cpu_fan_att_val" value=""><br />
+<input type="checkbox" class="search_att" id="case_fan_att" name="case_fan_att" value="1"/>Case Fan 
+<input type="hidden" id="case_fan_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="drive_bay_fan_att" name="drive_bay_fan_att" value="1"/>Drive Bay 
+<input type="hidden" id="drive_bay_fan_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="liquid_cool_att" name="liquid_cool_att" value="1"/>Liquid
+<input type="hidden" id="liquid_cool_att_val" value=""><br />
+<input type="checkbox" class="search_att" id="case_slot_fan_att" name="case_slot_fan_att" value="1"/>Slot
+<input type="hidden" id="case_slot_fan_att_val"  value="">
+</div>
+
+<div id="cpu_att" class="atts_div">
+<input type="checkbox" class="search_att" id="i7_cpu_att" name="i7_cpu_att" value="1"/>i7 
+<input type="text" name="i7_cpu_att_val" id="i7_cpu_att_val" value="" size="3" maxlength="3"> GHz (ex. 3.5GHz enter 3.5)<br />
+<input type="checkbox" class="search_att"  id="i5_cpu_att" name="i5_cpu_att" value="1"/>i5 
+<input type="text"  name="i5_cpu_att_val" id="i5_cpu_att_val" value="" size="3" maxlength="3">GHz (ex. 3.5GHz enter 3.5)<br />
+<input type="checkbox" class="search_att" id="phenom_ii_cpu_att" name="phenom_ii_cpu_att" value="1"/>Phenom II 
+<input type="text" name="phenom_ii_cpu_att_val" id="phenom_ii_cpu_att_val"  value="" size="3" maxlength="3">GHz (ex. 3.5GHz enter 3.5)<br />
+<input type="checkbox" id="cpu_pentium_att" name="cpu_pentium_att"  class="search_att" value="1"/>Pentium
+<input type="text" name="cpu_pentium_att_val" id="cpu_pentium_att_val"  value="" size="3" maxlength="3">GHz (ex. 3.5GHz enter 3.5)<br />
+<input type="checkbox" id="cpu_celeron_att" name="cpu_celeron_att" class="search_att"  value="1"/>Celeron
+<input type="text" name="cpu_celeron_att_val" id="cpu_celeron_att_val"  value="" size="3" maxlength="3">GHz (ex. 3.5GHz enter 3.5)<br />
+<input type="checkbox" id="cpu_cores_att" name="cpu_cores_att" class="search_att"  value="1"/>Cores
+<input type="text" name="cpu_cores_att_val" id="cpu_cores_att_val"  value="" size="2" maxlength="2"># of Cores (ex. dual-core enter 2, quad-core enter 4, etc.)
+</div>
+
+<div id="ext_drive_att" class="atts_div">
+<input type="checkbox" class="search_att" id="ext_drive_e_sata_att" name="ext_drive_sata_att" value="1"/>eSATA 
+<input type="hidden" id="ext_drive_e_sata_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="ext_drive_usb_att" name="ext_drive_usb_att" value="1"/>USB 
+<input type="hidden" id="ext_drive_usb_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="ext_drive_cd_att" name="ext_drive_cd_att" value="1"/>CD/RW 
+<input type="hidden" id="ext_drive_cd_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="ext_drive_dvd_att" name="ext_drive_dvd_att" value="1"/>DVD/RW 
+<input type="hidden" id="ext_drive_dvd_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="ext_drive_blu_ray_att" name="ext_drive_blu_ray_att" value="1"/>Blue Ray 
+<input type="hidden" id="ext_drive_blu_ray_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="ext_drive_blk_att" name="ext_drive_blk_att" value="1"/>Black 
+<input type="hidden" id="ext_drive_blk_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="ext_drive_white_att" name="ext_drive_white_att" value="1"/>White 
+<input type="hidden" id="ext_drive_white_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="ext_drive_other_att" name="ext_drive_other_att" value="1"/>Other 
+<input type="hidden" id="ext_drive_other_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="ext_drive_drive_spd_att" name="ext_drive_drive_spd_att" value="1"/>Speed 
+<input type="text" id="ext_drive_drive_spd_att_val" name="ext_drive_drive_spd_att_val"  value="" size="2" maxlength="2">Min.(ex. 4X/8X/16X 4X enter 4. 8X enter 8)
+</div>
+
+<div id="hard_drv_att" class="atts_div">
+<input type="checkbox" class="search_att" id="hard_drv_e_sata_att" name="hard_drv_e_sata_att" value="1"/>External eSATA 
+<input type="hidden" id="hard_drv_e_sata_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="hard_drv_usb_att" name="hard_drv_usb_att" value="1"/>External USB 
+<input type="hidden" id="hard_drv_usb_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="hard_drv_fw_att" name="hard_drv_fw_att" value="1"/>External FireWire/IEEE 1394
+<input type="hidden" id="hard_drv_fw_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="hard_drv_ide_att" name="hard_drv_ide_att" value="1"/>IDE 
+<input type="hidden" id="hard_drv_ide_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="hard_drv_sata_att" name="hard_drv_sata_att" value="1"/>SATA 
+<input type="hidden" id="hard_drv_sata_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="hard_drv_gb_mem_size_att" name="hard_drv_gb_mem_size_att" value="1"/>Giga Byte Size 
+<input type="text" name="hard_drv_gb_mem_size_att_val" id="hard_drv_gb_mem_size_att_val"  value="" size="4" maxlength="4">GB <br />
+<input type="checkbox" class="search_att" id="hard_drv_tb_mem_size_att" name="hard_drv_tb_mem_size_att" value="1"/>Tera Byte Size 
+<input type="text" name="hard_drv_tb_mem_size_att_val" id="hard_drv_tb_mem_size_att_val"  value="" size="4" maxlength="4">TB <br />
+<input type="checkbox" class="search_att" id="hard_drv_54rpm_att" name="hard_drv_54rpm_att" value="1"/>5400 RPM 
+<input type="hidden" id="hard_drv_54rpm_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="hard_drv_72rpm_att" name="hard_drv_72rpm_att" value="1"/>7200 RPM. Faster drive. <br />
+<input type="hidden" id="hard_drv_72rpm_att_val"  value="">
+<input type="checkbox" class="search_att" id="hard_drv_cache_att" name="hard_drv_cache_att" value="1"/>MB CACHE
+<input type="text" id="hard_drv_cache_att_val" name="hard_drv_cache_att_val" size="2" maxlength="2"  value=""> (ex. 4MB enter 4)
+</div>
+
+<div id="headphones_att" class="atts_div">
+<input type="checkbox" class="search_att" id="headp_full_att" name="headp_full_att" value="1"/>Full Size 
+<input type="hidden" id="headp_full_att_val"  value=""> Large. Sit around the ear. World's best.<br />
+<input type="checkbox" class="search_att" id="headp_in_att" name="headp_in_att" value="1"/>In Ear 
+<input type="hidden" id="headp_in_att_val"  value=""> <br />
+<input type="checkbox" class="search_att" id="headp_pad_att" name="headp_pad_att" value="1"/>Ear Pad 
+<input type="hidden" id="headp_pad_att_val"  value=""> Most Common.<br />
+<input type="checkbox" class="search_att" id="headp_closed_att" name="headp_closed_att" value="1"/>Closed 
+<input type="hidden" id="headp_closed_att_val"  value=""> Isolate outside noise.<br />
+<input type="checkbox" class="search_att" id="headp_head_att" name="headp_head_att" value="1"/>Headset 
+<input type="hidden" id="headp_head_att_val"  value=""> Listen and Talk.<br />
+<input type="checkbox" class="search_att" id="headp_wireless_att" name="headp_wireless_att" value="1"/>Wireless 
+<input type="hidden" id="headp_wireless_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="headp_bud_att" name="headp_bud_att" value="1"/>Earbuds 
+<input type="hidden" id="headp_bud_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="headp_neck_att" name="headp_neck_att" value="1"/>Behind The Neck 
+<input type="hidden" id="headp_neck_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="headp_clip_att" name="headp_clip_att" value="1"/>Clip On 
+<input type="hidden" id="headp_clip_att_val"  value=""><br />
+</div>
+
+<div id="bundle_att" class="atts_div">
+
+</div>
+
+<div id="mobile_att" class="atts_div">
+<input type="checkbox" id="mobile_armband_att" name="mobile_armband_att" class="search_att"  value="1"/>Armbands
+<input type="hidden" id="mobile_armband_att_val"  name="mobile_armband_att_val" value=""><br />
+<input type="checkbox" id="mobile_battery_att" name="mobile_battery_att" class="search_att"  value="1"/>Battery
+<input type="hidden" id="mobile_battery_att_val"  name="mobile_battery_att_val" value=""><br />
+<input type="checkbox" id="mobile_blue_att" name="mobile_blue_att" class="search_att"  value="1"/>Bluetooth
+<input type="hidden" id="mobile_blue_att_val"  name="mobile_blue_att_val" value=""><br />
+<input type="checkbox" id="mobile_calc_att" name="mobile_calc_att" class="search_att"  value="1"/>Calculator
+<input type="hidden" id="mobile_calc_att_val"  name="mobile_calc_att_val" value=""><br />
+<input type="checkbox" id="mobile_charge_att" name="mobile_charge_att" class="search_att"  value="1"/>Charger
+<input type="hidden" id="mobile_charge_att_val"  name="mobile_charge_att_val" value=""><br />
+<input type="checkbox" id="mobile_car_charge_att" name="mobile_car_charge_att" class="search_att"  value="1"/>Car Charger
+<input type="hidden" id="mobile_car_charge_att_val"  name="mobile_car_charge_att_val" value=""><br />
+<input type="checkbox" id="mobile_cell_att" name="mobile_cell_att" class="search_att"  value="1"/>Cellphone
+<input type="hidden" id="mobile_cell_att_val"  name="mobile_cell_att_val" value=""><br />
+<input type="checkbox" id="mobile_cable_att" name="mobile_cable_att" class="search_att"  value="1"/>Cables
+<input type="hidden" id="mobile_cable_att_val"  name="mobile_cable_att_val" value=""><br />
+<input type="checkbox" id="mobile_case_att" name="mobile_case_att" class="search_att"  value="1"/>Cases
+<input type="hidden" id="mobile_case_att_val"  name="mobile_case_att_val" value=""><br />
+<input type="checkbox" id="mobile_mount_att" name="mobile_mount_att" class="search_att"  value="1"/>Mounts
+<input type="hidden" id="mobile_mount_att_val"  name="mobile_mount_att_val" value=""><br />
+<input type="checkbox" id="mobile_blk_att" name="mobile_blk_att" class="search_att"  value="1"/>Black Color (Part/Whole)
+<input type="hidden" id="mobile_blk_att_val"  name="mobile_blk_att_val" value=""><br />
+<input type="checkbox" id="mobile_white_att" name="mobile_white_att" class="search_att"  value="1"/>White Color (Part/Whole)
+<input type="hidden" id="mobile_white_att_val"  name="mobile_white_att_val" value=""><br />
+<input type="checkbox" id="mobile_other_att" name="mobile_other_att" class="search_att"  value="1"/>Other Color (Part/Whole)
+<input type="hidden" id="mobile_other_att_val"  name="mobile_other_att_val" value="">
+</div>
+
+<div id="monitor_att" class="atts_div">
+<input type="checkbox" class="search_att" id="monitor_screen_att" name="monitor_screen_att" value="1"/>Screen Size 
+<input type="text"  name="monitor_screen_att_val" id="monitor_screen_att_val"  value="" size="4" maxlength="4"> in Inches (ex. 21 inch, enter 21)<br />
+<input type="checkbox" class="search_att" id="monitor_res_att" name="monitor_res_att" value="1"/>Resolution 
+<input type="text" name="monitor_res_att_val" id="monitor_res_att_val"  value="" size="4" maxlength="4">Min. (ex. 1080p enter 1080. 1440x900 enter 1440)<br />
+<input type="checkbox" class="search_att" id="monitor_3d_att" name="monitor_3d_att" value="1"/>3D 
+<input type="hidden" id="monitor_3d_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="monitor_lcd_att" name="monitor_lcd_att" value="1"/>LCD 
+<input type="hidden" id="monitor_lcd_att_val"  value=""> (Liquid Crystal)<br />
+<input type="checkbox" class="search_att" id="monitor_led_att" name="monitor_led_att" value="1"/>LED 
+<input type="hidden" id="monitor_led_att_val"  value=""> (Light Emmiting Diode)<br />
+<input type="checkbox" class="search_att" id="monitor_dvi_att" name="monitor_dvi_att" value="1"/>DVI 
+<input type="hidden" id="monitor_dvi_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="monitor_hdmi_att" name="monitor_hdmi_att" value="1"/>HDMI 
+<input type="hidden" id="monitor_hdmi_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="monitor_disp_port_att" name="monitor_disp_port_att" value="1"/>Display Port 
+<input type="hidden" id="monitor_disp_port_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="monitor_vga_att" name="monitor_vga_att" value="1"/>VGA 
+<input type="hidden" id="monitor_vga_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="monitor_speaker_att" name="monitor_speaker_att" value="1"/>Speakers 
+<input type="hidden" id="monitor_speaker_att_val"  value=""> (Built In)<br />
+</div>
+
+<div id="mobo_att" class="atts_div">
+<h4>Form Factor</h4>
+<input type="checkbox" class="search_att" id="mobo_atx_att" name="mobo_atx_att" value="1"/>ATX 
+<input type="hidden" id="mobo_atx_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="mobo_micro_atx_att" name="mobo_micro_atx_att" value="1"/>Micro-ATX/Ultra-ATX
+<input type="hidden" id="mobo_micro_atx_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="mobo_mini_itx_att" name="mobo_mini_itx_att" value="1"/>Mini-ITX 
+<input type="hidden" id="mobo_mini_itx_att_val"  value="">
+<h4>CPU</h4>
+<input type="checkbox" class="search_att" id="mobo_i7_cpu_att" name="mobo_i7_cpu_att" value="1"/>LGA 1155 Socket (ex. i7)
+<input type="hidden" id="mobo_i7_cpu_att_val"  value="" > Socket<br />
+<input type="checkbox" class="search_att" id="mobo_i5_cpu_att" name="mobo_i5_cpu_att" value="1"/>LGA 1155 Socket (ex. i3/i5)
+<input type="hidden" id="mobo_i5_cpu_att_val"  value="" > Socket<br />
+<input type="checkbox" class="search_att" id="mobo_phenom_ii_cpu_att" name="mobo_phenom_ii_cpu_att" value="1"/>AM3 (ex. Phenom II/FX)
+<input type="hidden" id="mobo_phenom_ii_cpu_att_val"  value=""> Socket<br />
+<h4>Memory</h4>
+<input type="checkbox" class="search_att" id="mobo_ram_att" name="mobo_ram_att" value="1"/>RAM Size/Capacity 
+<input type="text" name="mobo_ram_att_val" id="mobo_ram_att_val"  value="" size="2" maxlength="2">Min. In GB (ex. 16GB enter 16)<br />
+<input type="checkbox" class="search_att" id="mobo_ram_speed_att" name="mobo_ram_speed_att" value="1"/>DDR Type 
+<input type="text" name="mobo_ram_speed_att_val" id="mobo_ram_speed_att_val"  value="" size="1" maxlength="1"> (ex. DDR3 enter 3)<br />
+<input type="checkbox" class="search_att" id="mobo_ram_slots_att" name="mobo_ram_slots_att" value="1"/>RAM Slots 
+<input type="text" name="mobo_ram_slots_att_val" id="mobo_ram_slots_att_val"  value="" size="1" maxlength="1"> Min. (ex. 4 enter 4)
+<h4>Built-In Graphics</h4>
+<input type="checkbox" class="search_att" id="mobo_dvi_att" name="mobo_dvi_att" value="1"/>DVI 
+<input type="hidden" id="mobo_dvi_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="mobo_hdmi_att" name="mobo_hdmi_att" value="1"/>HDMI 
+<input type="hidden" id="mobo_hdmi_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="mobo_disp_port_att" name="mobo_disp_port_att" value="1"/>Display Port 
+<input type="hidden" id="mobo_disp_port_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="mobo_vga_att" name="mobo_vga_att" value="1"/>VGA 
+<input type="hidden" id="mobo_vga_att_val"  value=""><br />
+<input type="checkbox" id="mobo_crossfx_att" name="mobo_crossfx_att" class="search_att"  value="1"/>CrossfireX (2+ CrossfireX AMD/ATI graphics cards)
+<input type="hidden" id="mobo_crossfx_att_val"  value=""><br />
+<input type="checkbox" id="mobo_hybrid_crossfx_att" name="mobo_hybrid_crossfx_att" class="search_att"  value="1"/>Hybrid CrossfireX (Combines built-in graphics with add-in graphics card) 
+<input type="hidden" id="mobo_hybrid_crossfx_att_val"  value=""><br />
+<input type="checkbox" id="mobo_sli_att" name="mobo_sli_att" class="search_att"  value="1"/>SLI (2+ SLI NVIDIA graphics cards) 
+<input type="hidden" id="mobo_sli_att_val"  value="">
+<h4>External USB/eSATA/Firewire/IEEE 1394</h4>
+<input type="checkbox" class="search_att" id="mobo_e_sata_att" name="mobo_e_sata_att" value="1"/>eSATA 
+<input type="hidden" id="mobo_e_sata_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="mobo_usb2_att" name="mobo_usb2_att" value="1"/>USB 2.0 
+<input type="text" name="mobo_usb2_att_val" id="mobo_usb2_att_val"  value="" size="1" maxlength="1"> Min. Ports (ex. 4 enter 4)<br />
+<input type="checkbox" class="search_att" id="mobo_usb3_att" name="mobo_usb3_att" value="1"/>USB 3.0 
+<input type="text" name="mobo_usb3_att_val" id="mobo_usb3_att_val"  value="" size="1" maxlength="1"> Min. Ports (ex. 4 enter 4)<br />
+<input type="checkbox" class="search_att" id="mobo_fire_att" name="mobo_fire_att" value="1"/>FireWire/IEEE 1394
+<input type="hidden" id="mobo_fire_att_val"  value=""><br />
+<h4>Internal IDE/SATA/Expansion Slots</h4>
+<input type="checkbox" class="search_att" id="mobo_ide_att" name="mobo_ide_att" value="1"/>IDE 
+<input type="hidden" id="mobo_ide_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="mobo_sata3_att" name="mobo_sata3_att" value="1"/>SATA 3GB/s 
+<input type="text" name="mobo_sata3_att_val" id="mobo_sata3_att_val"  value="" size="1" maxlength="1"> Ports<br />
+<input type="checkbox" class="search_att" id="mobo_sata6_att" name="mobo_sata6_att" value="1"/>SATA 6GB/s 
+<input type="text" name="mobo_sata6_att_val" id="mobo_sata6_att_val"  value="" size="1" maxlength="1"> Ports<br />
+<input type="checkbox" class="search_att" id="mobo_pci_att" name="mobo_pci_att" value="1"/>PCI 
+<input type="text" name="mobo_pci_att_val" id="mobo_pci_att_val"  value="" size="1" maxlength="1"> Slots<br />
+<input type="checkbox" class="search_att" id="mobo_pci_x_att" name="mobo_pci_x_att" value="1"/>PCIx1 
+<input type="text" name="mobo_pci_x_att_val" id="mobo_pci_x_att_val"  value="" size="1" maxlength="1"> Slots<br />
+<input type="checkbox" class="search_att" id="mobo_pci_x2_att" name="mobo_pci_x2_att" value="1"/>PCIx2.0 
+<input type="text" name="mobo_pci_x2_att_val" id="mobo_pci_x2_att_val"  value="" size="1" maxlength="1"> Slots<br />
+<input type="checkbox" class="search_att" id="mobo_pci_x3_att" name="mobo_pci_x3_att" value="1"/>PCIx3.0 
+<input type="text" name="mobo_pci_x3_att_val" id="mobo_pci_x3_att_val"  value="" size="1" maxlength="1"> Slots<br />
+<h4>Audio</h4>
+<input type="checkbox" class="search_att" id="mobo_channel_att" name="mobo_channel_att" value="1"/>Audio Channels 
+<input type="text" name="mobo_channel_att_val" id="mobo_channel_att_val"  value="" size="2" maxlength="2"><br />
+<input type="checkbox" class="search_att" id="mobo_bit_rate_att" name="mobo_bit_rate_att" value="1"/>Bit-Rate/Sound Quality 
+<input type="text" name="mobo_bit_rate_att_val" id="mobo_bit_rate_att_val"  value="" size="2" maxlength="2">  (ex. 8/16/24, enter 8 for 8bit, 16 for 16bit, etc.)<br />
+<input type="checkbox" class="search_att" id="mobo_ofc_att" name="mobo_ofc_att" value="1"/>OFC(Optical Fiber Connect) 
+<input type="hidden" id="ofc_att_val"  value="">
+<h4>Network</h4>
+<input type="checkbox" class="search_att" id="mobo_net_att" name="mobo_net_att" value="1"/>Network 
+<input type="hidden"  id="mobo_net_att_val"  value=""> RJ45 Gbit 100/1000
+</div>
+
+<div id="nic_att" class="atts_div">
+<input type="checkbox" class="search_att" id="nic_antenna_att" name="nic_antenna_att" value="1"/>Antenna 
+<input type="hidden" id="nic_antenna_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="nic_cat5_jack_att" name="nic_cat5_jack_att" value="1"/>CAT5 Jack 
+<input type="hidden" id="nic_cat5_jack_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="nic_cat5_wall_att" name="nic_cat5_wall_att" value="1"/>CAT5 Wallplate 
+<input type="text" id="nic_cat5_wall_att_val" name="nic_cat5_wall_att_val" size="2" maxlength="2"  value=""> # of Ports<br />
+<input type="checkbox" class="search_att" id="nic_pci_att" name="nic_pci_att" value="1"/>PCI 
+<input type="hidden" id="nic_pci_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="nic_pci_x_att" name="nic_pci_x_att" value="1"/>PCI Express 
+<input type="hidden" id="nic_pci_x_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="nic_usb_att" name="nic_usb_att" value="1"/>USB 
+<input type="hidden" id="nic_usb_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="nic_wireless_att" name="nic_wireless_att" value="1"/>Wireless 
+<input type="hidden" id="nic_wireless_att_val"  value=""><br />
+</div>
+
+<div id="devices_att" class="atts_div">
+<input type="checkbox" class="search_att" id="devices_blk_att" name="devices_blk_att" value="1"/>Color Black (Part/Whole)
+<input type="hidden" id="devices_blk_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_other_att" name="devices_other_att" value="1"/>Color Other (Part/Whole)
+<input type="hidden" id="devices_other_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_white_att" name="devices_white_att" value="1"/>Color White (Part/Whole)
+<input type="hidden" id="devices_white_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_gamepad_att" name="devices_gamepad_att" value="1"/>Game Pad 
+<input type="hidden" id="devices_gamepad_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_joy_att" name="devices_joy_att" value="1"/>Joystick 
+<input type="hidden" id="devices_joy_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_keyboard_att" name="devices_keyboard_att" value="1"/>Keyboard 
+<input type="hidden" id="devices_keyboard_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_key_mouse_att" name="devices_key_mouse_att" value="1"/>Keyboard/Mouse Combo 
+<input type="hidden" id="devices_key_mouse_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_key_ergo_gel_att" name="devices_key_ergo_gel_att" value="1"/>Keyboard Ergonomics Gel
+<input type="hidden" id="devices_key_ergo_gel_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_mini_att" name="devices_mini_att" value="1"/>Mini
+<input type="hidden" id="devices_mini_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_mouse_att" name="devices_mouse_att" value="1"/>Mouse 
+<input type="hidden" id="devices_mouse_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_mouse_ergo_gel_att" name="devices_mouse_ergo_gel_att" value="1"/>Mouse Ergonomics Gel
+<input type="hidden" id="devices_mouse_ergo_gel_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_slim_att" name="devices_slim_att" value="1"/>Slim Keys
+<input type="hidden" id="devices_slim_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_touch_att" name="devices_touch_att" value="1"/>Touch Pad 
+<input type="hidden" id="devices_touch_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_track_att" name="devices_track_att" value="1"/>Trackball 
+<input type="hidden" id="devices_track_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_usb_att" name="devices_usb_att" value="1"/>USB 
+<input type="hidden" id="devices_usb_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_usb_hub_att" name="devices_usb_hub_att" value="1"/>USB Hub 
+<input type="hidden" id="devices_usb_hub_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_cam_att" name="devices_cam_att" value="1"/>Web Cam 
+<input type="hidden" id="devices_cam_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="devices_wireless_att" name="devices_wireless_att" value="1"/>Wireless 
+<input type="hidden" id="devices_wireless_att_val"  value="">
+</div>
+
+<div id="net_router_att" class="atts_div">
+<input type="checkbox" class="search_att" id="net_router_cable_att" name="net_router_cable_att" value="1"/>Cable 
+<input type="hidden" id="net_router_cable_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="net_router_dsl_att" name="net_router_dsl_att" value="1"/>DSL 
+<input type="hidden" id="net_router_dsl_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="net_router_ports_att" name="net_router_ports_att" value="1"/>Ports 
+<input type="text" name="net_router_ports_att_val" id="net_router_ports_att_val"  value="" size="2" maxlength="2"> Enter minimum # of Ports (ex. 4, enter 4)<br />
+<input type="checkbox" class="search_att" id="net_router_wireless_g_att" name="net_router_wireless_g_att" value="1"/>Wireless G 
+<input type="hidden" id="net_router_wireless_g_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="net_router_wireless_n_att" name="net_router_wireless_n_att" value="1"/>Wireless N 
+<input type="hidden" id="net_router_wireless_n_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="net_router_blk_att" name="net_router_blk_att" value="1"/>Black 
+<input type="hidden" id="net_router_blk_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="net_router_white_att" name="net_router_white_att" value="1"/>White 
+<input type="hidden" id="net_router_white_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="net_router_other_att" name="net_router_other_att" value="1"/>Other 
+<input type="hidden" id="net_router_other_att_val"  value=""><br />
+</div>
+
+<div id="net_switch_att" class="atts_div">
+<input type="checkbox" class="search_att" id="net_switch_ports_att" name="net_switch_ports_att" value="1"/>Ports 
+<input type="text" name="net_switch_ports_att_val" id="net_switch_ports_att_val"  value="" size="2" maxlength="2"> Enter minimum # of Ports (ex. 4, enter 4)<br />
+<input type="checkbox" class="search_att" id="net_switch_100_att" name="net_switch_100_att" value="1"/>100Mbps 
+<input type="hidden" id="net_switch_100_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="net_switch_1000_att" name="net_switch_1000_att" value="1"/>1000Mbps 
+<input type="hidden" id="net_switch_1000_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="net_switch_blk_att" name="net_switch_blk_att" value="1"/>Black Color (in Part/only)
+<input type="hidden" id="net_switch_blk_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="net_switch_white_att" name="net_switch_white_att" value="1"/>White Color (in Part/only)
+<input type="hidden" id="net_switch_white_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="net_switch_other_att" name="net_switch_other_att" value="1"/>Other Color (in Part/only) 
+<input type="hidden" id="net_switch_other_att_val"  value=""><br />
+</div>
+
+<div id="power_att" class="atts_div">
+<input type="checkbox" class="search_att" id="power_watts_att" name="power_watts_att" value="1"/>Watts 
+<input type="text" name="power_watts_att_val" id="power_watts_att_val"  value="" size="4" maxlength="4"> Min. Output Power (ex. 420, enter 420)<br />
+<input type="checkbox" class="search_att" id="power_pci_x_att" name="power_pci_x_att" value="1"/>PCI Express 
+<input type="text" name="power_pci_x_att_val" id="power_pci_x_att_val"  value="" size="2" maxlength="2">Min. Connectors. SLI or Crossfire (dual video cards) need 4 so enter 4.<br />
+<input type="checkbox" class="search_att" id="power_sata_att" name="power_sata_att" value="1"/>SATA 
+<input type="text" name="power_sata_att_val" id="power_sata_att_val"  value="" size="2" maxlength="2">Min. Connectors (ex. 12, enter 12)<br />
+<input type="checkbox" class="search_att" id="power_4pin_att" name="power_4pin_att" value="1"/>4 Pin Peripheral 
+<input type="text" name="power_4pin_att_val" id="power_4pin_att_val"  value="" size="2" maxlength="2"> Min. Connectors (ex. 12 enter 12)<br />
+<input type="checkbox" class="search_att" id="power_p4_att" name="power_p4_att" value="1"/>P4 
+<input type="hidden" id="power_p4_att_val"  value=""> Connector. A second connector that goes to the motherboard (in addition to the main 24-pin connector) to supply dedicated power for the processor. <br />
+<input type="checkbox" class="search_att" id="power_8pin_att" name="power_8pin_att" value="1"/>8PIN 
+<input type="hidden" id="power_8pin_att_val"  value=""> Connector. For the purpose of backwards compatibility, some connectors designed for use with high end PCI Express graphics cards feature this kind of pin configuration.<br />
+</div>
+
+<div id="projector_att" class="atts_div">
+<input type="checkbox" class="search_att" id="projector_lcd_att" name="projector_lcd_att" value="1"/>LCD 
+<input type="text" name="projector_lcd_att_val" id="projector_lcd_att_val"  value="" size="4" maxlength="4"> (Liquid Crystal) in Lumens/Brightness (ex. 1000 Luments, enter 1000) More affordable<br />
+<input type="checkbox" class="search_att" id="projector_dlp_att" name="projector_dlp_att"value="1"/>DLP 
+<input type="text" name="projector_dlp_att_val" id="projector_dlp_att_val"  value="" size="4" maxlength="4"> (Digital Light Processing) in Lumens/Brightness (ex. 1000 Luments, enter 1000) More expensive, higher quality.<br />
+<input type="checkbox" class="search_att" id="projector_res_att" name="projector_res_att" value="1"/>Resolution 
+<input type="text" name="projector_res_att_val" id="projector_res_att_val"  value="" size="4" maxlength="4"> Min. (ex. 1080p enter 1080.)<br />
+<input type="checkbox" class="search_att" id="projector_3d_att" name="projector_3d_att" value="1"/>3D 
+<input type="hidden" id="projector_3d_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="projector_asp_ratio_att" name="projector_asp_ratio_att" value="1"/>16:9 
+<input type="hidden" id="projector_asp_ratio_att_val"  value=""> Aspect Ration<br />
+<input type="checkbox" class="search_att" id="projector_remote_cont_att" name="projector_remote_cont_att" value="1"/>Remote Controller 
+<input type="hidden" id="projector_remote_cont_att_val"  value=""><br />
+</div>
+
+<div id="memram_att" class="atts_div">
+<input type="checkbox" class="search_att" id="memram_ram_att" name="memram_ram_att" value="1"/>Size  
+<input type="text" name="memram_ram_att_val" id="memram_ram_att_val"  value="" size="1" maxlength="1"> Min Size In GB (ex. 16GB, enter 16)<br />
+<input type="checkbox" class="search_att" id="memram_ram_speed_att" name="memram_ram_speed_att" value="1"/>DDR RAM Type 
+<input type="text" name="memram_ram_speed_att_val" id="memram_ram_speed_att_val"  value="" size="1" maxlength="1">Min. (ex. DDR3, enter 3)<br />
+<input type="checkbox" class="search_att" id="memram_ram_slots_att" name="memram_ram_slots_att" value="1"/>Sticks 
+<input type="text" name="memram_ram_slots_att_val" id="memram_ram_slots_att_val"  value="" size="1" maxlength="1">Min (ex. 4, enter 4)<br />
+<input type="checkbox" class="search_att" id="memram_ram_sodimm_att" name="memram_ram_sodimm_att" value="1"/>SODIMM (Laptop Memory)
+<input type="hidden" id="memram_ram_sodimm_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="memram_ram_ecc_att" name="memram_ram_ecc_att" value="1"/>ECC 
+<input type="hidden" id="memram_ram_ecc_att_val"  value="">
+</div>
+
+<div id="security_att" class="atts_div">
+<input type="checkbox" class="search_att" id="security_fake_camera_att" name="security_fake_camera_att" value="1"/>Fake Camera 
+<input type="hidden" id="security_fake_camera_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="security_slvr_att" name="security_slvr_att" value="1"/>Silver 
+<input type="hidden" id="security_slvr_att_val"  value=""> <br />
+<input type="checkbox" class="search_att" id="security_blk_att" name="security_blk_att" value="1"/>Black 
+<input type="hidden" id="security_blk_att_val"  value=""> <br />
+<input type="checkbox" class="search_att" id="security_white_att" name="security_white_att" value="1"/>White 
+<input type="hidden" id="security_white_att_val"  value=""> <br />
+<input type="checkbox" class="search_att" id="security_other_att" name="security_other_att" value="1"/>Other 
+<input type="hidden" id="security_other_att_val"  value=""> <br />
+</div>
+
+<div id="speakers_att" class="atts_div">
+<input type="checkbox" class="search_att" id="speakers_watts_att" name="speakers_watts_att" value="1"/>Min. Watts 
+<input type="text" name="speakers_watts_att_val" id="speakers_watts_att_val"  value="" size="4" maxlength="4"> Output Power (ex. 120, enter 120)<br />
+<input type="checkbox" class="search_att" id="speakers_channel_att" name="speakers_channel_att" value="1"/>Channels 
+<input type="text" name="speakers_channel_att_val" id="speakers_channel_att_val"  value="" size="2" maxlength="2"><br />
+<input type="checkbox" class="search_att" id="speakers_qty_att" name="speakers_qty_att" value="1"/>Min. # of Speakers 
+<input type="text" name="speakers_qty_att_val" id="speakers_qty_att_val"  value="" size="1" maxlength="1"> Not including Subwoofer. (ex. left, center, right channels = 3, enter 3)<br />
+<input type="checkbox" class="search_att" id="speakers_woofer_att" name="speakers_woofer_att" value="1"/>Subwoofer 
+<input type="hidden" id="speakers_woofer_att_val"  value=""> Bass<br />
+<input type="checkbox" class="search_att" id="speakers_blk_att" name="speakers_blk_att" value="1"/>Black Color (Part/Whole) 
+<input type="hidden" id="speakers_blk_att_val"  value=""> <br />
+<input type="checkbox" class="search_att" id="speakers_white_att" name="speakers_white_att" value="1"/>White Color (Part/Whole)  
+<input type="hidden" id="speakers_white_att_val"  value=""> <br />
+<input type="checkbox" class="search_att" id="speakers_other_att" name="speakers_other_att" value="1"/>Other Color (Part/Whole)  
+<input type="hidden" id="speakers_other_att_val"  value=""> <br />
+</div>
+
+<div id="ssd_att" class="atts_div">
+<input type="checkbox" class="search_att" id="ssd_gb_mem_size_att" name="ssd_gb_mem_size_att" value="1"/>Giga Byte Size 
+<input type="text" name="ssd_gb_mem_size_att_val" id="ssd_gb_mem_size_att_val"  value="" size="4" maxlength="4">GB (ex. 500GB, enter 500)<br />
+</div>
+
+<div id="tools_att" class="atts_div">
+<input type="checkbox" class="search_att" id="tools_crimper_att" name="tools_crimper_att" value="1"/>Crimper 
+<input type="hidden" id="tools_crimper_att_val"  value=""> for RJ45/RJ11<br />
+<input type="checkbox" class="search_att" id="tools_it_tool_att" name="tools_it_tool_att" value="1"/>IT Tool Kit 
+<input type="hidden" id="tools_it_tool_att_val"  value=""> Set<br />
+<input type="checkbox" class="search_att" id="tools_it_acc_att" name="tools_it_acc_att" value="1"/>IT Accessories Kit 
+<input type="hidden" id="tools_it_acc_att_val"  value=""> nuts, stand-offs, screws, ties, etc.<br />
+<input type="checkbox" class="search_att" id="tools_rj45_plug_att" name="tools_rj45_plug_att" value="1"/>RJ45/CAT5 plugs 
+<input type="text" name="tools_rj45_plug_att_val" id="tools_rj45_plug_att_val"  value="" size="3" maxlength="3"> Min. Quantity<br />
+<input type="checkbox" class="search_att" id="tools_net_test_att" name="tools_net_test_att" value="1"/>Network Cable Tester 
+<input type="hidden" id="tools_net_test_att_val"  value=""> <br />
+<input type="checkbox" class="search_att" id="tools_anti_stat_att" name="tools_anti_stat_att" value="1"/>Anti-Static 
+<input type="hidden" id="tools_anti_stat_att_val"  value=""> Mats, wrist straps, etc. <br />
+</div>
+
+<div id="usb_mem_att" class="atts_div">
+<input type="checkbox" class="search_att" id="usb_mem_gb_mem_size_att" name="usb_mem_gb_mem_size_att" value="1"/>Giga Byte Size 
+<input type="text" name="usb_mem_gb_mem_size_att_val" id="usb_mem_gb_mem_size_att_val"  value="" size="4" maxlength="4">GB (ex. 20GB, enter 20)<br />
+</div>
+
+<div id="vid_card_att" class="atts_div">
+<input type="checkbox" class="search_att" id="vid_card_ram_speed_att" name="vid_card_ram_speed_att" value="1"/>DDR RAM Type 
+<input type="text" name="vid_card_ram_speed_att_val" id="vid_card_ram_speed_att_val"  value="" size="1" maxlength="1"> (ex. DDR 3, enter 3. DDR 5, enter 5)<br />
+<input type="checkbox" class="search_att" id="vid_card_gb_mem_size_att" name="vid_card_gb_mem_size_att" value="1"/>Giga Byte Size 
+<input type="text" name="vid_card_gb_mem_size_att_val" id="vid_card_gb_mem_size_att_val"  value="" size="4" maxlength="4">GB (ex. 2GB, enter 2)<br />
+<input type="checkbox" class="search_att" id="vid_card_bit_size_att" name="vid_card_bit_size_att" value="1"/>Bit  
+<input type="text" name="vid_card_bit_size_att_val" id="vid_card_bit_size_att_val"  value="" size="4" maxlength="3">Min. Size(ex. 64Bit, enter 64. 128Bit, enter 128. 256Bit, enter 256)<br />
+<input type="checkbox" class="search_att" id="vid_card_dvi_att" name="vid_card_dvi_att" value="1"/>DVI 
+<input type="hidden" id="vid_card_dvi_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="vid_card_hdmi_att" name="vid_card_hdmi_att" value="1"/>HDMI 
+<input type="hidden" id="vid_card_hdmi_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="vid_card_mini_hdmi_att" name="vid_card_mini_hdmi_att" value="1"/>Mini HDMI 
+<input type="hidden" id="vid_card_mini_hdmi_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="vid_card_disp_port_att" name="vid_card_disp_port_att" value="1"/>Display Port 
+<input type="hidden" id="vid_card_disp_port_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="vid_card_vga_att" name="vid_card_vga_att" value="1"/>VGA 
+<input type="hidden" id="vid_card_vga_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="vid_card_sli_att" name="vid_card_sli_att" value="1"/>SLI 
+<input type="hidden" id="vid_card_sli_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="vid_card_cross_att" name="vid_card_cross_att" value="1"/>Crossfire 
+<input type="hidden" id="vid_card_cross_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="vid_card_pcie2_att" name="vid_card_pcie2_att" value="1"/>PCIe 2.0+
+<input type="hidden" id="vid_card_pcie2_att_val"  value=""><br />
+<input type="checkbox" class="search_att" id="vid_card_pcie3_att" name="vid_card_pcie3_att" value="1"/>PCIe 3.0+ 
+<input type="hidden" id="vid_card_pcie3_att_val"  value=""><br />
+</div>
+
+<div class="atts_div" style="display:block;">
+<button onclick="javascript: searchAttVal();">Search</button>&nbsp;<button onclick="javascript: clearCheckboxes();">Reset Checkboxes</button>
+</div>
+<div id="results"></div>
+
+<script type="text/javascript">
+ <!--
+ var atts_menu_list = [];
+ var checkbox_array = document.getElementsByClassName("search_att");
+ 
+ for(var i = 1; i < 27; i++){
+	 var current_att_menu = document.getElementById("select_item").options[i].value;
+	 if(current_att_menu !== ""){
+	 atts_menu_list.push(current_att_menu);
+	 }//end if
+ }//end for
+ 
+ function updateProductBrand(selected_brand){
+ 	//get item brand
+	var product_brand_val = selected_brand;
+	document.getElementById("product_brand_val").value = selected_brand;
+	//alert("772: " + product_brand_val + " = " + selected_brand);
+ }//end function
+ 
+ function displayAttsMenu(the_menu){
+	 if(the_menu !== ""){
+		 //var the_menu_to_display = the_menu + "_att";
+		 //alert(the_menu_to_display);
+		 for(var i = 0; i < atts_menu_list.length; i++){
+			 var the_menu_to_display = atts_menu_list[i] + "_att";
+			 //alert(atts_menu_list[i] + " comparing to " + the_menu);
+			 if(the_menu == atts_menu_list[i]){
+				 //alert("Match Found");
+				 document.getElementById(the_menu_to_display).style.display = "block";
+				 //alert("Show" + the_menu_to_display);
+			 }else{
+				 document.getElementById(the_menu_to_display).style.display = "none";
+			 }//end if
+		 }//end for
+	 }//end if
+ }//end function
+ 
+ function clearCheckboxes(){
+	 
+	 for (i = 0; i < checkbox_array.length; i++){
+		checkbox_array[i].checked = false ;
+		//alert(checkbox_array[i].value);
+	}//end for
+ }//end function clearCheckboxes()
+</script>
+
+<script language="javascript" src="javascript/item_list.js"></script>
+
+<script language="javascript" type="text/javascript">
+ 
+var audio_pci_att = document.getElementById("audio_pci_att");
+var audio_pci_att_val = document.getElementById("audio_pci_att_val");
+var audio_pci_x_att = document.getElementById("audio_pci_x_att");
+var audio_pci_x_att_val = document.getElementById("audio_pci_x_att_val");
+var audio_usb_att = document.getElementById("audio_usb_att");
+var audio_usb_att_val = document.getElementById("audio_usb_att_val");
+var audio_channel_att = document.getElementById("audio_channel_att");
+var audio_channel_att_val = document.getElementById("audio_channel_att_val");
+var audio_bit_rate_att = document.getElementById("audio_bit_rate_att");
+var audio_bit_rate_att_val = document.getElementById("audio_bit_rate_att_val");
+var audio_ofc_att = document.getElementById("audio_ofc_att");
+var audio_ofc_att_val = document.getElementById("audio_ofc_att_val");
+
+var cable_dvi_att = document.getElementById("cable_dvi_att");
+var cable_dvi_att_val = document.getElementById("cable_dvi_att_val");
+var cable_ofc_att = document.getElementById("cable_ofc_att");
+var cable_ofc_att_val = document.getElementById("cable_ofc_att_val");
+var cable_fire_att = document.getElementById("cable_fire_att");
+var cable_fire_att_val = document.getElementById("cable_fire_att_val");
+var cable_hdmi_att = document.getElementById("cable_hdmi_att");
+var cable_hdmi_att_val = document.getElementById("cable_hdmi_att_val");
+var cable_ide_att = document.getElementById("cable_ide_att");
+var cable_ide_att_val = document.getElementById("cable_ide_att_val");
+var cable_net_att = document.getElementById("cable_net_att");
+var cable_net_att_val = document.getElementById("cable_net_att_val");
+var cable_pow_att = document.getElementById("cable_pow_att");
+var cable_pow_att_val = document.getElementById("cable_pow_att_val");
+var cable_sata_att = document.getElementById("cable_sata_att");
+var cable_sata_att_val = document.getElementById("cable_sata_att_val");
+var cable_usb_usb_att = document.getElementById("cable_usb_usb_att");
+var cable_usb_usb_att_val = document.getElementById("cable_usb_usb_att_val");
+var cable_usb_min_usb_att = document.getElementById("cable_usb_min_usb_att");
+var cable_usb_min_usb_att_val = document.getElementById("cable_usb_min_usb_att_val");
+var cable_vga_att = document.getElementById("cable_vga_att");
+var cable_vga_att_val = document.getElementById("cable_vga_att_val");
+var cable_display_port_att = document.getElementById("cable_display_port_att");
+var cable_display_port_att_val = document.getElementById("cable_display_port_att_val");
+var cable_display_port_dvi_att = document.getElementById("cable_display_port_dvi_att");
+var cable_display_port_dvi_att_val = document.getElementById("cable_display_port_dvi_att_val");
+var cable_micro_hdmi_hdmi_att = document.getElementById("cable_micro_hdmi_hdmi_att");
+var cable_micro_hdmi_hdmi_att_val = document.getElementById("cable_micro_hdmi_hdmi_att_val");
+var cable_hdmi_vga_att = document.getElementById("cable_hdmi_vga_att");
+var cable_hdmi_vga_att_val = document.getElementById("cable_hdmi_vga_att_val");
+var cable_vga_mini_dp_att = document.getElementById("cable_vga_mini_dp_att");
+var cable_vga_mini_dp_att_val = document.getElementById("cable_vga_mini_dp_att_val");
+var cable_kvm_dvi_usb_att = document.getElementById("cable_kvm_dvi_usb_att");
+var cable_kvm_dvi_usb_att_val = document.getElementById("cable_kvm_dvi_usb_att_val");
+var cable_kvm_vga_ps2_att = document.getElementById("cable_kvm_vga_ps2_att");
+var cable_kvm_vga_ps2_att_val = document.getElementById("cable_kvm_vga_ps2_att_val");
+var cable_kvm_vga_usb_att = document.getElementById("cable_kvm_vga_usb_att");
+var cable_kvm_vga_usb_att_val = document.getElementById("cable_kvm_vga_usb_att_val");
+var cable_3_5mm_head_ext_att = document.getElementById("cable_3_5mm_head_ext_att");
+var cable_3_5mm_head_ext_att_val = document.getElementById("cable_3_5mm_head_ext_att_val");
+var cable_3_5mm__25inch_att = document.getElementById("cable_3_5mm__25inch_att");
+var cable_3_5mm__25inch_att_val = document.getElementById("cable_3_5mm__25inch_att_val");
+var cable_3_5mm_stereo_att = document.getElementById("cable_3_5mm_stereo_att");
+var cable_3_5mm_stereo_att_val = document.getElementById("cable_3_5mm_stereo_att_val");
+var cable_coax_att = document.getElementById("cable_coax_att");
+var cable_coax_att_val = document.getElementById("cable_coax_att_val");
+var cable_rca_att = document.getElementById("cable_rca_att");
+var cable_rca_att_val = document.getElementById("cable_rca_att_val");
+var cable_cat5_att = document.getElementById("cable_cat5_att");
+var cable_cat5_att_val = document.getElementById("cable_cat5_att_val");
+var cable_usb_share_att = document.getElementById("cable_usb_share_att");
+var cable_usb_share_att_val = document.getElementById("cable_usb_share_att_val");
+var cable_usb_ide_sata_att = document.getElementById("cable_usb_ide_sata_att");
+var cable_usb_ide_sata_att_val = document.getElementById("cable_usb_ide_sata_att_val");
+var cable_length_att = document.getElementById("cable_length_att");
+var cable_length_att_val = document.getElementById("cable_length_att_val");
+
+var drive_ide_att = document.getElementById("drive_ide_att");
+var drive_ide_att_val = document.getElementById("drive_ide_att_val");
+var drive_sata_att = document.getElementById("drive_sata_att");
+var drive_sata_att_val = document.getElementById("drive_sata_att_val");
+var drive_cd_att = document.getElementById("drive_cd_att");
+var drive_cd_att_val = document.getElementById("drive_cd_att_val");
+var drive_dvd_att = document.getElementById("drive_dvd_att");
+var drive_dvd_att_val = document.getElementById("drive_dvd_att_val");
+var drive_blu_ray_att = document.getElementById("drive_blu_ray_att");
+var drive_blu_ray_att_val = document.getElementById("drive_blu_ray_att_val");
+var drive_drive_spd_att = document.getElementById("drive_drive_spd_att");
+var drive_drive_spd_att_val = document.getElementById("drive_drive_spd_att_val");
+
+var comp_case_pow_att = document.getElementById("comp_case_pow_att");
+var comp_case_pow_att_val = document.getElementById("comp_case_pow_att_val");
+var comp_case_atx_att = document.getElementById("comp_case_atx_att");
+var comp_case_atx_att_val = document.getElementById("comp_case_atx_att_val");
+var comp_case_micro_atx_att = document.getElementById("comp_case_micro_atx_att");
+var comp_case_micro_atx_att_val = document.getElementById("comp_case_micro_atx_att_val");
+var comp_case_mini_itx_att = document.getElementById("comp_case_mini_itx_att");
+var comp_case_mini_itx_att_val = document.getElementById("comp_case_mini_itx_att_val");
+var comp_case_tooless_att = document.getElementById("comp_case_tooless_att");
+var comp_case_tooless_att_val = document.getElementById("comp_case_tooless_att_val");
+var comp_case_blk_att = document.getElementById("comp_case_blk_att");
+var comp_case_blk_att_val = document.getElementById("comp_case_blk_att_val");
+var comp_case_white_att = document.getElementById("comp_case_white_att");
+var comp_case_white_att_val = document.getElementById("comp_case_white_att_val");
+var comp_case_other_att = document.getElementById("comp_case_other_att");
+var comp_case_other_att_val = document.getElementById("comp_case_other_att_val");
+
+var case_fan_att = document.getElementById("case_fan_att");
+var case_fan_att_val = document.getElementById("case_fan_att_val");
+var drive_bay_fan_att = document.getElementById("drive_bay_fan_att");
+var drive_bay_fan_att_val = document.getElementById("drive_bay_fan_att_val");
+
+var price = document.getElementById("price");
+var price_val = document.getElementById("price_val");
+var product_brand = document.getElementById("product_brand");
+var product_brand_val = document.getElementById("product_brand_val");
+
+var i7_cpu_att = document.getElementById("i7_cpu_att");
+var i7_cpu_att_val = document.getElementById("i7_cpu_att_val");
+var i5_cpu_att = document.getElementById("i5_cpu_att");
+var i5_cpu_att_val = document.getElementById("i5_cpu_att_val");
+var cpu_pentium_att = document.getElementById("cpu_pentium_att");
+var cpu_pentium_att_val = document.getElementById("cpu_pentium_att_val");
+var cpu_celeron_att = document.getElementById("cpu_celeron_att");
+var cpu_celeron_att_val = document.getElementById("cpu_celeron_att_val");
+var cpu_cores_att = document.getElementById("cpu_cores_att");
+var cpu_cores_att_val = document.getElementById("cpu_cores_att_val");
+
+var lga1155_cpu_fan_att = document.getElementById("lga1155_cpu_fan_att");
+var lga1155_cpu_fan_att_val = document.getElementById("lga1155_cpu_fan_att_val");
+var liquid_cool_att = document.getElementById("liquid_cool_att");
+var liquid_cool_att_val = document.getElementById("liquid_cool_att_val");
+var phenom_ii_cpu_att = document.getElementById("phenom_ii_cpu_att");
+var phenom_ii_cpu_att_val = document.getElementById("phenom_ii_cpu_att_val");
+var phenom_ii_cpu_fan_att = document.getElementById("phenom_ii_cpu_fan_att");
+var phenom_ii_cpu_fan_att_val = document.getElementById("phenom_ii_cpu_fan_att_val");
+var lga775_cpu_fan_att = document.getElementById("lga775_cpu_fan_att");
+var lga775_cpu_fan_att_val = document.getElementById("lga775_cpu_fan_att_val");
+var am2_cpu_fan_att = document.getElementById("am2_cpu_fan_att");
+var am2_cpu_fan_att_val = document.getElementById("am2_cpu_fan_att_val");
+var case_slot_fan_att = document.getElementById("case_slot_fan_att");
+var case_slot_fan_att_val = document.getElementById("case_slot_fan_att_val");
+
+var ext_drive_e_sata_att = document.getElementById("ext_drive_e_sata_att");
+var ext_drive_e_sata_att_val = document.getElementById("ext_drive_e_sata_att_val");	
+var ext_drive_usb_att = document.getElementById("ext_drive_usb_att");
+var ext_drive_usb_att_val = document.getElementById("ext_drive_usb_att_val");
+var ext_drive_cd_att = document.getElementById("ext_drive_cd_att");
+var ext_drive_cd_att_val = document.getElementById("ext_drive_cd_att_val");
+var ext_drive_dvd_att = document.getElementById("ext_drive_dvd_att");
+var ext_drive_dvd_att_val = document.getElementById("ext_drive_dvd_att_val");
+var ext_drive_blu_ray_att = document.getElementById("ext_drive_blu_ray_att");
+var ext_drive_blu_ray_att_val = document.getElementById("ext_drive_blu_ray_att_val");
+var ext_drive_drive_spd_att = document.getElementById("ext_drive_drive_spd_att");
+var ext_drive_drive_spd_att_val = document.getElementById("ext_drive_drive_spd_att_val"); 
+var ext_drive_blk_att = document.getElementById("ext_drive_blk_att");
+var ext_drive_blk_att_val = document.getElementById("ext_drive_blk_att_val");  
+var ext_drive_white_att = document.getElementById("ext_drive_white_att");
+var ext_drive_white_att_val = document.getElementById("ext_drive_white_att_val");  
+var ext_drive_other_att = document.getElementById("ext_drive_other_att");
+var ext_drive_other_att_val = document.getElementById("ext_drive_other_att_val"); 
+  
+var hard_drv_gb_mem_size_att = document.getElementById("hard_drv_gb_mem_size_att");
+var hard_drv_gb_mem_size_att_val = document.getElementById("hard_drv_gb_mem_size_att_val");	
+var hard_drv_tb_mem_size_att = document.getElementById("hard_drv_tb_mem_size_att");
+var hard_drv_tb_mem_size_att_val = document.getElementById("hard_drv_tb_mem_size_att_val");	
+var hard_drv_e_sata_att = document.getElementById("hard_drv_e_sata_att");
+var hard_drv_e_sata_att_val = document.getElementById("hard_drv_e_sata_att_val");
+var hard_drv_usb_att = document.getElementById("hard_drv_usb_att");
+var hard_drv_usb_att_val = document.getElementById("hard_drv_usb_att_val");
+var hard_drv_ide_att = document.getElementById("hard_drv_ide_att");
+var hard_drv_ide_att_val = document.getElementById("hard_drv_ide_att_val");
+var hard_drv_sata_att = document.getElementById("hard_drv_sata_att");
+var hard_drv_sata_att_val = document.getElementById("hard_drv_sata_att_val");
+var hard_drv_fw_att = document.getElementById("hard_drv_fw_att");
+var hard_drv_fw_att_val = document.getElementById("hard_drv_fw_att_val");
+var hard_drv_54rpm_att = document.getElementById("hard_drv_54rpm_att");
+var hard_drv_54rpm_att_val = document.getElementById("hard_drv_54rpm_att_val");
+var hard_drv_72rpm_att = document.getElementById("hard_drv_72rpm_att");
+var hard_drv_72rpm_att_val = document.getElementById("hard_drv_72rpm_att_val");
+var hard_drv_cache_att = document.getElementById("hard_drv_cache_att");
+var hard_drv_cache_att_val = document.getElementById("hard_drv_cache_att_val");
+
+var headp_full_att = document.getElementById("headp_full_att");
+var headp_full_att_val = document.getElementById("headp_full_att_val");
+var headp_in_att = document.getElementById("headp_in_att");
+var headp_in_att_val = document.getElementById("headp_in_att_val");
+var headp_pad_att = document.getElementById("headp_pad_att");
+var headp_pad_att_val = document.getElementById("headp_pad_att_val");
+var headp_closed_att = document.getElementById("headp_closed_att");
+var headp_closed_att_val = document.getElementById("headp_closed_att_val");
+var headp_head_att = document.getElementById("headp_head_att");
+var headp_head_att_val = document.getElementById("headp_head_att_val");
+var headp_wireless_att = document.getElementById("headp_wireless_att");
+var headp_wireless_att_val = document.getElementById("headp_wireless_att_val");
+var headp_bud_att = document.getElementById("headp_bud_att");
+var headp_bud_att_val = document.getElementById("headp_bud_att_val");
+var headp_neck_att = document.getElementById("headp_neck_att");
+var headp_neck_att_val = document.getElementById("headp_neck_att_val");
+var headp_clip_att = document.getElementById("headp_clip_att");
+var headp_clip_att_val = document.getElementById("headp_clip_att_val");
+
+var mobile_armband_att = document.getElementById("mobile_armband_att");
+var mobile_armband_att_val = document.getElementById("mobile_armband_att_val");
+var mobile_battery_att = document.getElementById("mobile_battery_att");
+var mobile_battery_att_val = document.getElementById("mobile_battery_att_val");
+var mobile_blue_att = document.getElementById("mobile_blue_att");
+var mobile_blue_att_val = document.getElementById("mobile_blue_att_val");
+var mobile_calc_att = document.getElementById("mobile_calc_att");
+var mobile_calc_att_val = document.getElementById("mobile_calc_att_val");
+var mobile_charge_att = document.getElementById("mobile_charge_att");
+var mobile_charge_att_val = document.getElementById("mobile_charge_att_val");
+var mobile_car_charge_att = document.getElementById("mobile_car_charge_att");
+var mobile_car_charge_att_val = document.getElementById("mobile_car_charge_att_val");
+var mobile_cell_att = document.getElementById("mobile_cell_att");
+var mobile_cell_att_val = document.getElementById("mobile_cell_att_val");
+var mobile_cable_att = document.getElementById("mobile_cable_att");
+var mobile_cable_att_val = document.getElementById("mobile_cable_att_val");
+var mobile_case_att = document.getElementById("mobile_case_att");
+var mobile_case_att_val = document.getElementById("mobile_case_att_val");
+var mobile_mount_att = document.getElementById("mobile_mount_att");
+var mobile_mount_att_val = document.getElementById("mobile_mount_att_val");
+var mobile_blk_att = document.getElementById("mobile_blk_att");
+var mobile_blk_att_val = document.getElementById("mobile_blk_att_val");
+var mobile_white_att = document.getElementById("mobile_white_att");
+var mobile_white_att_val = document.getElementById("mobile_white_att_val");
+var mobile_other_att = document.getElementById("mobile_other_att");
+var mobile_other_att_val = document.getElementById("mobile_other_att_val");
+
+var monitor_screen_att = document.getElementById("monitor_screen_att");
+var monitor_screen_att_val = document.getElementById("monitor_screen_att_val");
+var monitor_lcd_att = document.getElementById("monitor_lcd_att");
+var monitor_lcd_att_val = document.getElementById("monitor_lcd_att_val");
+var monitor_led_att = document.getElementById("monitor_led_att");
+var monitor_led_att_val = document.getElementById("monitor_led_att_val");
+var monitor_speaker_att = document.getElementById("monitor_speaker_att");
+var monitor_speaker_att_val = document.getElementById("monitor_speaker_att_val");
+var monitor_res_att = document.getElementById("monitor_res_att");
+var monitor_res_att_val = document.getElementById("monitor_res_att_val");
+var monitor_vga_att = document.getElementById("monitor_vga_att");
+var monitor_vga_att_val = document.getElementById("monitor_vga_att_val");
+var monitor_3d_att = document.getElementById("monitor_3d_att");
+var monitor_3d_att_val = document.getElementById("monitor_3d_att_val");
+var monitor_dvi_att = document.getElementById("monitor_dvi_att");
+var monitor_dvi_att_val = document.getElementById("monitor_dvi_att_val");
+var monitor_hdmi_att = document.getElementById("monitor_hdmi_att");
+var monitor_hdmi_att_val = document.getElementById("monitor_hdmi_att_val");
+var monitor_disp_port_att = document.getElementById("monitor_disp_port_att");
+var monitor_disp_port_att_val = document.getElementById("monitor_disp_port_att_val");
+
+var mobo_atx_att = document.getElementById("mobo_atx_att");
+var mobo_micro_atx_att = document.getElementById("mobo_micro_atx_att");
+var mobo_mini_itx_att = document.getElementById("mobo_mini_itx_att");
+var mobo_i7_cpu_att = document.getElementById("mobo_i7_cpu_att");
+var mobo_i5_cpu_att = document.getElementById("mobo_i5_cpu_att");
+var mobo_phenom_ii_cpu_att = document.getElementById("mobo_phenom_ii_cpu_att");
+var mobo_dvi_att = document.getElementById("mobo_dvi_att");
+var mobo_hdmi_att = document.getElementById("mobo_hdmi_att");
+var mobo_disp_port_att = document.getElementById("mobo_disp_port_att");
+var mobo_vga_att = document.getElementById("mobo_vga_att");
+var mobo_e_sata_att = document.getElementById("mobo_e_sata_att");
+var mobo_usb2_att = document.getElementById("mobo_usb2_att");
+var mobo_usb3_att = document.getElementById("mobo_usb3_att");
+var mobo_ide_att = document.getElementById("mobo_ide_att");
+var mobo_sata3_att = document.getElementById("mobo_sata3_att");
+var mobo_sata6_att = document.getElementById("mobo_sata6_att");
+var mobo_channel_att = document.getElementById("mobo_channel_att");
+var mobo_bit_rate_att = document.getElementById("mobo_bit_rate_att");
+var mobo_ofc_att = document.getElementById("mobo_ofc_att");
+var mobo_fire_att = document.getElementById("mobo_fire_att");
+var mobo_net_att = document.getElementById("mobo_net_att");
+var mobo_pci_att = document.getElementById("mobo_pci_att");
+var mobo_pci_x_att = document.getElementById("mobo_pci_x_att");
+var mobo_pci_x2_att = document.getElementById("mobo_pci_x2_att");
+var mobo_pci_x3_att = document.getElementById("mobo_pci_x3_att");
+var mobo_ram_att = document.getElementById("mobo_ram_att");
+var mobo_ram_speed_att = document.getElementById("mobo_ram_speed_att");
+var mobo_ram_slots_att = document.getElementById("mobo_ram_slots_att");
+var mobo_atx_att_val = document.getElementById("mobo_atx_att_val");
+var mobo_micro_atx_att_val = document.getElementById("mobo_micro_atx_att_val");
+var mobo_mini_itx_att_val = document.getElementById("mobo_mini_itx_att_val");
+var mobo_i7_cpu_att_val = document.getElementById("mobo_i7_cpu_att_val");
+var mobo_i5_cpu_att_val = document.getElementById("mobo_i5_cpu_att_val");
+var mobo_phenom_ii_cpu_att_val = document.getElementById("mobo_phenom_ii_cpu_att_val");
+var mobo_dvi_att_val = document.getElementById("mobo_dvi_att_val");
+var mobo_hdmi_att_val = document.getElementById("mobo_hdmi_att_val");
+var mobo_disp_port_att_val = document.getElementById("mobo_disp_port_att_val");
+var mobo_vga_att_val = document.getElementById("mobo_vga_att_val");
+var mobo_e_sata_att_val = document.getElementById("mobo_e_sata_att_val");
+var mobo_usb2_att_val = document.getElementById("mobo_usb2_att_val");
+var mobo_usb3_att_val = document.getElementById("mobo_usb3_att_val");
+var mobo_ide_att_val = document.getElementById("mobo_ide_att_val");
+var mobo_sata3_att_val = document.getElementById("mobo_sata3_att_val");
+var mobo_sata6_att_val = document.getElementById("mobo_sata6_att_val");
+var mobo_channel_att_val = document.getElementById("mobo_channel_att_val");
+var mobo_bit_rate_att_val = document.getElementById("mobo_bit_rate_att_val");
+var mobo_ofc_att_val = document.getElementById("mobo_ofc_att_val");
+var mobo_fire_att_val = document.getElementById("mobo_fire_att_val");
+var mobo_net_att_val = document.getElementById("mobo_net_att_val");
+var mobo_pci_att_val = document.getElementById("mobo_pci_att_val");
+var mobo_pci_x_att_val = document.getElementById("mobo_pci_x_att_val");
+var mobo_pci_x2_att_val = document.getElementById("mobo_pci_x2_att_val");
+var mobo_pci_x3_att_val = document.getElementById("mobo_pci_x3_att_val");
+var mobo_ram_att_val = document.getElementById("mobo_ram_att_val");
+var mobo_ram_speed_att_val = document.getElementById("mobo_ram_speed_att_val");
+var mobo_ram_slots_att_val = document.getElementById("mobo_ram_slots_att_val");
+var mobo_crossfx_att = document.getElementById("mobo_crossfx_att");
+var mobo_crossfx_att_val = document.getElementById("mobo_crossfx_att_val");
+var mobo_hybrid_Crossfx_att = document.getElementById("mobo_hybrid_Crossfx_att");
+var mobo_hybrid_Crossfx_att_val = document.getElementById("mobo_hybrid_Crossfx_att_val");
+var mobo_sli_att = document.getElementById("mobo_sli_att");
+var mobo_sli_att_val = document.getElementById("mobo_sli_att_val");
+
+var nic_pci_att = document.getElementById("nic_pci_att");
+var nic_pci_x_att = document.getElementById("nic_pci_x_att");
+var nic_usb_att = document.getElementById("nic_usb_att");
+var nic_wireless_att = document.getElementById("nic_wireless_att");
+var nic_antenna_att = document.getElementById("nic_antenna_att");
+var nic_cat5_wall_att = document.getElementById("nic_cat5_wall_att");
+var nic_cat5_jack_att = document.getElementById("nic_cat5_jack_att");
+var nic_pci_att_val = document.getElementById("nic_pci_att_val");
+var nic_pci_x_att_val = document.getElementById("nic_pci_x_att_val");
+var nic_usb_att_val = document.getElementById("nic_usb_att_val");
+var nic_wireless_att_val = document.getElementById("nic_wireless_att_val");
+var nic_antenna_att_val = document.getElementById("nic_antenna_att_val");
+var nic_cat5_wall_att_val = document.getElementById("nic_cat5_wall_att_val");
+var nic_cat5_jack_att_val = document.getElementById("nic_cat5_jack_att_val");
+
+var power_watts_att = document.getElementById("power_watts_att");
+var power_pci_x_att = document.getElementById("power_pci_x_att");
+var power_sata_att = document.getElementById("power_sata_att");
+var power_p4_att = document.getElementById("power_p4_att");
+var power_8pin_att = document.getElementById("power_8pin_att");
+var power_watts_att_val = document.getElementById("power_watts_att_val");
+var power_pci_x_att_val = document.getElementById("power_pci_x_att_val");
+var power_sata_att_val = document.getElementById("power_sata_att_val");
+var power_p4_att_val = document.getElementById("power_p4_att_val");
+var power_8pin_att_val = document.getElementById("power_8pin_att_val");
+var power_4pin_att = document.getElementById("power_4pin_att");
+var power_4pin_att_val = document.getElementById("power_4pin_att_val");
+
+var projector_lcd_att = document.getElementById("projector_lcd_att");
+var projector_dlp_att = document.getElementById("projector_dlp_att");
+var projector_res_att = document.getElementById("projector_res_att");
+var projector_3d_att = document.getElementById("projector_3d_att");
+var projector_asp_ratio_att = document.getElementById("projector_asp_ratio_att");
+var projector_remote_cont_att = document.getElementById("projector_remote_cont_att");
+var projector_lcd_att_val = document.getElementById("projector_lcd_att_val");
+var projector_dlp_att_val = document.getElementById("projector_dlp_att_val");
+var projector_res_att_val = document.getElementById("projector_res_att_val");
+var projector_3d_att_val = document.getElementById("projector_3d_att_val");
+var projector_asp_ratio_att_val = document.getElementById("projector_asp_ratio_att_val");
+var projector_remote_cont_att_val = document.getElementById("projector_remote_cont_att_val");
+
+var memram_ram_att = document.getElementById("memram_ram_att");
+var memram_ram_speed_att = document.getElementById("memram_ram_speed_att");
+var memram_ram_slots_att = document.getElementById("memram_ram_slots_att");
+var memram_ram_att_val = document.getElementById("memram_ram_att_val");
+var memram_ram_speed_att_val = document.getElementById("memram_ram_speed_att_val");
+var memram_ram_slots_att_val = document.getElementById("memram_ram_slots_att_val");
+var memram_ram_sodimm_att = document.getElementById("memram_ram_sodimm_att");
+var memram_ram_sodimm_att_val = document.getElementById("memram_ram_sodimm_att_val");
+var memram_ram_ecc_att = document.getElementById("memram_ram_ecc_att");
+var memram_ram_ecc_att_val = document.getElementById("memram_ram_ecc_att_val");
+
+var security_fake_camera_att = document.getElementById("security_fake_camera_att");
+var security_fake_camera_att_val = document.getElementById("security_fake_camera_att_val");
+var security_slvr_att = document.getElementById("security_slvr_att");
+var security_slvr_att_val = document.getElementById("security_slvr_att_val");
+var security_blk_att = document.getElementById("security_blk_att");
+var security_blk_att_val = document.getElementById("security_blk_att_val");
+var security_white_att = document.getElementById("security_white_att");
+var security_white_att_val = document.getElementById("security_white_att_val");
+var security_other_att = document.getElementById("security_other_att");
+var security_other_att_val = document.getElementById("security_other_att_val");
+
+var speakers_watts_att = document.getElementById("speakers_watts_att");
+var speakers_qty_att = document.getElementById("speakers_qty_att");
+var speakers_woofer_att = document.getElementById("speakers_woofer_att");
+var speakers_blk_att = document.getElementById("speakers_blk_att");
+var speakers_white_att = document.getElementById("speakers_white_att");
+var speakers_other_att = document.getElementById("speakers_other_att");
+var speakers_blk_att_val = document.getElementById("speakers_blk_att_val");
+var speakers_white_att_val = document.getElementById("speakers_white_att_val");
+var speakers_other_att_val = document.getElementById("speakers_other_att_val");
+var speakers_watts_att_val = document.getElementById("speakers_watts_att_val");
+var speakers_qty_att_val = document.getElementById("speakers_qty_att_val");
+var speakers_woofer_att_val = document.getElementById("speakers_woofer_att_val");
+var speakers_channel_att = document.getElementById("speakers_channel_att");
+var speakers_channel_att_val = document.getElementById("speakers_channel_att_val");
+
+var ssd_gb_mem_size_att = document.getElementById("ssd_gb_mem_size_att");
+var ssd_gb_mem_size_att_val = document.getElementById("ssd_gb_mem_size_att_val");
+
+var tools_crimper_att = document.getElementById("tools_crimper_att");
+var tools_it_tool_att = document.getElementById("tools_it_tool_att");
+var tools_it_acc_att = document.getElementById("tools_it_acc_att");
+var tools_rj45_plug_att = document.getElementById("tools_rj45_plug_att");
+var tools_net_test_att = document.getElementById("tools_net_test_att");
+var tools_anti_stat_att = document.getElementById("tools_anti_stat_att");
+var tools_crimper_att_val = document.getElementById("tools_crimper_att_val");
+var tools_it_tool_att_val = document.getElementById("tools_it_tool_att_val");
+var tools_it_acc_att_val = document.getElementById("tools_it_acc_att_val");
+var tools_rj45_plug_att_val = document.getElementById("tools_rj45_plug_att_val");
+var tools_net_test_att_val = document.getElementById("tools_net_test_att_val");
+var tools_anti_stat_att_val = document.getElementById("tools_anti_stat_att_val");
+
+var usb_mem_gb_mem_size_att = document.getElementById("usb_mem_gb_mem_size_att");
+var usb_mem_gb_mem_size_att_val = document.getElementById("usb_mem_gb_mem_size_att_val");
+
+var vid_card_ram_speed_att = document.getElementById("vid_card_ram_speed_att");
+var vid_card_ram_speed_att_val = document.getElementById("vid_card_ram_speed_att_val");
+var vid_card_gb_mem_size_att = document.getElementById("vid_card_gb_mem_size_att");
+var vid_card_gb_mem_size_att_val = document.getElementById("vid_card_gb_mem_size_att_val");
+var vid_card_bit_size_att = document.getElementById("vid_card_bit_size_att");
+var vid_card_bit_size_att_val = document.getElementById("vid_card_bit_size_att_val");
+var vid_card_dvi_att = document.getElementById("vid_card_dvi_att");
+var vid_card_dvi_att_val = document.getElementById("vid_card_dvi_att_val");
+var vid_card_hdmi_att = document.getElementById("vid_card_hdmi_att");
+var vid_card_hdmi_att_val = document.getElementById("vid_card_hdmi_att_val");
+var vid_card_disp_port_att = document.getElementById("vid_card_disp_port_att");
+var vid_card_disp_port_att_val = document.getElementById("vid_card_disp_port_att_val");
+var vid_card_vga_att = document.getElementById("vid_card_vga_att");
+var vid_card_vga_att_val = document.getElementById("vid_card_vga_att_val");
+var vid_card_sli_att = document.getElementById("vid_card_sli_att");
+var vid_card_sli_att_val = document.getElementById("vid_card_sli_att_val");
+var vid_card_cross_att = document.getElementById("vid_card_cross_att");
+var vid_card_cross_att_val = document.getElementById("vid_card_cross_att_val");
+var vid_card_pcie2_att = document.getElementById("vid_card_pcie2_att");
+var vid_card_pcie2_att_val = document.getElementById("vid_card_pcie2_att_val");
+var vid_card_pcie3_att = document.getElementById("vid_card_pcie3_att");
+var vid_card_pcie3_att_val = document.getElementById("vid_card_pcie3_att_val");
+var vid_card_mini_hdmi_att = document.getElementById("vid_card_mini_hdmi_att");
+var vid_card_mini_hdmi_att_val = document.getElementById("vid_card_mini_hdmi_att_val");
+
+var net_router_cable_att = document.getElementById("net_router_cable_att");
+var net_router_dsl_att = document.getElementById("net_router_dsl_att");
+var net_router_ports_att = document.getElementById("net_router_ports_att");
+var net_router_wireless_g_att = document.getElementById("net_router_wireless_g_att");
+var net_router_wireless_n_att = document.getElementById("net_router_wireless_n_att");
+var net_router_blk_att = document.getElementById("net_router_blk_att");
+var net_router_white_att = document.getElementById("net_router_white_att");
+var net_router_other_att = document.getElementById("net_router_other_att");
+var net_router_cable_att_val = document.getElementById("net_router_cable_att_val");
+var net_router_dsl_att_val = document.getElementById("net_router_dsl_att_val");
+var net_router_ports_att_val = document.getElementById("net_router_ports_att_val");
+var net_router_wireless_g_att_val = document.getElementById("net_router_wireless_g_att_val");
+var net_router_wireless_n_att_val = document.getElementById("net_router_wireless_n_att_val");
+var net_router_blk_att_val = document.getElementById("net_router_blk_att_val");
+var net_router_white_att_val = document.getElementById("net_router_white_att_val");
+var net_router_other_att_val = document.getElementById("net_router_other_att_val");
+
+var net_switch_ports_att = document.getElementById("net_switch_ports_att");
+var net_switch_100_att = document.getElementById("net_switch_100_att");
+var net_switch_1000_att = document.getElementById("net_switch_1000_att");
+var net_switch_blk_att = document.getElementById("net_switch_blk_att");
+var net_switch_white_att = document.getElementById("net_switch_white_att");
+var net_switch_other_att = document.getElementById("net_switch_other_att");
+var net_switch_ports_att_val = document.getElementById("net_switch_ports_att_val");
+var net_switch_100_att_val = document.getElementById("net_switch_100_att_val");
+var net_switch_1000_att_val = document.getElementById("net_switch_1000_att_val");
+var net_switch_blk_att_val = document.getElementById("net_switch_blk_att_val");
+var net_switch_white_att_val = document.getElementById("net_switch_white_att_val");
+var net_switch_other_att_val = document.getElementById("net_switch_other_att_val");
+
+var devices_keyboard_att = document.getElementById("devices_keyboard_att");
+var devices_mouse_att = document.getElementById("devices_mouse_att");
+var devices_key_mouse_att = document.getElementById("devices_key_mouse_att");
+var devices_track_att = document.getElementById("devices_track_att");
+var devices_touch_att = document.getElementById("devices_touch_att");
+var devices_gamepad_att = document.getElementById("devices_gamepad_att");
+var devices_joy_att = document.getElementById("devices_joy_att");
+var devices_cam_att = document.getElementById("devices_cam_att");
+var devices_usb_hub_att = document.getElementById("devices_usb_hub_att");
+var devices_wireless_att = document.getElementById("devices_wireless_att");
+var devices_usb_att = document.getElementById("devices_usb_att");
+var devices_blk_att = document.getElementById("devices_blk_att");
+var devices_white_att = document.getElementById("devices_white_att");
+var devices_other_att = document.getElementById("devices_other_att");
+var devices_keyboard_att_val = document.getElementById("devices_keyboard_att_val");
+var devices_mouse_att_val = document.getElementById("devices_mouse_att_val");
+var devices_key_mouse_att_val = document.getElementById("devices_key_mouse_att_val");
+var devices_track_att_val = document.getElementById("devices_track_att_val");
+var devices_touch_att_val = document.getElementById("devices_touch_att_val");
+var devices_gamepad_att_val = document.getElementById("devices_gamepad_att_val");
+var devices_joy_att_val = document.getElementById("devices_joy_att_val");
+var devices_cam_att_val = document.getElementById("devices_cam_att_val");
+var devices_usb_hub_att_val = document.getElementById("devices_usb_hub_att_val");
+var devices_wireless_att_val = document.getElementById("devices_wireless_att_val");
+var devices_usb_att_val = document.getElementById("devices_usb_att_val");
+var devices_blk_att_val = document.getElementById("devices_blk_att_val");
+var devices_white_att_val = document.getElementById("devices_white_att_val");
+var devices_other_att_val = document.getElementById("devices_other_att_val");
+var devices_key_ergo_gel_att = document.getElementById("devices_key_ergo_gel_att");
+var devices_key_ergo_gel_att_val = document.getElementById("devices_key_ergo_gel_att_val");
+var devices_mouse_ergo_gel_att = document.getElementById("devices_mouse_ergo_gel_att");
+var devices_mouse_ergo_gel_att_val = document.getElementById("devices_mouse_ergo_gel_att_val");
+var devices_slim_att = document.getElementById("devices_slim_att");
+var devices_slim_att_val = document.getElementById("devices_slim_att_val");
+var devices_mini_att = document.getElementById("devices_mini_att");
+var devices_mini_att_val = document.getElementById("devices_mini_att_val");
+
+ var results_div = document.getElementById("results");
+ var result_string = "";
+ var results = [];
+ var arr = [];
+ var search_att_val_list = [[audio_pci_att,audio_pci_att_val],
+ 							[audio_pci_x_att,audio_pci_x_att_val],
+							[audio_usb_att,audio_usb_att_val],
+							[audio_channel_att,audio_channel_att_val],
+							[audio_bit_rate_att,audio_bit_rate_att_val],
+							[audio_ofc_att,audio_ofc_att_val],
+							[cable_dvi_att,cable_dvi_att_val],
+							[cable_ofc_att,cable_ofc_att_val],
+							[cable_fire_att,cable_fire_att_val],
+							[cable_hdmi_att,cable_hdmi_att_val],
+							[cable_ide_att,cable_ide_att_val],
+							[cable_net_att,cable_net_att_val],
+							[cable_pow_att,cable_pow_att_val],
+							[cable_sata_att,cable_sata_att_val],
+							[cable_usb_usb_att,cable_usb_usb_att_val],
+							[cable_usb_min_usb_att,cable_usb_min_usb_att_val],
+							[cable_vga_att,cable_vga_att_val],
+							[cable_display_port_att,cable_display_port_att_val],
+							[cable_display_port_dvi_att,cable_display_port_dvi_att_val],
+							[cable_hdmi_vga_att,cable_hdmi_vga_att_val],
+							[cable_micro_hdmi_hdmi_att,cable_micro_hdmi_hdmi_att_val],
+							[cable_vga_mini_dp_att,cable_vga_mini_dp_att_val],
+							[cable_kvm_dvi_usb_att,cable_kvm_dvi_usb_att_val],
+							[cable_kvm_vga_ps2_att,cable_kvm_vga_ps2_att_val],
+							[cable_kvm_vga_usb_att,cable_kvm_vga_usb_att_val],
+							[cable_3_5mm_head_ext_att,cable_3_5mm_head_ext_att_val],
+							[cable_3_5mm__25inch_att,cable_3_5mm__25inch_att_val],
+							[cable_3_5mm_stereo_att,cable_3_5mm_stereo_att_val],
+							[cable_coax_att,cable_coax_att_val],
+							[cable_rca_att,cable_rca_att_val],
+							[cable_cat5_att,cable_cat5_att_val],
+							[cable_usb_share_att,cable_usb_share_att_val],
+							[cable_usb_ide_sata_att,cable_usb_ide_sata_att_val],
+							[cable_length_att,cable_length_att_val],
+							[drive_ide_att,drive_ide_att_val],
+							[drive_sata_att,drive_sata_att_val],
+							[drive_cd_att,drive_cd_att_val],
+							[drive_dvd_att,drive_dvd_att_val],
+							[drive_blu_ray_att,drive_blu_ray_att_val],
+							[drive_drive_spd_att,drive_drive_spd_att_val],
+							[comp_case_pow_att,comp_case_pow_att_val],
+							[comp_case_atx_att,comp_case_atx_att_val],
+							[comp_case_micro_atx_att,comp_case_micro_atx_att_val],
+							[comp_case_mini_itx_att,comp_case_mini_itx_att_val],
+							[comp_case_tooless_att,comp_case_tooless_att_val],
+							[comp_case_blk_att,comp_case_blk_att_val],
+							[comp_case_white_att,comp_case_white_att_val],
+							[comp_case_other_att,comp_case_other_att_val],
+							[case_fan_att,case_fan_att_val],
+							[drive_bay_fan_att,drive_bay_fan_att_val],
+							[product_brand,product_brand_val],
+							[price,price_val],
+							[i7_cpu_att,i7_cpu_att_val],
+							[i5_cpu_att,i5_cpu_att_val],
+							[cpu_pentium_att,cpu_pentium_att_val],
+							[cpu_celeron_att,cpu_celeron_att_val],
+							[cpu_cores_att,cpu_cores_att_val],
+							[lga1155_cpu_fan_att,lga1155_cpu_fan_att_val],
+							[liquid_cool_att,liquid_cool_att_val],
+							[phenom_ii_cpu_att,phenom_ii_cpu_att_val],
+							[phenom_ii_cpu_fan_att,phenom_ii_cpu_fan_att_val],
+							[lga775_cpu_fan_att,lga775_cpu_fan_att_val],
+							[am2_cpu_fan_att,am2_cpu_fan_att_val],
+							[case_slot_fan_att,case_slot_fan_att_val],
+							[ext_drive_e_sata_att,ext_drive_e_sata_att_val],
+							[ext_drive_usb_att,ext_drive_usb_att_val],
+							[ext_drive_cd_att,ext_drive_cd_att_val],
+							[ext_drive_dvd_att,ext_drive_dvd_att_val],
+							[ext_drive_blu_ray_att,ext_drive_blu_ray_att_val],
+							[ext_drive_drive_spd_att,ext_drive_drive_spd_att_val],
+							[ext_drive_blk_att,ext_drive_blk_att_val],
+							[ext_drive_white_att,ext_drive_white_att_val],
+							[ext_drive_other_att,ext_drive_other_att_val],
+							[hard_drv_e_sata_att,hard_drv_e_sata_att_val],
+							[hard_drv_usb_att,hard_drv_usb_att_val],
+							[hard_drv_fw_att,hard_drv_fw_att_val],
+							[hard_drv_ide_att,hard_drv_ide_att_val],
+							[hard_drv_sata_att,hard_drv_sata_att_val],
+							[hard_drv_gb_mem_size_att,hard_drv_gb_mem_size_att_val],
+							[hard_drv_tb_mem_size_att,hard_drv_tb_mem_size_att_val],
+							[hard_drv_54rpm_att,hard_drv_54rpm_att_val],
+							[hard_drv_72rpm_att,hard_drv_72rpm_att_val],
+							[hard_drv_cache_att,hard_drv_cache_att_val],
+							[headp_full_att,headp_full_att_val],
+							[headp_in_att,headp_in_att_val],
+							[headp_pad_att,headp_pad_att_val],
+							[headp_closed_att,headp_closed_att_val],
+							[headp_head_att,headp_head_att_val],
+							[headp_wireless_att,headp_wireless_att_val],
+							[headp_bud_att,headp_bud_att_val],
+							[headp_neck_att,headp_neck_att_val],
+							[headp_clip_att,headp_clip_att_val],
+							[mobile_armband_att,mobile_armband_att_val],
+							[mobile_battery_att,mobile_battery_att_val],
+							[mobile_blue_att,mobile_blue_att_val],
+							[mobile_calc_att,mobile_calc_att_val],
+							[mobile_charge_att,mobile_charge_att_val],
+							[mobile_car_charge_att,mobile_car_charge_att_val],
+							[mobile_cell_att,mobile_cell_att_val],
+							[mobile_cable_att,mobile_cable_att_val],
+							[mobile_case_att,mobile_case_att_val],
+							[mobile_mount_att,mobile_mount_att_val],
+							[mobile_blk_att,mobile_blk_att_val],
+							[mobile_white_att,mobile_white_att_val],
+							[mobile_other_att,mobile_other_att_val],
+							[monitor_screen_att,monitor_screen_att_val],
+							[monitor_lcd_att,monitor_lcd_att_val],
+							[monitor_led_att,monitor_led_att_val],
+							[monitor_speaker_att,monitor_speaker_att_val],
+							[monitor_res_att,monitor_res_att_val],
+							[monitor_vga_att,monitor_vga_att_val],
+							[monitor_3d_att,monitor_3d_att_val],
+							[monitor_dvi_att,monitor_dvi_att_val],
+							[monitor_hdmi_att,monitor_hdmi_att_val],
+							[monitor_disp_port_att,monitor_disp_port_att_val],
+							[mobo_atx_att, mobo_atx_att_val],
+							[mobo_micro_atx_att, mobo_micro_atx_att_val],
+							[mobo_mini_itx_att, mobo_mini_itx_att_val],
+							[mobo_i7_cpu_att, mobo_i7_cpu_att_val],
+							[mobo_i5_cpu_att, mobo_i5_cpu_att_val],
+							[mobo_phenom_ii_cpu_att, mobo_phenom_ii_cpu_att_val],
+							[mobo_dvi_att, mobo_dvi_att_val],
+							[mobo_hdmi_att, mobo_hdmi_att_val],
+							[mobo_disp_port_att, mobo_disp_port_att_val],
+							[mobo_vga_att, mobo_vga_att_val],
+							[mobo_e_sata_att, mobo_e_sata_att_val],
+							[mobo_usb2_att, mobo_usb2_att_val],
+							[mobo_usb3_att, mobo_usb3_att_val],
+							[mobo_ide_att, mobo_ide_att_val],
+							[mobo_sata3_att, mobo_sata3_att_val],
+							[mobo_sata6_att, mobo_sata6_att_val],
+							[mobo_channel_att, mobo_channel_att_val],
+							[mobo_bit_rate_att, mobo_bit_rate_att_val],
+							[mobo_ofc_att, mobo_ofc_att_val],
+							[mobo_fire_att, mobo_fire_att_val],
+							[mobo_net_att, mobo_net_att_val],
+							[mobo_pci_att, mobo_pci_att_val],
+							[mobo_pci_x_att, mobo_pci_x_att_val],
+							[mobo_pci_x2_att, mobo_pci_x2_att_val],
+							[mobo_pci_x3_att, mobo_pci_x3_att_val],
+							[mobo_ram_att, mobo_ram_att_val],
+							[mobo_ram_speed_att, mobo_ram_speed_att_val],
+							[mobo_ram_slots_att, mobo_ram_slots_att_val],
+							[mobo_crossfx_att,mobo_crossfx_att_val],
+							[mobo_hybrid_crossfx_att, mobo_hybrid_crossfx_att_val],
+							[mobo_sli_att, mobo_sli_att_val],
+							[nic_pci_att, nic_pci_att_val],
+							[nic_pci_x_att, nic_pci_x_att_val],
+							[nic_usb_att, nic_usb_att_val],
+							[nic_wireless_att, nic_wireless_att_val],
+							[nic_antenna_att, nic_antenna_att_val],
+							[nic_cat5_wall_att, nic_cat5_wall_att_val],
+							[nic_cat5_jack_att, nic_cat5_jack_att_val],
+							[power_watts_att, power_watts_att_val],
+							[power_pci_x_att, power_pci_x_att_val],
+							[power_sata_att, power_sata_att_val],
+							[power_p4_att, power_p4_att_val],
+							[power_4pin_att, power_4pin_att_val],
+							[power_8pin_att, power_8pin_att_val],
+							[projector_lcd_att, projector_lcd_att_val],
+							[projector_dlp_att, projector_dlp_att_val],
+							[projector_res_att, projector_res_att_val],
+							[projector_3d_att, projector_3d_att_val],
+							[projector_asp_ratio_att, projector_asp_ratio_att_val],
+							[projector_remote_cont_att, projector_remote_cont_att_val],
+							[memram_ram_att, memram_ram_att_val],
+							[memram_ram_speed_att, memram_ram_speed_att_val],
+							[memram_ram_slots_att, memram_ram_slots_att_val],
+							[memram_ram_sodimm_att, memram_ram_sodimm_att_val],
+							[memram_ram_ecc_att, memram_ram_ecc_att_val],
+							[security_fake_camera_att, security_fake_camera_att_val],
+							[security_slvr_att,security_slvr_att_val],
+							[security_blk_att,security_blk_att_val],
+							[security_white_att,security_white_att_val],
+							[security_other_att,security_other_att_val],
+							[speakers_watts_att,speakers_watts_att_val],
+							[speakers_qty_att,speakers_qty_att_val],
+							[speakers_channel_att,speakers_channel_att_val],
+							[speakers_woofer_att,speakers_woofer_att_val],
+							[speakers_blk_att,speakers_blk_att_val],
+							[speakers_white_att,speakers_white_att_val],
+							[speakers_other_att,speakers_other_att_val],
+							[ssd_gb_mem_size_att,ssd_gb_mem_size_att_val],
+							[tools_crimper_att,tools_crimper_att_val],
+							[tools_it_tool_att,tools_it_tool_att_val],
+							[tools_it_acc_att,tools_it_acc_att_val],
+							[tools_rj45_plug_att,tools_rj45_plug_att_val],
+							[tools_net_test_att,tools_net_test_att_val],
+							[tools_anti_stat_att,tools_anti_stat_att_val],
+							[usb_mem_gb_mem_size_att,usb_mem_gb_mem_size_att_val],
+							[vid_card_ram_speed_att,vid_card_ram_speed_att_val],
+							[vid_card_gb_mem_size_att,vid_card_gb_mem_size_att_val],
+							[vid_card_bit_size_att,vid_card_bit_size_att_val],
+							[vid_card_dvi_att,vid_card_dvi_att_val],
+							[vid_card_hdmi_att,vid_card_hdmi_att_val],
+							[vid_card_disp_port_att,vid_card_disp_port_att_val],
+							[vid_card_vga_att,vid_card_vga_att_val],
+							[vid_card_sli_att,vid_card_sli_att_val],
+							[vid_card_cross_att,vid_card_cross_att_val],
+							[vid_card_pcie2_att,vid_card_pcie2_att_val],
+							[vid_card_pcie3_att,vid_card_pcie3_att_val],
+							[vid_card_mini_hdmi_att,vid_card_mini_hdmi_att_val],
+							[net_router_cable_att,net_router_cable_att_val],
+							[net_router_dsl_att,net_router_dsl_att_val],
+							[net_router_ports_att,net_router_ports_att_val],
+							[net_router_wireless_g_att,net_router_wireless_g_att_val],
+							[net_router_wireless_n_att,net_router_wireless_n_att_val],
+							[net_router_blk_att,net_router_blk_att_val],
+							[net_router_white_att,net_router_white_att_val],
+							[net_router_other_att,net_router_other_att_val],
+							[net_switch_ports_att,net_switch_ports_att_val],
+							[net_switch_100_att,net_switch_100_att_val],
+							[net_switch_1000_att,net_switch_1000_att_val],
+							[net_switch_blk_att,net_switch_blk_att_val],
+							[net_switch_white_att,net_switch_white_att_val],
+							[net_switch_other_att,net_switch_other_att_val],
+							[devices_keyboard_att,devices_keyboard_att_val],
+							[devices_mouse_att,devices_mouse_att_val],
+							[devices_key_mouse_att,devices_key_mouse_att_val],
+							[devices_track_att,devices_track_att_val],
+							[devices_touch_att,devices_touch_att_val],
+							[devices_gamepad_att,devices_gamepad_att_val],
+							[devices_joy_att,devices_joy_att_val],
+							[devices_cam_att,devices_cam_att_val],
+							[devices_usb_hub_att,devices_usb_hub_att_val],
+							[devices_wireless_att,devices_wireless_att_val],
+							[devices_usb_att,devices_usb_att_val],
+							[devices_blk_att,devices_blk_att_val],
+							[devices_white_att,devices_white_att_val],
+							[devices_other_att,devices_other_att_val],
+							[devices_key_ergo_gel_att,devices_key_ergo_gel_att_val],
+							[devices_mouse_ergo_gel_att,devices_mouse_ergo_gel_att_val],
+							[devices_slim_att,devices_slim_att_val],
+							[devices_mini_att,devices_mini_att_val]];
+ 
+ function searchAttVal(){
+ 	//clear previous result
+	result_string = "";
+	//clear the item list
+	var item_list = [];
+ 	//purge item list with only selected item type
+	var the_item_class = document.getElementById("select_item").options[document.getElementById("select_item").selectedIndex].value;
+	//alert("1351: Selected Item Class = " + the_item_class); //...............check
+	if(the_item_class !== ""){
+	//iterate original_item_list, if find like item, add to item_list
+	for(var h = 0; h < original_item_list.length; h++){
+		//check if current item is like selected item type
+		 if(original_item_list[h].item_class == the_item_class){
+		 	//add it to item_list
+			item_list.push(original_item_list[h]);
+			//alert("1359: Adding " + original_item_list[h].item_name + " to item_list from original_item_list because " + original_item_list[h].item_class + " = " + the_item_class ); //.....check
+		 }//end if
+	}//end for
+	
+	 result_string = "";
+	 final_results = [];
+	 results = [];
+	 var new_att_val_list = [];
+	 var new_item_list = [];
+	 //get all the checkboxes that are checked
+	 for(var i = 0; i < search_att_val_list.length; i++){
+	 	//alert("1372: Checking " + search_att_val_list[i][0].name);
+			if(search_att_val_list[i][0].checked){
+				//add attribute and value and put it into an array
+				new_att_val_list.push(search_att_val_list[i]);
+				//alert("1376: Adding " + search_att_val_list[i][0].id + " to the search checkbox list"); //...............check
+			}else{
+				continue;
+			}//end if
+	 }//end for
+
+	//check each item against each attribute
+	for(var j = 0; j < item_list.length; j++){ 
+		var already_in_list = false;
+		for(var i = 0; i < new_att_val_list.length; i++){
+			var att_search = new_att_val_list[i][0].id;
+			//alert("1567:" + att_search); //.............................................................check
+			//if it does not have an attribute, remove it from the items array
+			if (item_list[j].hasOwnProperty(att_search) == false ){
+				//alert("1570: does item have property " + att_search + ": " + item_list[j].hasOwnProperty(att_search)); //...........................check
+				//alert("1389:" + item_list[j].item_name + " does not have:" + att_search); //...............check
+				//check if this item is already in the new list
+				for(var s=0;s<new_item_list.length;s++){
+					//alert("1392: comparing " + item_list[j].item_name + " with " + new_item_list[s].item_name); //...............check
+					if(item_list[j].id == new_item_list[s].id){
+						already_in_list = true;
+					}//end if
+				}//end for
+				if(already_in_list !== true){
+					new_item_list.push(item_list[j]);
+				}//end if
+			}//end if
+		}//end for
+	}//end for
+	//compare both lists and add to results
+	for(var x = 0; x < item_list.length; x++){
+		var do_not_add = false;
+		for(var z = 0; z < new_item_list.length; z++){
+			//alert("comparing original " + item_list[x].item_name + " with " + new_item_list[z].item_name); //......check
+			if(item_list[x].item_name == new_item_list[z].item_name){
+				do_not_add = true;
+				//alert("1410 : Not Adding " + new_item_list[z].item_name);
+			}//end if
+		}//end for
+		if(do_not_add !== true){
+			results.push(item_list[x]);
+		}//end if
+		
+	}//end for
+	
+	//get the values of items and search_values and return the ones that meet the minimum search_value
+	for(var j = 0; j < results.length; j++){ 
+		var add_to_final_list = false;
+		//alert("1423: " + add_to_final_list); //.................................................................check
+		for(var i = 0; i < new_att_val_list.length; i++){
+			var att_search = new_att_val_list[i][0].id;
+			var att_value = new_att_val_list[i][1].value;
+			//alert("1614: att: " + att_search + " value: " + att_value);
+					//check if value is set and pull value
+					var item_value = results[j][att_search];
+					//alert("1430: " + results[j].item_name + " " + att_search + ":" + item_value); //..........check
+					//check if value has a value and is less than specified
+					if(att_value !== ""){
+						//alert("1614: att: " + att_search + " value: " + att_value);
+						//check it its a number
+						if(isNaN(att_value) == false){
+							//alert("1617: " + att_value);
+							att_value = att_value * 1;
+							if(att_value > item_value ){
+								add_to_final_list = true;
+								//alert("1436:att <> \"\" " + add_to_final_list); //.........................check
+								//alert("1437: " + att_value + ">" + item_value + add_to_final_list); //...............check
+							}//end if
+							//alert ("adding " + item_list[j].item_name);
+						}else if(isNaN(att_value) == true && att_value !== item_value){
+							add_to_final_list = true;
+						}//end if
+					}else{
+						continue;	
+					}//end if
+					
+					//result_string += item_list[j].item_name + "<br />";	
+		}//end for
+		if(add_to_final_list != true){
+						final_results.push(results[j]);
+						//alert("1451:adding " + results[j].item_name); //.......check
+					}//end if
+	}//end for
+	
+	
+
+	for (var n = 0; n < final_results.length; n++) {
+		result_string += "<div class=\"category_product rounded_corners\"><div class=\"category_product_image\"><a target=\"_blank\" href=\""+ final_results[n].image +"\"><img width=\"120\" height=\"120\" alt=\""+ final_results[n].item_name +"\" src=\""+ final_results[n].image +"\"></a></div><!-- end of category_product_image --><div class=\"category_product_content\"><strong><a href=\""+ final_results[n].item_link +"\">"+ final_results[n].item_name +"</a></strong><br><span style=\"font-size:10pt;\"><strong>ID</strong> "+ final_results[n].id +"</span><br><span style=\"font-size:10pt;\"><strong>Price</strong> "+ final_results[n].price +"</span></div><!-- end of category_product_content --><div class=\"category_product_add\"><div class=\"product\"><input type=\"hidden\" class=\"product-title\" value=\""+ final_results[n].id + " " + final_results[n].item_name +"\"><input type=\"hidden\" class=\"product-price\" value=\""+ final_results[n].price +"\"><input type=\"hidden\" class=\"product-weight\" value=\""+ final_results[n].weight +"\"><img width=\"112\" height=\"112\" onmouseout=\"javascript: this.src='images/layout/add_computer.gif';\" onmouseover=\"javascript: this.src='images/layout/addon_computer.gif'\" class=\"googlecart-add\" role=\"button\" title=\"Add to cart\" alt=\"add to cart\" src=\"images/layout/add_computer.gif\"></div><!-- end of product --></div><!-- end of category_product_add --></div>";
+	}//end for
+	 
+	 results_div.innerHTML = result_string;
+	}else{
+		alert("Please Select Item Type");
+	}//end if
+ }//end searchAttVal
+ 
+ function returnInventory(){
+ for (var o = 0; o < original_item_list.length; o++) {
+		result_string += "<div class=\"category_product rounded_corners\" style=\"background-color:#000;\"><div class=\"category_product_image\" style=\"width:240px;\"><a href=\""+original_item_list[o].image+"\" target=\"_blank\" ><img src=\""+original_item_list[o].image+"\" alt=\""+original_item_list[o].item_name+"\" width=\"240\"  /></a></div><!-- end of category_product_image --><div class=\"category_product_content\" style=\"width:260px;color:#975B38;\"><strong>"+original_item_list[o].item_name+"</strong><br /><span style=\"font-size:10pt;color:#975B38;\"><strong>Price: </strong>"+original_item_list[o].price+"</span></div><!-- end of category_product_content --><div class=\"category_product_offer\"><form class=\"rounded_corners make_your_offer_box\" style=\"float:left; text-align:left;  background-color:#cccccc;\" action=\"diabloIII-item-request.php\" method=\"post\" enctype=\"multipart/form-data\" ><input  name=\"product_offer\" value=\""+original_item_list[o].item_name+"\" type=\"hidden\" />Battle.NET User:<input type=\"text\" value=\"\" name=\"user\" size=\"9\" maxlength=\"20\" /><br /><input style=\"margin-top:3px;\" type=\"Submit\" value=\"Buy\" onmouseover=\"this.style.cursor='pointer';\" /></form></div><!-- end of category_product_offer --></div><!-- end of category_product -->";
+	}//end for
+	 
+	 results_div.innerHTML = result_string;
+ }
+
+ 
+
+  //-->
+</script>
+</body>
+</html>

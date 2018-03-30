@@ -1,0 +1,369 @@
+<script src="javascript/demo_gallery_comics.js"></script>
+
+<style type="text/css">
+#holder_art {
+	width:495px;
+	height:345px;
+	margin:0 auto;
+	background-color:#ffffff;
+}
+
+#gallery_holder_div {
+	width:15px;
+	height:345px;
+	margin:0 auto;
+	overflow:hidden;
+	background-color:#333333;
+	border:1px solid #000000;
+	border-radius: 5px;
+}
+#gallery_div {
+	height:345px;
+	width:120px;
+	opacity:0;
+	background-color:#333333;
+	position:relative;
+}
+.gallery_row {
+	height:115px;
+	width:auto;
+	float:left;
+	clear:both;
+}
+.image_holder {
+	height:115px;
+	width:120px;
+	float:left;
+	text-align:center;
+	background-color:#333333;
+}
+
+.image_holder img:hover {
+	box-shadow: 0 0 15px 15px #000000;
+    -webkit-box-shadow: 0 0 15px 15px #000000; 
+    -moz-box-shadow: 0 0 15px 15px #000000;
+	border:3px solid #ffffff;
+}
+
+.image_holder img {
+	position:relative;
+	top:7px;
+	transition: all 0.5s ease-in-out;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+}
+
+.button_scroller {
+	width:27px;
+	height:25px;
+	opacity: 0.5;
+-webkit-transition: opacity 1s ease-in-out;
+  -moz-transition: opacity 1s ease-in-out;
+  -ms-transition: opacity 1s ease-in-out;
+  -o-transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease-in-out;
+  position:relative;
+  z-index:50;
+}
+
+.button_scroller:hover {
+	opacity: 1;
+}
+
+#scroll_left_div {
+	  top:-184px;
+}
+
+#scroll_right_div {
+	  top:-209px;
+	  left:468px;
+}
+
+#image_viewer_div {
+	padding:10px;
+	width:500px;
+	background-color:#000000;
+	display:none;
+	z-index:70;
+	text-align:center;
+	position:fixed;
+	left:0px;
+	top:0px;
+
+}
+
+#directions_div {
+	text-align:center;
+	width:100%;
+	height:auto;
+}
+
+#directions_div p {
+	margin:0px;
+	padding:0px;
+}
+
+</style>
+
+<div id="holder_art">
+
+    <div id="gallery_holder_div">
+    
+    	<div id="gallery_div">
+        
+    		<div id="row_1" class="gallery_row"></div>
+            
+            <div id="row_2" class="gallery_row"></div>
+            
+            <div id="row_3" class="gallery_row"></div>
+            
+        </div><!-- gallery_div -->
+        
+        <div id="scroll_left_div" class="button_scroller" onMouseOver="scrollGLeft();" onMouseOut="stopGScroll();">
+    
+    		<img src="images/layout/scrolling-button-left.png" width="27" height="25" />
+    
+    	</div><!-- scroll_left_div -->
+    
+   		<div id="scroll_right_div" class="button_scroller" onMouseOver="scrollGRight();" onMouseOut="stopGScroll();">
+    
+    		<img src="images/layout/scrolling-button-right.png" width="27" height="25" />
+    
+    	</div><!-- scroll_right_div -->
+        
+    </div><!-- gallery_holder_div -->
+    
+    <div id="directions_div"><p style="font-weight:bold;">Click or Hold to Zoom</p></div><!-- directions_div -->
+    
+    <!-- <div id="image_viewer_div" onClick="this.style.display='none';"></div> image_viewer_div -->
+    
+</div><!-- center_holder_art -->
+<!--
+<input type="button" onClick="ocGallery()" value="Click" />
+-->
+<script language="javascript" type="text/javascript">
+//set all variables
+var anim_gall_width = 15;
+var anim_opacity = 0;
+var gallery_holder = document.getElementById("gallery_holder_div");
+var gallery_div = document.getElementById("gallery_div");
+
+var row_1 = document.getElementById("row_1");
+var row_2 = document.getElementById("row_2");
+var row_3 = document.getElementById("row_3");
+var slot_count = 0;
+var row_count = 0;
+var slot_width = 120;
+var gallery_list_comics_size = gallery_list_comics.length; // 25
+var extra_slots = gallery_list_comics_size % 3; // 1
+var row_min_slots = (gallery_list_comics_size - extra_slots) / 3; //8
+var row_max_slots = ((gallery_list_comics_size - extra_slots) / 3) + extra_slots; //9
+var gallery_width = row_max_slots * slot_width; //1080
+var is_gallery_filled = false;
+
+function fillUpGallery(){
+//fill in images into gallery holder ///////////////////////////////////////////////////////////////////////////////////////////
+gallery_div.style.width = gallery_width;
+
+for(var i = 0;i < gallery_list_comics.length; i++){
+	var fill_row = "";
+	
+	fill_row += "<div class=\"image_holder\">\n";
+    fill_row +=  	"<a href=\""+  gallery_list_comics[i].location +"\" target=\"_blank\" ><img src=\""+ gallery_list_comics[i].tn_location +"\" height=\"100\" onmouseover=\"expandImage('"+ gallery_list_comics[i].location +"')\" alt=\""+ gallery_list_comics[i].name +"\" onmouseout=\"stopImgExpand();\" /></a>\n";
+    fill_row +=  "</div>\n";
+	
+	slot_count += 1;
+	
+	if(slot_count == row_min_slots){
+		row_count += 1;
+		slot_count = 0;
+	}//end if
+	
+	switch(row_count){
+		case 0:
+			//add to row 1
+			row_1.innerHTML += fill_row;
+		break;
+		case 1:
+			//add to row 2
+			row_2.innerHTML += fill_row;
+		break;
+		case 2:
+		case 3:
+			//add to row 3
+			row_3.innerHTML += fill_row;
+		break;
+	}//end switch
+	
+	//
+}//end for
+
+is_gallery_filled = true;
+}//end function
+
+
+// open close gallery animation ///////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function animOpenGallery(){
+	parent.sync_gallery = true;
+	anim_gall_width = anim_gall_width + 15;
+	gallery_holder.style.width = anim_gall_width + "px";
+	if(anim_gall_width >= 495){
+		setTimeout('clearInterval(anim_ogallery_interval)', 0);
+		gallery_holder.style.width = 495 + "px";
+		anim_gall_width = 495;
+	}//end if
+}//end function
+
+function animCloseGallery(){
+	parent.sync_gallery = false;
+	anim_gall_width = anim_gall_width - 15;
+	gallery_holder.style.width = anim_gall_width + "px";
+	if(anim_gall_width <= 15){
+		setTimeout('clearInterval(anim_cgallery_interval)', 0);
+		gallery_holder.style.width = 15 + "px";
+		anim_gall_width = 15;
+	}//end if
+}//end function
+
+function animOpacityShow(){
+	anim_opacity = anim_opacity + 0.1;
+	gallery_div.style.opacity = anim_opacity;
+	if(anim_opacity >= 1){
+		setTimeout('clearInterval(anim_opacitys_interval)', 0);
+		gallery_div.style.opacity = 1;
+		anim_opacity = 1;
+	}//end if
+}//end function
+
+function animOpacityHide(){
+	anim_opacity = anim_opacity - 0.1;
+	gallery_div.style.opacity = anim_opacity;
+	if(anim_opacity <= 0){
+		setTimeout('clearInterval(anim_opacityh_interval)', 0);
+		gallery_div.style.opacity = 0;
+		anim_opacity = 0;
+	}//end if
+}//end function
+
+function animOpacity(){
+    if(gallery_div.style.opacity == 0){  
+		anim_opacitys_interval = setInterval(function(){ animOpacityShow(); }, 30);
+		anim_opacitys_interval;
+    }//end if
+}//end function
+
+
+function ocGallery(){
+	if(!is_gallery_filled){
+		fillUpGallery();
+		is_gallery_filled = true;
+	}//end if
+	 animOpacity();
+	if(anim_gall_width <= 15){
+		anim_ogallery_interval = setInterval(function(){ animOpenGallery(); }, 30);
+		anim_ogallery_interval;
+	}//end if
+}//end function
+
+function ocGalleryStart(){
+	var startG = setTimeout(function(){ocGallery()}, 200);
+	startG;
+}//end function
+
+//functions to stop intervals for parent website
+function StopOpenGallAnim(){
+	setTimeout('clearInterval(anim_ogallery_interval)', 0);
+	gallery_holder.style.width = 495 + "px";
+	anim_gall_width = 495;
+}//end function
+
+function StopCloseGallAnim(){
+	setTimeout('clearInterval(anim_cgallery_interval)', 0);
+	gallery_holder.style.width = 15 + "px";
+	anim_gall_width = 15;
+}//end function
+
+//scroll gallery ///////////////////////////////////////////////////////////////////////////////////////////
+
+var scrolling_max = (gallery_width - 495) * -1;
+var scroll_g_at = 0;
+var scrolling_left = false;
+var scrolling_right = false;
+
+function scrollingGLeft(){
+	scrolling_left = true;
+	scrolling_right = false;
+	scroll_g_at = scroll_g_at + 10;
+	gallery_div.style.left = scroll_g_at;
+	if (scroll_g_at >= 0){
+		setTimeout('clearInterval(anim_scrollGLeft_interval)', 0);
+		scroll_g_at = 0;
+		gallery_div.style.left = scroll_g_at + "px";
+	}//end if
+}//end function
+
+function scrollingGRight(){
+	scrolling_right = true;
+	scrolling_left = false;
+	scroll_g_at = scroll_g_at - 10;
+	gallery_div.style.left = scroll_g_at;
+	if (scroll_g_at <= scrolling_max){
+		setTimeout('clearInterval(anim_scrollGRight_interval)', 0);
+		scroll_g_at = scrolling_max;
+		gallery_div.style.left = scroll_g_at + "px";
+	}//end if
+}//end function
+
+function scrollGLeft(){
+	anim_scrollGLeft_interval = setInterval(function(){ scrollingGLeft(); }, 30);
+	anim_scrollGLeft_interval;
+}//end function
+
+function scrollGRight(){
+		anim_scrollGRight_interval = setInterval(function(){ scrollingGRight(); }, 30);
+		anim_scrollGRight_interval;	
+}//end function
+
+function stopGScroll(){
+	if(scrolling_right){
+		setTimeout('clearInterval(anim_scrollGRight_interval)', 0);
+		scroll_g_at = parseInt(gallery_div.style.left);
+	}else if(scrolling_left){
+		setTimeout('clearInterval(anim_scrollGLeft_interval)', 0);
+		scroll_g_at = parseInt(gallery_div.style.left);
+	}//end if
+}//end function
+
+//Image expand ///////////////////////////////////////////////////////////////////////////////////////////
+
+var image_viewer_div = parent.document.getElementById("image_viewer_div");
+
+function exapandingImage(image_link){
+	var viewer_content = "<img src=\""+ image_link +"\" width=\"500\" />";
+	image_viewer_div.innerHTML = viewer_content;
+
+	//call the following in parent function
+	/*
+	image_viewer_div.style.display = "block";
+	image_viewer_div.style.width = 500;
+	var s_width = (screen.width / 2) - (parseInt(image_viewer_div.style.width) / 2);
+	image_viewer_div.style.left = s_width + "px";
+	*/
+	parent.exapandingImage();
+	
+}//end function
+
+function expandImage(image_link){
+	expand_img_timer = setTimeout(function(){ exapandingImage(image_link); }, 1000);
+	expand_img_timer;
+}//end function
+
+function stopImgExpand(){
+	clearTimeout(expand_img_timer);
+}//end function
+
+
+</script>

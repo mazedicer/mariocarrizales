@@ -1,0 +1,6 @@
+Android Developer Tools
+https://dl-ssl.google.com/android/eclipse
+
+Developer Tools
+NDK plugins
+

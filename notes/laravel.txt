@@ -1,0 +1,486 @@
+<?php 
+////////////////////////////////////////////////////////////
+//SECURITY CSRF Cross Site Request Forgery
+////////////////////////////////////////////////////////////
+/* route > controller > template */
+//routes 
+Route::get('/',[
+	'as'=>'home',
+	'uses'=>'HomeController@index',
+]);
+Route::post('/mailing',[
+	'as'=>'mailing.create',
+	'uses'=>'MailingController@create',
+]);
+/*controller class HomeController @ method index() in Http/Controllers/HomeController.php 
+controller class MailingController @ method create() in ...*/
+class HomeController extends Controller {
+	public function index(Request $request){
+		//returns blade template file resources/views/home/index.blade.php 
+		return view('home.index');
+	}
+}
+class MailingController extends Controller {
+	public function create(Request $request){
+		dd($request->email); //data dump on screen
+	}
+}
+//template 
+<form action="{{route('mailing.create')}}" method="post">
+	//reuse previously entered values with old('input-name')
+	<input type="text"> name="email" value="{{old('email')}}">
+	@if ($errors->has('email'))
+		<div>{{$errors->first('email')}}</div> //first error 
+	@endif
+	<input type="submit">
+	//<input type="hidden" name="_token" value="{{csrf_token()}}">
+	//{{csrf_field()}} will output the above line
+</form>
+
+////////////////////////////////////////////////////////////
+//VALIDATION
+////////////////////////////////////////////////////////////
+/*input validation rules in the create method of MailingController
+app/Http/Kernel.php framework middleware 
+in the $middleWareGroups web ShareErrorsFromSession*/
+$this->validate($request,[
+	'email'=>'required|email',
+], 
+[
+	//custom message :attribute in this case is email
+	//not necessary if customized global under resources/lang/en/validation.php 
+	'email.required'=>'We need your :attribute.', 
+]);
+//default for localization english resources/lang/en/validation.php 
+'custom'=>[
+	'attribute-name'=>[
+		'rule-name'=>'custom-message',
+	],
+],
+//change to:
+'custom'=>[
+	'email'=>[
+		'required'=>'We need your email address.',
+	],
+],
+
+////////////////////////////////////////////////////////////
+//FORM REQUEST
+////////////////////////////////////////////////////////////
+cmd>php artisan make:request CreateSubscriptionFormRequest
+//Http/Requests/CreateSubscriptionFormRequest.php 
+//move into Http/Requests/Newsletter/CreateSubscriptionFormRequest.php 
+namespace App\Http\Request\Newsletter;
+use App\Http\Requests\Request;
+class CreateSubscriptionFormRequest extends Request {
+	//is user authorized, return bool
+	public function authorize(){
+		//return Auth::check();
+		return true;
+	}
+	//validation rules that apply to the request 
+	public function rules(){
+		return [
+			'email'=>'required|email',
+		];
+	}
+}
+//how to use on HomeController.php 
+use App\Http\Requests\Newsletter\CreateSubscriptionFormRequest;
+class HomeController extends Controller {
+	public function index(){
+		return view('home.index');
+	}
+	//replace normal Request type-hint with created one 
+	public function create(CreateSubscriptionFormRequest $request){
+		dd('Subscribe user');
+	}
+}
+
+////////////////////////////////////////////////////////////
+//REDIRECT to named routes, urls, back, etc.
+////////////////////////////////////////////////////////////
+Route::get('/second',[
+	'as'=>'second',
+	'uses'=>'HomeController@second',
+]);
+//inside second() method 
+return redirect()->to('/second');
+//or using route name 
+return redirect()->route('second')
+//or facade 
+return Redirect::
+//or validate, insert a post, and then go back 
+return redirect()->back();
+
+////////////////////////////////////////////////////////////
+//JSON RESPONSES
+////////////////////////////////////////////////////////////
+//from a post request 
+return response()->json([
+	'post'=>[
+		['id'=>1,'title'=>'abc'],
+		['id'=>2,'title'=>'def'],
+		['id'=>3,'title'=>'ghi'],
+	]
+]);
+
+////////////////////////////////////////////////////////////
+//EMAIL
+////////////////////////////////////////////////////////////
+//.env, config/mail.php , config/services.php 
+//mail facade in config/app.php 
+//welcome.blade.php 
+//pass to welcome.blade.php view and send 
+$name="Mario";
+Mail::send('emails.auth.welcome',['name'=>$name],function($m){
+	$m->to('mail@email.com', 'Me')
+		->subject('my mail');
+});
+//mail with Mailer 
+use Illuminate\Mail\Mailer;
+//in class method 
+public function index(Mailer $mail){
+	$mail->send('emails.auth.welcome',['name'=>$name],function($m){
+	$m->to('mail@email.com', 'Me')
+		->subject('my mail');
+}
+//in constructor for different mails 
+protected $mailer;
+public function __construct(Mailer $mail){
+	$this->mailer = $mail;
+}
+//then use $this->mailer->send()
+
+////////////////////////////////////////////////////////////
+//MIGRATION
+////////////////////////////////////////////////////////////
+/*.env, database/migrations/ DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD
+everytime you add columns, tables, etc. you need to do the opposite under down()
+migration files are created with timestamps so when php artisan migrate command is ran 
+they will run from oldest to new */
+php artisan make:migration create_users_table --create=users 
+//use methods for building schema
+php artisan migrate
+//for future modifications, create a new migration
+php artisan make:migration add_password_column_to_user_table --table=users
+//you would add inside up() method Schema::table('users',function(Blueprint $table)
+$table->string('password');
+//and in down() method Schema::table('users',function(Blueprint $table)
+$table->dropColumn('password');
+php artisan migrate 
+//to rollback a migration 
+php artisan migrate:rollback 
+//to reset 
+php artisan migrate:reset 
+//changes to columns, create a migration and choose the table to modify 
+php artisan make:migration update_users_set_bio_nullable --table=users 
+//inside up() method 
+$table->text('bio')->nullable()->change();
+//inside down() method 
+$table->text('bio')->nullable(false)->change();
+//if error 
+comoser require doctrine/dbal 
+//change column name 
+php artisan make:migration rename_bio_to_about_on_users_table --table=users
+$table->renameColumn('bio', 'about'); //up 
+$table->renameColumn('about', 'bio'); //down to rollback  
+
+////////////////////////////////////////////////////////////
+//MODELS
+////////////////////////////////////////////////////////////
+php artisan make:migration create_posts_table --create=posts
+//design your table 
+php arstisan migrate 
+//model names are singular 
+php artisan make:model Post 
+//app/Post.php 
+use Illuminate\Database\Eloquent\Model;
+class Post extends Model {
+	protected $table = 'posts';
+	protected $fillable = [
+		'title',
+		'body',
+	];
+}
+//to populate with data use faker in routes.php and go to that location on browser
+Route::group(['middleware'=>['web']], function(){
+	Route::get('/seed', function(\Appname\Post $post){
+		//using faker will populate database with random data 
+		$f = \Faker\Factory::create();
+		foreach(range(1, 1000) as $x){
+			$post->create([
+				'title'=>$f->sentence(10),
+				'body'=>$f->sentence(100),
+			])
+		}
+	});
+});
+//how to get records 
+use Appname\Post;
+class HomeController extends Controller {
+	public function index(Post $post){
+		//returns a collection 
+		$post=$post->get();
+		//returns 10 records 
+		$post=$post->take(10)->get();
+		dd($post);
+		//pass to a view 
+		return view('home.index')->with('posts',$posts);
+	}
+}
+//index.blade.php 
+@if($posts->count())
+	@foreach($posts as $post)
+	{{$post->title}}
+		{{str_limit($post->body, 100)}}
+@else
+	no posts 
+@endif 
+
+//CRUD
+//create 
+public function index(Post $post){
+	$post->create([
+		'title'=>'Test',
+		'body'=>'Test body',
+	]);
+	//better way in case of conditions, insert individually 
+	$newPost = new Post;
+	$newPost->title="A new title";
+	//if body, etc..
+	$newPost->body="A new post body";
+	$newPost->save();
+}
+//update 
+public function index(Request $request, Post $post){
+	$postToUpdate=$post->find($request->id);
+	//$postToUpdate=$post->findOrFail($request->id);
+	$postToUpdate=$post->where('id', $request->id);
+	//or $postToUpdate=$post->find($request->id);
+	//dd($postToUpdate);
+	$postToUpdate->update([
+		'title'=>'This is an updated title',
+	])
+	//or 
+	$postToUpdate->title="Abc";
+	$postToUpdate->body="More abc";
+	$postToUpdate->save();
+}
+//delete
+$postToUpdate->delete();
+
+//properties and methods in your model. skinny controllers, fat models 
+//User.php model in app/User.php 
+public function getFullName(){
+	return $this->first_name . " " . $this->last_name;
+}
+//use it 
+use MyApp\User;
+class HomeController extends Controller {
+	public function index(User $user){
+		$user = $user->where('username','alex')->first();
+		dd($user->getFullName());
+	}
+}
+
+//queries
+$p=$post->where('id','=',1);
+$p=$post->where('id','=',1)->get();
+//boolean 
+$p=$post->where('live',true); //tiny int value 1 
+//return in decending order 
+$p=$posts->orderBy('created_at','desc')->get();
+//limit to 5 results 
+$p=$posts->orderBy('created_at','desc')->limit(5)->get();
+
+//scopes - shortcut methods prefixed with scope<method_name>
+//in User.php 
+public function scopeIsActive($query){
+	//returns a query builder
+	return $query->where('active',true);
+}
+//use at controller 
+public function index(User $user){
+	$users=$user->isActive()->get();
+}
+//another example pulling from reputation column INT 11
+public function scopeReputationGreaterThan($query,$reputation){
+	return $query->where('reputation','>=',$reputation);
+}
+//use in controller 
+public function index(User $user){
+	$users=$user->reputationGreaterThan(100)->get();
+	dd($users);
+}
+//scope chaining
+$users=$user->isActive()->reputationGreaterThan(100)->get();
+
+////////////////////////////////////////////////////////////
+//DATES TIMES in eloquent Carbon date time 
+////////////////////////////////////////////////////////////
+dd($post->created_at) //returns carbon instance
+{{$post->created_at}}
+//create date column manually reviewed_at will not be a carbon instance 
+//when creating models, specify which columns are dates
+namespace MyApp;
+use Illuminate\Database\Eloquent\Model;
+class Post extends Model {
+	protected $table='posts';
+	protected $fillable=[
+		'title',
+		'body',
+	];
+	protected $dates=[
+		'reviewed_at',
+	];
+}
+
+////////////////////////////////////////////////////////////
+//ROUTES-MODEL BINDING
+////////////////////////////////////////////////////////////
+//since we are using Post model, route path must point to {post}
+Route::get('/post/{post}',[
+	'as'=>'post.get',
+	'uses'=>'postController@get',
+]);
+//controller PostController
+use MyApp\Post;
+class PostController extends Controller {
+	public function get(Post $post){
+		dd($post);
+	}
+}
+//in RouteServiceProvider.php 
+public function boot(Router $router){
+	$router->bind('post',function($value){
+		return Post::where('slug',$value)->where('live',true)->first();
+	});
+	parent::boot($router);
+}
+//If not using RouteServiceProvider.php 
+//to target from column name, add to Post.php model 
+//and use slug column 
+public function getRouteKeyName(){
+	return 'slug';
+}
+//in browser go to MyApp.app:8000/post/<slug_name> will return records that have that slug name 
+
+////////////////////////////////////////////////////////////
+//ACCESSORS API
+////////////////////////////////////////////////////////////
+Route::get('/api/posts',[
+	'as'=>'api.posts',
+	'uses'=>'PostController@index',
+]);
+//PostController
+public function index(Post $post){
+	$post=$post->first();
+	dd($post->humanCreatedAt);
+	//this will return all records 
+	//return response()->json($post->get());
+}
+//create accessor in model class Post prefixed with get<MethodName>Attribute postfix
+protected $appends=[
+	'humanCreatedAt',
+];
+class Post extends Model {
+	public function getHumanCreatedAtAttribute(){
+		return $this->created_at->diffForHumans(); //diffForHumans() carbon method 
+	}
+}
+
+////////////////////////////////////////////////////////////
+//PAGINATION
+////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////
+//ROUTES
+////////////////////////////////////////////////////////////
+	web.php
+		routes setup
+			returns a view 
+	
+resources
+	views
+		welcome.blade.php 
+		
+config
+	view.php
+		paths = resources/views 
+
+CONTROLLERS
+
+php artisan
+php artisan makecontroller usercontroller
+
+app/http/controllers/UserController.php
+
+Route::get( 'users', [ 'uses' => 'UsersController@index' ] );
+
+//@index is the function name
+
+views/admin/users/index.blade.php 
+
+@foreach( $users as $user )
+	<li>{!! $user['first_name'] !!}</li>
+@endforeach
+
+UserController.php 
+
+<?php 
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use App\Http\Requests;
+class UserController extends Controller {
+	public function index(){
+		$users = [ 
+			'0' => [ 
+				'first_name' => 'Mario',
+				'last_name' => 'Carrizales'
+			],
+			'1' => [ 
+				'first_name' => 'Mario',
+				'last_name' => 'Carrizales'
+			]
+		];
+		return view( 'admin.users.index', compact( 'users' ) );
+	}
+}
+
+Getting data from database
+
+Route::get( 'users/create', [ 'uses' => 'UsersController@create' ] );
+Route::post( 'users', [ 'uses' => 'UsersController@store' ] );
+
+public function create(){
+	retrun view( 'admin.users.create' );
+}
+
+use App\User;
+
+public function store( Request $request ){
+	User::create( $request->all() );
+	return 'success';
+	return $request->all();
+}
+
+resources/views/admin/users/create.blade.php
+
+<form method="POST" action="/users">
+	{!! csrf_field() !!}
+	<input type="text" name="name">
+	<input type="email" name="email">
+	<input type="password" name="password">
+	<input type="submit" value="Create">
+</form>
+
+php artisan 
+shows commands for right-out-the-box features
+
+Authentication
+
+php artisan make:auth
+//will make login/register/forgot password pages
+

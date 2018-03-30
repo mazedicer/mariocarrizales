@@ -1,0 +1,224 @@
+<?php
+//class
+class Address {
+	//property
+	public $streetName = "California";
+	
+	//function
+	function display(){
+		$output = "";
+		$output .= $this->streetName;
+		return $output;
+	}
+	
+}
+
+//DEFAULT VALUE FOR ARGUMENTS
+
+	function paint($color="red"){
+		echo "The color of the room is {$color}.";
+	}
+
+//REFERENCE ASSIGNMENT
+	
+	same as alias
+	$b =& $a;
+	
+	ex1,
+		//$var becomes the alias of $a
+		function ref_test(&$var){
+		
+			$var = $var * 2;
+		
+		}//end function
+		
+		$a = 10;
+		ref_test($a);
+		echo $a; // result is 20
+	
+	ex2,
+		function &ref_return(){
+		
+			global $a;
+			$a = $a * 2;
+			return $a;
+		
+		}//end function
+		
+		$a = 10;
+		$b =& ref_return(); //alias of $a
+
+//FIND CLASS NAME OF OBJECTS
+
+	get_class($address_business);
+	
+	($address_copy instanceOf Address)
+
+//INSTANTIATION OF CLASS
+
+	$address = new Address;
+
+//CHANGING PROPERTY OF INSTATIATED CLASS
+
+	$address->streetName = "Oregon";
+	
+//CALLING A FUNCTION WITH INSTANTIATED OBJECTS
+
+	$address->display();
+	
+//VISIBILITY SCOPE
+/*
+	Public - to all the program
+	Protected - within class and children class
+	Private - within the class
+	Static - available using main class and cannot be instantiated
+			you can't use $this
+		ex,
+			Self::$my_money; 
+			or
+			MyBank::$my_money;
+			
+	final - prevents child classes from overriding and classes from extending
+*/
+//GETTER AND SETTERS
+
+	//analogy: bank teller is getter and setter for our money in the bank
+	//ex,
+		class MyBank {
+			
+			private $my_money = 1; //nobody can access this, only from inside
+			
+			public function get_my_money_teller() {
+				
+				return $this->my_money;
+				
+			}//end function
+		
+			public function deposit_my_money($cash_deposit){
+			
+				$this->my_money = $cash_deposit;
+			
+			}//end function
+		
+		}//end class
+	
+//MAGIC METHODS
+
+	__construct() //runs when instantiating the object
+	__get()
+	__set()
+	__toString()
+	__clone() //if method exists it is called after an object is cloned ex,
+		
+		protected $_time_created;
+		protected $_time_updated;
+		
+		function __clone(){
+			
+			$this->_time_created = time();
+			$this->_time_updated = NULL;
+			
+		}//end clone
+	
+//SCOPE RESOLUTION OPERATOR
+	
+	// :: allows access to static properties and constants
+	// calling a parent class from its child class 
+		
+		//calling a method
+		$output .= parent::display();
+
+//STATIC METHODS
+//cannot use 
+$this, 
+//instead use 
+self::function()
+//self points to the class in which it is written
+self::$_instance=new self();
+//is the same as
+self::$_instance=new MyClass();
+//_call,__callStatic()
+class SetCall extends SetState{
+	public function __call($name,$args){
+		if($name=='flip'){
+			return array_reverse($this->_set);
+		}
+	}
+	public function __callStatic($name,$args){
+		if($name=='factory'){
+			return new self();
+		}
+	}
+}
+$myset=SetCall::factory();
+$reversed=$myset->flip();
+var_dump($reversed);
+//__invoke() allows your object to be called as  a function
+class SetInvoke extends SetCall{
+	public function __invoke($start,$length){
+		return array_slice($this->_set,$start,$length,TRUE)
+	}
+}
+$myset=new SetInvoke();
+$slice=$myset(1,3);
+var_dump($slice);
+//CONSTANTS
+
+	const ADDRESS_TYPE_RESIDENCE = 1;
+	$myAddressType = Address::ADDRESS_TYPE_RESIDENCE;
+	
+//ABSTRACT CLASSES AND METHODS
+/*contains at least one abstract method, which is a method without any actual code in it, just the name and the parameters, and that has been marked as "abstract". The purpose of this is to provide a kind of template to inherit from and to force the inheriting class to implement the abstract methods.
+An abstract class thus is something between a regular class and a pure interface. Also interfaces are a special case of abstract classes where ALL methods are abstract.*/
+
+//if class has abstract method, the class must be abstract also ex,
+		abstract class Address {}
+		
+//INTERFACES
+/*
+	-100% abstract classes
+	-Cannot be instantiated
+	-Shell
+	-Empty methods that must be filled by the class implementing the
+	interface
+	
+	Used for creating a structure for classes to set standards for objects
+	Used for creating standard base classes for example an animal class will have eat(), sleep(), breath() as standard.
+	
+	When should you use them?
+	
+		If you have a class that is never instantiated directly in your program is a good candidate. So, if you are creating a class to only serve as the parent to other classes, it should probably be made into an interface.
+		
+		When you know what methods you need but don't have the code details.
+		
+		Quickly map out the basic structures of your classes to serve as a template for others to follow --keeps the code-base predictable and consistent.
+*/
+
+	interface Model {
+	
+		static function load($address_id);
+		
+		function save();
+		
+	}//end interface
+	
+	abstract class Address implements Model {
+	
+		final public static function load($address_id) {
+		
+		}//end function
+		
+		final public function save(){
+		
+		}//end function
+	
+	}//end class
+	
+	
+	
+//CLONING AND COMPARING
+/*
+	== checks properties are the same
+	=== check that the objects are the same
+*/
+	$address_park_clone = clone $address_park;

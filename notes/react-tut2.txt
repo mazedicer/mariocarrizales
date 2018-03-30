@@ -1,0 +1,201 @@
+/*index.js
+const title = React.createElement( 'h1', { id: 'title', className: 'header' }, 'Hellow World' )
+reactDom.render( title, document.getElementById( 'react-container' ) ) */
+//index.js ES6 same as above 
+const { createElement } = React 
+const { render } = React 
+const title = createElement( 'h1', { id: 'title', className: 'header' }, 'Hellow World' )
+render( title, document.getElementById( 'react-container' ) )
+/*index.js JSX from Babel
+used to transpile html inside .js files  
+same as above */
+const style = {
+	backgroundColor: 'orange',
+	color: 'white',
+	fontFamily: 'verdana'
+}
+remder( 
+	<h1 id='title' className='header' style={style}>Hello World</h1>,
+	document.getElementById( 'react-container' )
+)
+//index.js with inline-style style={{<styles>}}
+remder( 
+	<h1 id='title' className='header' style={{backgroundColor: 'orange',color: 'white',fontFamily: 'verdana'}}>Hello World</h1>,
+	document.getElementById( 'react-container' )
+)
+
+/* index.html
+<head>
+	<script src="https://fb.me/react-15.1.0.js"></script>
+	<script src="https://fb.me/react-dom-15.1.0.js"></script>
+</head>
+<body>
+	<div id="react-container"></div>
+	<script src="index.js"></script>
+*/
+
+/* ROUTER */
+cmd> npm install react-router --save
+//src/index.js 
+import React from 'react'
+import { render } from 'react-dom'
+import { App } from './components/App'
+import { Whoops404 } from './components/Whoops404'
+import { Router, Route, hashHistory } from 'react-router'
+window.React = React //add to window element 
+render {
+	<Router history={hashHistory}>
+		<Route path="/" component={App} />
+		<Route path="list-days" component={App}>
+			<Route path=":filter" component={App} /> //will render depending on filter passed
+		</Route>
+		<Route path="add-day" component={App} />
+		<Route path"*" component={Whoops404} />
+	</Router>,
+	document.getElementById( 'react-container' )
+}
+//src/components/App.js 
+import { Component } from 'react'
+import { SkiDayList } from './SkiDayList'
+import { SkiDayCount } from './SkiDayCount'
+import { AddDayForm } from './AddDayForm'
+import { Menu } from './Menu'
+export class App extends Component {
+	constructor( props ){
+		super( props )
+		this.state = {
+			allSkiDays: [ 
+				{ resort: "X", date: new Date(), powder: true, backcountry: false }, 
+				{}, 
+				{} ]
+		}
+	}
+	render(){
+		return(
+			<div className="app">
+			<Menu />
+			{ //router purpose
+				( this.props.location.pathname === "/" ) ? 
+					<SkiDayCount total={this.countDays()}
+						powder={this.countDays( "powder" )}
+						backcountry={this.countDays( "backcountry" )} /> :
+				( this.porps.location.pathname === "/add-day" ) ?
+					<AddDayForm /> :
+					<SkiDayList days={ this.state.allSkiDays } 
+						filter={ this.props.params.filter }/>
+			}
+			</div>
+		)
+	}
+}
+//src/components/SkiDayList.js 
+import SnowFlake from 'react-icons/lib/ti/weather-snow'
+import Calendar from 'react-icons/lib/fa/calendar'
+import { SkiDayRow } from './SkiDayRow'
+import { Link } from 'react-router'
+export const SkiDayList = ( { days, filter } ) => {
+	const filteredDays = ( !filter || !filter.match( /powder|backcountry/ ) ) ? days : days.filter( day => day[ filter ] )
+	return (
+		<div className="ski-day-list">
+			<table>
+				<thead>
+					<tr>
+						<th>Date</th>
+						<th>Resort</th>
+						<th>Powder</th>
+						</th>Backcountry</th>
+					</tr>
+					<tr>
+						<td colSpan={4}>
+							<Link to="/list-days">All Days</Link>
+							<Link to="/list-days/powder">Powder Days</Link>
+							<Link to="/list-days/backcountry">Backcountry Days</Link>
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					{
+						filteredDays.map( ( day, i ) => <SkiDayRow key={i} {...day} /> )
+					}
+				</tbody>
+			</table>
+		</div>
+	)
+}
+//src/components/SkiDayRow.js 
+import Terrain from 'react-icon/lib/md/terrain'
+import SnowFLake from 'react-icon/lib/ti/weather-snow'
+import Calendar from 'react-icon/lib/fa/calendar'
+export const SkiDayRow = ( { resort, date, powder, backcountry } ) => (
+	<tr>
+		<td>
+			{ date.getMonth() } + 1 / { date.getDate() } / { date.getFullYear() }
+		</td>
+		<td>
+			{ resort }
+		</td>
+		<td>
+			{ ( powder ) ? <SnowFlake/> : null } 
+		</td>
+		<td>
+			{ ( backcountry ) ? <Terrain/> : null }
+		</td>
+	</tr>
+)
+
+//src/components/Whoops404.js
+export const Whoops404 = () =>
+	<div>
+		<h1>Whoops, route not found</h1>
+	</div>
+//src/components/AddDayForm.js 
+export const AddDayForm = ( { resort, date, powder, backcountry } ) => {
+	let _resort, _date, _powder, _backcountry
+	const submit = ( e ) => {
+		e.preventDefault()
+		console.log( 'resort', _resort.value )
+		console.log( 'date', _date.value )
+		console.log( 'powder', _powder.checked )
+		console.log( 'backcountry', _backcountry.checked )
+	}
+	return(
+			<form onsubmit={this.submit} className="add-day-form">
+				<label>Resort Name</label>
+				<input id="resort" type="text" required defaultValue={resort} 
+					ref={input => _resort = input } />
+				<label>Date</label>
+				<input id="date" type="date" required defaultValue={date} 
+					ref={input => _date = input }" />
+				<div><input id="powder" type="checkbox" defaultChecked={powder} 
+					ref={input => _powder = input } />
+				<label>Powder</label></div>
+				<div><input id="backcountry" type="checkbox" defaultChecked={backcountry} 
+					ref={input => _backcountry = input }  />
+				<label>Backcountry</label></div>
+				<button>Add Day</button>
+			</form>
+	)
+}
+AddDayForm.defaultProps = { resort: "X", 
+	date: "2017-02-12", 
+	powder: true, 
+	backcountry: false 
+	}
+	
+//src/components/Menu.js 
+import { Link } from 'react-router'
+import HomeIcon from 'react-icons/lib/fa/home'
+import AddDayIcon from 'react-icons/lib/fa/calendar-plus-o'
+import ListDaysIcon from 'react-icons/lib/fa/table'
+export const Menu = () =>
+	<nav className="menu">
+		<Link to="/" activeClassName="selected">
+			<HomeIcon /> //icon image
+		</Link>
+		<Link to="/add-day" activeClassName="selected">
+			<AddDayIcon />
+		</Link>
+		<Link to="/list-days" activeClassName="selected">
+			<ListDaysIcon />
+		</Link>
+	</nav>

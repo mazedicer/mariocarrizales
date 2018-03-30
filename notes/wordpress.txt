@@ -1,0 +1,905 @@
+<?php
+/*---------------------------------------------
+GLOBALS DB
+----------------------------------------------*/
+//db object 
+$wpdb
+//query object 
+$wp_query 
+//array stores error info of query 
+$EZSQL_ERRROR
+//array|object update user data 
+$userdata 
+//holds query string passed to the $wp_query object by wp-blog-header.php 
+$query 
+//array assoc. of query var names and values 
+$query_vars 
+/*---------------------------------------------
+GLOBALS
+----------------------------------------------*/
+$day
+$previousday
+$wp_version
+$wp_locale
+$wp_broken_theme
+$wp_themes //array holds working themes 
+$wp_did_header //boolean true if header loaded 
+$cache_lastpostdate //array stores the date the last post was published in different formats
+$cache_lastpostmodified 
+$cache_lastcommentmodified
+$blog_id //the blog ID 
+
+
+//////////////////////////////////////////////////
+//WP_Query
+/////////////////////////////////////////////////
+/*includes/query.php*/
+$args = array(
+    /* Arguments for your query.
+    checkout https://code.tutsplus.com/series/mastering-wp_query--cms-818
+    for a huge list of WP_Query Arguments*/
+);
+// Custom query.
+$query = new WP_Query( $args );
+// Check that we have query results.
+if ( $query->have_posts() ) {
+    // Start looping over the query results.
+    while ( $query->have_posts() ) {
+        $query->the_post();
+        // Contents of the queried post results go here.
+        the_ID(); 
+        post_class( 'left' );
+        the_permalink(); 
+        the_title_attribute();
+        post_thumbnail( 'thumbnail');
+        the_title();
+        the_excerpt();
+    }
+}
+// Restore original post data.
+wp_reset_postdata();
+
+/*If you need to modify the main query, use pre_get_posts instead, 
+and if you want to create a completely new query, use WP_Query*/
+
+/*pre_get_posts is a hook which modifies the main query. 
+You can use it with a conditional tag to check if a certain type 
+of page is being viewed (for example the home page) and then
+ use it to amend the query that's run (for example to remove the most 
+recent three posts, if you're displaying them elsewhere on the page). 
+It's a very efficient way of modifying the main query and should be
+ your first port of call if that's what you want to do. However you 
+can't use it to create a completely new query.
+
+get_posts() and get_pages() are very similar, with the main
+ difference being obvious from their names. These template tags 
+actually use the WP_Query class, so they are another way of 
+doing the same thing, but add an extra step because they call 
+the WP_Query class instead of you doing it directly. 
+You can only use them to query either posts or pages*/
+
+/*functions
+get_query_var(<string_var>,<default_val>) It takes the global 
+$wp_query object and retrieves a public query variable from it. 
+It has two parameters: The first one is the variable to return
+ its value, and the second one is a default value to return if the 
+variable is not set.
+
+query_posts() is a function that alters the main query by putting
+ the main query aside and running a new query?and you'll need to 
+use wp_reset_query() to clean up after it.
+
+get_post(<post_ID>, [assoc | num] array, raw | edit | display | attrib | js filter )*/
+$first_post = get_post( 1, ARRAY_A );
+$post_title = $first_post[ 'post_title' ];
+
+/*get_posts() function allows us to run queries and save them as 
+arrays to use in various places. It requires the same arguments
+ with WP_Query so you can customize the query as you like*/
+ $args = array(
+    'category_name' => 'news',
+    'order' => 'ASC',
+    'orderby' => 'post_title',
+    'posts_per_page' => -1
+);
+// Return an array of all posts in the "news" category.
+$all_posts_list = get_posts( $args );
+ 
+/*get_pages() fetches a list of pages. The follow. shows the args
+that can be provided*/
+$args = array(
+    'sort_order' => 'ASC',
+    'sort_column' => 'post_title',
+    'hierarchical' => 1,
+    'exclude' => '',
+    'include' => '',
+    'meta_key' => '',
+    'meta_value' => '',
+    'authors' => '',
+    'child_of' => 0,
+    'parent' => -1,
+    'exclude_tree' => '',
+    'number' => '',
+    'offset' => 0,
+    'post_type' => 'page',
+    'post_status' => 'publish'
+);
+$pages = get_pages( $args );
+
+/*have_posts() returns true or false if records are returned or not.
+
+the_post() 
+It fetches the next record from the query.
+It sets up the $post data.
+It sets the in_the_loop parameter to TRUE
+
+setup_postdata() fills the global variables $id, $authordata, 
+$currentday, $currentmonth, $page, $pages, $multipage,
+ $more, $numpages, which help many Template Tags work in 
+the current post context. It does not assign the global $post
+ variable, but seems to expect that its argument is a reference to it.*/
+global $post;
+setup_postdata( $post );
+
+/*rewind_posts() restart the loop
+
+wp_reset_postdata() resets the global $post variable back to the
+ first post in the main query. It's better to use this one after a 
+secondary query.
+
+wp_reset_query() should be used if the main query is changed 
+with the query_posts() function or the pre_get_posts 
+
+is_main_query() is a Conditional Tag that returns TRUE if the current 
+query is the main query and FALSE if it's not.*/
+if ( is_main_query() ) {   
+    // Success.
+} else {  
+    // Failure.
+}
+
+/*in_the_loop() Conditional Tag returns TRUE or FALSE if your code 
+is running inside the Loop or not
+
+WP_Query filters
+https://codex.wordpress.org/Plugin_API/Filter_Reference#WP_Query_Filters
+
+_______________________________________________________________________
+Properties of the WP_Query Class
+Let's begin with the properties, or the variables, of the WP_Query class.
+
+The Query String: $query
+This property stores the query passed to the $wp_query object.
+
+The Array of Query Variables: $query_vars
+This property stores an associative array of the variables 
+(and their values) of $query.
+
+The Queried Object: $queried_object
+This property stores the currently queried object, like the $post
+ object if it's a post query or the $author object if it's an author query.
+
+The ID of the Queried Object: $queried_object_id
+This property stores the ID of the queried object.
+
+The Posts Returned From the Query: $posts
+This property stores the posts returned from the query.
+
+The Number of Posts Being Displayed: $post_count
+This property stores the number of posts for the current query.
+
+The Number of Posts Returned from the Query: $found_posts
+This property stores the number of posts without the LIMIT 
+clause of the SQL query.
+
+The Number of Pages: $max_num_pages
+This property stores the number of pages?it's calculated by 
+dividing $found_posts by $posts_per_page.
+
+The Index of the Current Post: $current_post
+This property stores the index number of the current item in the Loop.
+ For example, it's -1 if the Loop has just started and it's incremented 
+by the next_post() method.
+
+The Current Post: $post
+This property stores, well, the current post.
+
+Conditional Tag Booleans: $is_{conditional}
+The following properties are stored as booleans, giving information 
+about the current post's status:
+
+$is_single: Checks if it's a single post of any post type 
+(except "attachment" and "page" post types) or not.
+$is_page: Checks if it's a page or not.
+$is_archive: Checks if it's an archive page or not.
+$is_preview: Checks if it's a post preview or not.
+$is_date: Checks if it's a date-based archive page or not.
+$is_year: Checks if it's a year-based archive page or not.
+$is_month: Checks if it's a month-based archive page or not.
+$is_time: Checks if it's a time-based (hourly, minutely or secondly)
+ archive page or not.
+$is_author: Checks if it's an author's archive page or not.
+$is_category: Checks if it's a category archive page or not.
+$is_tag: Checks if it's a tag archive page or not.
+$is_tax: Checks if it's a taxonomy archive page or not.
+$is_search: Checks if it's a "search results" page or not.
+$is_feed: Checks if it's a feed or not.
+$is_comment_feed: Checks if it's a comment feed or not.
+$is_trackback: Checks if it's a trackback or not.
+$is_home: Checks if it's the main blog page or not.
+$is_404: Checks if it's a 404 error page or not.
+$is_comments_popup: Checks if it's a comments popup window or not.
+$is_admin: Checks if it's the administration panel or not.
+$is_attachment: Checks if it's an attachment or not.
+$is_singular: Checks if it's a single post of any post type
+ (including "attachment" and "page" post types) or not.
+$is_robots: Checks if it's a query for the robots.txt file or not.
+$is_posts_page: Checks if it's the "Posts Page" 
+(set on the "Reading Settings" page in the admin panel) or not.
+$is_paged: Checks if it's a paginated query and it's not the first page.
+
+________________________________________________________________________
+Methods of the WP_Query Class
+the methods (functions) of the WP_Query class.
+
+init()
+This method simply initializes the object, setting all properties
+ to NULL, 0 or FALSE.
+
+parse_query( $query )
+This method uses the $query property to parse the query 
+and populate all other properties (except $posts, $post_count, 
+$post and $current_post).
+
+parse_query_vars()
+This method reparses the query variables.
+
+get( $query_var )
+This method fetches a given query variable.
+
+set( $query_var, $value )
+This method sets the given query variable to a specific value.
+
+&get_posts()
+This method returns the posts requested by the query and populates
+ the $posts and $post_count properties.
+
+next_post()
+This method increments the $current_post index and advances to
+ the next post in $posts, returning the current post object. 
+(This method must be used inside a Loop to work properly.)
+
+the_post()
+This method sets the global $post variable with the next post's data. 
+(This method must be used inside a Loop to work properly.)
+
+have_posts()
+This method checks if there are any posts left to work on, and returns 
+FALSE if there aren't. (This method must be used before a Loop to
+ work properly.)
+
+rewind_posts()
+This method simply resets the $current_post and $post properties.
+
+&query( $query )
+This method calls two of its sibling methods, parse_query() and 
+get_posts(), and returns the result of get_posts().
+
+get_queried_object()
+This method returns the queried object. (It sets $queried_object 
+if it's not already set.)
+
+get_queried_object_id()
+This method, similar to the one above, returns the queried 
+object's ID ($queried_object_id).
+
+Quick Tip: If there's an ampersand before a method,
+ it means that the method returns by reference.
+ 
+//////////////////////////////////////////////////
+CUSTOM ADMIN MENUS
+/////////////////////////////////////////////////
+/**
+ * Adds a new top-level menu to the bottom of the WordPress administration menu.
+ */ 
+function sandbox_create_menu_page() {
+ 
+    add_menu_page(
+        'Sandbox Options',          // The title to be displayed on the corresponding page for this menu
+        'Sandbox',                  // The text to be displayed for this actual menu item
+        'administrator',            // Which type of users can see this menu
+        'sandbox',                  // The unique ID - that is, the slug - for this menu item
+        'sandbox_menu_page_display',// The name of the function to call when rendering the menu for this page
+        ''
+    );
+ 
+} // end sandbox_create_menu_page
+add_action('admin_menu', 'sandbox_create_menu_page');
+ 
+/**
+ * Renders the basic display of the menu page for the theme.
+ */
+function sandbox_menu_page_display() {
+     
+    // Create a header in the default WordPress 'wrap' container
+    $html = '<div class="wrap">';
+        $html .= '<h2>Sandbox</h2>';
+    $html .= '</div>';
+     
+    // Send the markup to the browser
+    echo $html;
+     
+} // end sandbox_menu_page_display
+
+//////////////////////////////////////////////////
+CUSTOM ADMIN SUB MENUS
+/////////////////////////////////////////////////
+add_submenu_page(
+    'sandbox',                  // Register this submenu with the menu defined above
+    'Sandbox Options',          // The text to the display in the browser when this menu item is active
+    'Options',                  // The text for this menu item
+    'administrator',            // Which type of users can see this menu
+    'sandbox_options',          // The unique ID - the slug - for this menu item
+    'sandbox_options_display'   // The function used to render the menu for this page to the screen
+);
+function sandbox_options_display() {
+    // Create a header in the default WordPress 'wrap' container
+    $html = '<div class="wrap">';
+        $html .= '<h2>Sandbox Options</h2>';
+    $html .= '</div>';
+    // Send the markup to the browser
+    echo $html;  
+} // end sandbox_options_display
+
+//////////////////////////////////////////////////
+Plugin Pages
+//////////////////////////////////////////////////
+/*Refresh your WordPress Dashboard, hover over the 
+Plugins menu and you should notice a new menu item.*/
+/** This function introduces a single theme menu option into the WordPress 'Plugins' menu. */
+function sandbox_example_plugin_menu() {
+    add_plugins_page(
+        'Sandbox Plugin',           // The title to be displayed in the browser window for this page.
+        'Sandbox Plugin',           // The text to be displayed for this menu item
+        'administrator',            // Which type of users can see this menu item
+        'sandbox_plugin_options',   // The unique ID - that is, the slug - for this menu item
+        'sandbox_plugin_display'    // The name of the function to call when rendering the page for this menu
+    );
+} // end sandbox_example_theme_menu
+add_action('admin_menu', 'sandbox_example_plugin_menu');
+/**Renders a simple page to display for the theme menu defined above. */
+function sandbox_plugin_display() {
+    // Create a header in the default WordPress 'wrap' container
+    $html = '<div class="wrap">';
+        $html .= '<h2>Sandbox Plugin Options</h2>';
+        $html .= '<p class="description">There are currently no options. This is just for demo purposes.</p>';
+    $html .= '</div>';     
+    // Send the markup to the browser
+    echo $html;  
+} // end sandbox_plugin_display
+
+//////////////////////////////////////////////////
+Theme Pages
+//////////////////////////////////////////////////
+/*refresh the WordPress Dashboard, hover over the
+ Appearance menu and you should see your new menu item. Simple!*/
+ /** This function introduces a single theme menu option into the WordPress 'Appearance'menu.
+ */
+function sandbox_example_theme_menu() {
+    add_theme_page(
+        'Sandbox Theme',            // The title to be displayed in the browser window for this page.
+        'Sandbox Theme',            // The text to be displayed for this menu item
+        'administrator',            // Which type of users can see this menu item
+        'sandbox_theme_options',    // The unique ID - that is, the slug - for this menu item
+        'sandbox_theme_display'     // The name of the function to call when rendering the page for this menu
+    );
+} // end sandbox_example_theme_menu
+add_action('admin_menu', 'sandbox_example_theme_menu');
+/** Renders a simple page to display for the theme menu defined above.
+ */
+function sandbox_theme_display() {
+    // Create a header in the default WordPress 'wrap' container
+    $html = '<div class="wrap">';
+        $html .= '<h2>Sandbox Theme Options</h2>';
+        $html .= '<p class="description">There are currently no options. This is just for demo purposes.</p>';
+    $html .= '</div>';
+    // Send the markup to the browser
+    echo $html;
+} // end sandbox_theme_display
+
+
+
+//////////////////////////////////////////////////
+//CUSTOM ADMIN SETTINGS
+/////////////////////////////////////////////////
+/* ------------------------------------------------------------------------ *
+ * Setting Registration
+ * ------------------------------------------------------------------------ */
+ /* Initializes the theme options page by registering the Sections,
+ * Fields, and Settings.
+ *
+ * This function is registered with the 'admin_init' hook.
+ */
+add_action('admin_init', 'sandbox_initialize_theme_options');
+function sandbox_initialize_theme_options() {
+ 
+    // First, we register a section. This is necessary since all future options must belong to one.
+    add_settings_section(
+        'general_settings_section',         // ID used to identify this section and with which to register options
+        'Sandbox Options',                  // Title to be displayed on the administration page
+        'sandbox_general_options_callback', // Callback used to render the description of the section
+        'general'                           // Page on which to add this section of options
+    );
+} // end sandbox_initialize_theme_options
+ 
+/**
+ * This function provides a simple description for the General Options page. 
+ *
+ * It is called from the 'sandbox_initialize_theme_options' function by being passed as a parameter
+ * in the add_settings_section function.
+ */
+function sandbox_general_options_callback() {
+    echo '<p>Select which areas of content you wish to display.</p>';
+} // end sandbox_general_options_callback
+/*You can add this section to any of the pages under the Settings menu.
+ In the above example, we've passed "general" as the last parameter to the add_settings_section, 
+but if you'd like to add it to a different page, you can provide a different page title. 
+Here's a reference for each of the Settings pages and their corresponding key:
+
+General, "general"
+Writing, "writing"
+Reading, "reading"
+Discussion, "discussion"
+Media, "media"
+Privacy, "privacy"
+Permalinks, "permalink" */
+/* ------------------------------------------------------------------------ *
+ * Fields
+ * ------------------------------------------------------------------------ */
+// Next, we will introduce the fields for toggling the visibility of content elements.
+add_settings_field( 
+    'show_header',                      // ID used to identify the field throughout the theme
+    'Header',                           // The label to the left of the option interface element
+    'sandbox_toggle_header_callback',   // The name of the function responsible for rendering the option interface
+    'general',                          // The page on which this option will be displayed
+    'general_settings_section',         // The name of the section to which this field belongs
+    array(                              // The array of arguments to pass to the callback. In this case, just a description.
+        'Activate this setting to display the header.'
+    )
+);
+/**
+ * This function renders the interface elements for toggling the visibility of the header element.
+ * It accepts an array of arguments and expects the first element in the array to be the description
+ * to be displayed next to the checkbox.
+ */
+function sandbox_toggle_header_callback($args) {
+    // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
+    $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, get_option('show_header'), false) . '/>';
+    // Here, we will take the first argument of the array and add it to a label next to the checkbox
+    $html .= '<label for="show_header"> '  . $args[0] . '</label>';  
+    echo $html;     
+} // end sandbox_toggle_header_callback
+// Finally, we register the fields with WordPress
+register_setting(
+    'general',
+    'show_header'
+);
+/* ------------------------------------------------------------------------ *
+ * Using the new settings option in themes
+ * ------------------------------------------------------------------------ */
+/*What good are options if we can't take advantage of them
+ throughout our theme or our plugin? 
+We need to be able to read the values in order to properly 
+manage our new options.
+To do this, we need to use the get_option function*/
+//before applying
+<div id="header">
+    <h1>Sandbox Header</h1>
+</div><!-- /#header -->
+//after
+<?php if(get_option('show_header')) { ?>
+    <div id="header">
+        <h1>Sandbox Header</h1>
+    </div><!-- /#header -->
+<?php } 
+//you can do the same for content & footer
+
+
+
+/* SETTING UP
+Develop in a WordPress install.
+Turn WP_DEBUG on in wp-config.php file.
+Download Debug bar, Query Monitor plugins tools while designing plugins.
+Prevent direct access to files: */
+	if( !defined( 'ABSPATH' ) ) exit;
+
+//use of bloginfo('description'); = tagline
+<head>
+	
+	<link rel="alternate" 
+		type="application/rss+xml" 
+		title="<?php bloginfo('name'); ?>" 	//bloginfo('name'); = name of template
+		href="<?php bloginfo('rss2_url'); ?>" />
+	
+	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
+	
+	//style.css in mytemplate
+	<link rel="stylesheet" href="<?php bloginfo('stylesheet_url'); ?>" 
+	type="text/css" />
+	
+	//wordpress injects
+	<?php wp_head(); ?>
+		
+</head>
+
+//to reference another css stylesheet for a child theme
+@import url("../sometheme/style.css");
+
+/*
+wordpress
+	|__ |/_/ wp-content
+		|		|__ |/_/ themes
+		|		|		|__ |/_/ mytemplate 
+		|		|				|__ style.css
+		|		|				|__ index.php
+		|		|				|__ functions.php
+		|		|				|__ header.php
+		|		|				|__ page.php //page template
+		|		|
+		|		|__ |/_/ plugins				
+		|
+		|__ |/_/ upgrade
+				|__ |/_/ 
+*/
+	
+/* style.css
+
+		Theme Name: My Template
+		Theme URI: http://
+		Description: Simple wordpress
+		Version: 1.0
+		Author: Mario
+	
+	
+
+index.php
+
+functions.php
+	
+page.php
+	page templates unlimited
+*/
+	
+//////////////////////////////////////////////////
+// PLUGINS
+//////////////////////////////////////////////////
+/*Give every plugin its own folder.
+Should have the same file name and folder name.
+Name files, functions, and variables logically.
+Prefix functions and variable names.
+Comment your code.
+Group similar functions.
+Documentation
+	inline documentation (comments and DocBlocks).
+	user documentation.
+Security
+	Confirm user credentials
+	Data validation.
+	Securing input.
+	Escaping output.
+	
+add_action( <wordpress action to hook>, <custom function>, <priority=10>, <arguments limit=1> )
+*/
+function mfwp_load_scripts(){ //my first wordpress plugin (mfwp)
+	wp_enqueue_style('mfwp-style', plugin_dir_url( __FILE__ ) . 'css/plugin_styles.css');
+}
+//action hook - when wordpress is loading
+add_action('wp_enqueue_scripts', 'mfwp_load_scripts');
+
+//options pages on the admin menu 
+function mfwp_add_options_link(){
+	add_options_page('My First WordPress Plugin Options','My First Plugin','manage_options','mfwp-options','mfwp_options_page');
+}
+add_action('admin_menu', 'mfwp_add_options_link');
+/*	
+wp-content/plugins/
+	>make folder /addimage/
+	> make php file in addimage folder
+	/addimage.php
+*/
+
+//////////////////////////////////////////////////
+// ACTION HOOKS 
+//////////////////////////////////////////////////
+/*action hooks execute when event occurs 
+admin_head - head for dashboard
+admin_init - when dashboard has loaded
+comment_post - when new comment is created
+create_category - whe category is created
+init - when wordpress has loaded the website
+publish_post - when a new post is published
+switch_theme - when the theme is changed
+user_register - when a new user is registered
+wp_footer - occurs in the footer
+wp_head - occurs in the head
+*/
+//1 Define the action hook 
+function my_custom_action(){
+	do_action( 'my_custom_action', 1 );
+}
+//2 Attach a function to the action hook 
+add_action( 'my_custom_action', 'my_custom_function' );
+function my_custom_function(){
+	echo "This is a custom action.";
+}
+//3 Call the action hook 
+my_custom_action();
+
+/* REGISTER ACTIVATION HOOKS 
+register_activation_hook( __FILE__, 'custom_plugin_prefix_custom_function' );
+__FILE__ point to the right location
+register_deactivation_hook( __FILE__, 'custom_plugin_prefix_custom_function' );
+
+To uninstall:
+register_uninstall_hook( string $file, callable $callback )
+*/
+
+//////////////////////////////////////////////////
+//FILTERS
+//////////////////////////////////////////////////
+/*Filters modify data 
+filter hooks change content before displaying and saving to database
+comment_text changes comments before display
+get_categories - changes category list
+the_content - changes the content of a post or page
+the_content_rss - changes content of posts in RSS feeds
+the_permalink - changes the permalink
+the_title - the title of posts and pages
+wp_title - text in the title tag
+add_filter( <action to hook>, <custom function>, <priority=10>, <argument limit=1> )
+*/
+//example filter1
+add_filter( 'add_more_shrimp', 'moreShrimpHere' );
+function moreShrimpHere( $shrimps ){
+	$shrimps[] = 'bbq shrimp';
+	return $shrimps;
+}
+/*using filter1 
+has_filter( <filter> ) checks if the filter exists
+apply_filters( <filters> ) applies the passed filters */
+function listAllShrimp(){
+	$list = "";
+	$shrimps = array( 'pineapple shrimp', 'lemon shrimp', 'coconut shrimp', 'pepper shrimp' );
+	if( has_filter( 'add_more_shrimp' ) ){
+		$shrimps = apply_filters( 'add_more_shrimp', $shrimps )
+	}
+	foreach( $shrimps as $shrimp ){
+		$list .= $shrimp;
+	}
+	return $list;
+}
+
+//////////////////////////////////////////////////
+// CUSTOM POST TYPES
+//////////////////////////////////////////////////
+/plugins/customposttypes.php
+register_post_type( string $name_of_post_type, array of arguments ) */
+function myCustomPostTypes(){
+     $args=array(
+          /*support is the editable fields available for the user
+          on the admin cms side*/
+          'supports' =>array('title','editor','thumbnail'
+          ,'author','excerpt','comments','custom_fields'),
+          /*editable classification fields available for the user
+           category allows for hirearchical*/
+          'taxonomies'=>array('category','post_tag'),
+          ...);
+	register_post_type( 'recipes', $args );
+	//add as many post types as you need
+	register_post_type('coupons',$args);
+}
+add_action( 'init', 'myCustomPostTypes' );
+
+////////////////////////////////////////////////////////////
+/* ////TAXONAMIES
+////////////////////////////////////////////////////////////
+on same file /plugins/customposttypes.php
+classify and organize data such as Category and Tag 
+register_taxonamy( $name_of_taxonamy, $name_of_post_type_to_use_this_taxonamy_on, array of arguments )
+*/
+function register_recipe_taxonomy(){
+	register_taxonomy( 'recipe-type', 'recipe', $args );
+}
+add_action( 'init', 'register_recipe_taxonomy' ); //hooking to init action 
+
+//////////////////////////////////////////////////
+//CHILD THEME
+//////////////////////////////////////////////////
+/*1. Create a child theme folder 
+wp-content/themes/<parent-name>-child/
+
+2. Create a stylesheet: style.css 
+Your stylesheet must contain the below required header comment 
+at the very top of the file. This tells WordPress basic info about 
+the theme, including the fact that it is a child theme with a 
+particular parent:*/
+/* 
+Theme Name:   <Parent_theme_name> Child
+Template:     <Parent_theme_name>
+
+there are more properties but these are required.
+
+3. Enqueue stylesheet 
+ enqueue the parent and child theme stylesheets.
+functions.php*/
+add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_styles' );
+function my_theme_enqueue_styles() {
+ 
+    $parent_style = 'parent-style'; // This is 'twentyfifteen-style' for the Twenty Fifteen theme.
+ 
+    wp_enqueue_style( $parent_style, get_template_directory_uri() . '/style.css' );
+    wp_enqueue_style( 'child-style',
+        get_stylesheet_directory_uri() . '/style.css',
+        array( $parent_style ),
+        wp_get_theme()->get('Version')
+    );
+}
+
+/*4. Activate child theme 
+Administration Screen > Appearance > Themes
+
+5 Adding Template Files 
+Other than the functions.php file (as noted above), any file you 
+add to your child theme will overwrite the same file in the parent theme.
+For example, if you wanted to change the code of the parent 
+theme?s header.php file, you would copy the file to your child
+q theme folder and customize it there.*/
+
+//////////////////////////////////////////////////
+//functions.php 
+//////////////////////////////////////////////////
+/*Unlike style.css, the functions.php of a child theme does not override
+ its counterpart from the parent. Instead, it is loaded in addition to 
+the parent?s functions.php. (Specifically, it is loaded right before 
+the parent?s file.)
+If you want to modify parent theme via functions.php file,
+DO NOT add the code in the parent theme functions.php because it
+will dissapear the moment the theme gets updated. You must 
+create a child theme and add the code in the child theme's
+ functions.php. The child theme will not be affected.*/
+ // e.g. custom function to Include in functions.php
+function my_favicon_link() {
+    echo '<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />' . "\n";
+}
+add_action( 'wp_head', 'my_favicon_link' );
+
+//////////////////////////////////////////////////
+//Referencing or Including Other Files 
+//////////////////////////////////////////////////
+//points to child theme dir
+get_stylesheet_directory()
+//points to parent theme dir
+get_template_directory()
+//e.g.
+require_once( get_stylesheet_directory(). '/my_included_file.php' ); 
+/*Unlike get_stylesheet_directory(), which returns a file path, 
+get_stylesheet_directory_uri() returns a URL, which is useful for 
+front-end assets.*/
+echo get_stylesheet_directory_uri() . '/images/my_picture.png';
+
+
+//////////////////////////////////////////////////
+//CHILD THEME for post types
+//////////////////////////////////////////////////
+//theme/childtheme/style.css
+/*Theme name: Child Theme
+...
+*/
+//copy single.php
+//paste into /theme/childtheme/single-mychildtheme.php
+//single.php contains the framework
+...content-mychildtheme.php
+//content.php contains the content
+//in single-mychildtheme.php change
+get_template_part('content','mychildtheme');
+//it will pull the contents from content-mychildtheme.php
+//to add links
+get_the_term_list(post $id,taxonomy $taxonomy, html $before,seperator $sep, html $after)
+
+//////////////////////////////////////////////////
+//ROLES Administrator, Editor, Author, Contributor, Subscriber
+//////////////////////////////////////////////////
+/*add_role() - allows you to create custom roles
+add_cap(), remove_cap() - allows you to set|remove capabilities
+current_user_can() - check user capabilites 
+user_can() - check a particular user capabilites */
+
+//////////////////////////////////////////////////
+// SHORTCODES
+//////////////////////////////////////////////////
+/*[caption] - wrap caption around content 
+[gallery] - show image galleries
+[audio] - embed and play audo files 
+[video] - embed and play video files 
+[playlist] - display collection of audio or video files 
+[embed] - wrap embedded items*/
+
+add_shortcode( $name_of_shortcode, $function ) */
+//basic
+function make_a_button(){
+	return '<a href="http://someurl.com/" class="button">Click me</a>';
+}
+add_shortcode( 'my_button', 'make_my_button' ); // [my_button] 
+//customized by user 
+function make_a_button( $atts, $content = null ){
+	return '<a href="http://someurl.com/" class="button">' . $content . '</a>';
+}
+add_shortcode( 'my_button', 'make_my_button' ); // [my_button] $content [/my_button]
+
+
+//////////////////////////////////////////////////
+// PLUGIN HEADER
+//////////////////////////////////////////////////
+Plugin Name: Add Image
+Plugin URL: http://yourwebsite.com
+Version: 1.0
+Author: Mario
+Author URL: http://yourwebsite.com
+Description: This plugin adds an image at the beginning of every post
+*/
+//Exit if accessed directly.
+if( !defined( 'ABSPATH' ) ) exit;
+/*******************
+* GLOBAL VARS
+********************/
+$mfwp_prefix = "mfwp_";
+$mfwp_plugin_name = "My First Wordpress Plugin";
+/*******************
+* INCLUDES
+********************/
+include("includes/scripts.php"); // this controls all JS/CSS
+include("includes/data-processing.php"); //this controls all saving of data
+include("includes/display-functions.php"); //custom made file by user
+function addImage($post){
+	$img_w_text = "<img src=\"url\" alt=\"my image\" />";
+	$img_w_text .= $post;
+	return 	$img_w_text;
+}
+//data from server passes through the addImage function after the_content function
+add_filter("the_content","addImage");
+
+//Another example
+class my_widget extends WP_Widget{
+	function my_widget(){ //constructor
+		$widget_options = array(
+								'classname' => 'my_widget',
+								'description' => __('Display Links to Facebook, Twitter, and RSS')
+								);
+		parent::WP_Widget('my_widget', 'Social Network Links', $widget_options );
+	}
+	function widget($args, $instance){//instance is the widget itself
+		extract( $args, EXTR_SKIP );
+		$title = ( $instance['title'] ) ? $instance['title'] : 'Follow Me';
+		$facebook = ( $instance['facebook'] ) ? $instance['facebook'] : 'Follow Me';
+		$twitter = ( $instance['twitter'] ) ? $instance['twitter'] : 'Follow Me';
+	}
+	function update($new_instance, $old_instance){}
+	function form($instance){}
+}
+function my_widget_init(){
+	register_widget('my_widget');
+}
+add_action('widgets_init', 'my_widget_init');
+
+
+
+
+
+
+
+
+
+
+
+	
+	

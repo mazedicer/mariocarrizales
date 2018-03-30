@@ -1,0 +1,1 @@
+WINDOW SHIFT S : copy screen selection

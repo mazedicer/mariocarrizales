@@ -1,0 +1,287 @@
+mysql> show databases
+mysql> create database <name>;
+mysql> -u root -p -D <name> < <url of .sql file>
+
+<?php 
+/*
+MVC
+Model: db, logic
+view: html, xml, json 
+controller: 
+
+Entry point 
+
+index.php/{controller}/{method}/[param1]/[param2]/
+*/
+
+//codeigniter/application/config/config.php 
+
+$config['base_url'] = 'http://localhost:80/';
+
+//LOAD VIEWS AND DATA FROM CONTROLLER
+
+//codeigniter/application/controllers/Properties.php
+
+define( 'BASEPATH' ) or exit( 'No direct script access allowed' );
+
+class Properties extends CI_Controller {
+	public function index(){
+		//data to pass to the views in the form of associative arrays
+		$data[ 'user_name' ] = "Mario";
+		//load all the views
+		$this->load->view( 'layouts/header', $data );
+		$this->load->view( 'properties/index', $data );
+		$this->load->view( 'layouts/footer', $data );
+	}
+}
+	
+//views/properties/index.php is the template being loaded
+echo $user_name; //from $data array 
+
+//CONTROLLERS AND AUTOMATIC ROUTING
+/* in the properties class add a new function for show page */
+
+class Properties extends CI_Controller {
+	public function show( $id ){
+		$data[ 'id' ] = $id;
+		$this->load->view( 'properties/show' );
+	}
+}
+
+//in the show template add:
+echo $id;
+
+//MODELS AND LOAD THEM
+//application/model/Property.php 
+class Property extends CI_Model {
+	public function __construct(){
+		parent::__construct();
+	}
+	
+	public function get(){
+		return "This is a script";
+	}
+}
+
+//inside show function 
+public function show( $id ){
+	$data[ 'id' ] = $id;
+	//load module
+	$this->load->model( 'Property' );
+	$data[ 'name' ] = $this->Property->get();
+	$this->load->view( 'properties/show' );
+}
+//inside the show template
+echo $name;
+
+//HELPERS
+//URL helper 
+//inside the controller index()
+$this->load->helper( 'url' );
+//inside the template 
+echo base_url( 'assets/images/x.jpg' );
+//link helper 
+echo site_url( 'properties/show/1' );
+
+//AUTOLOAD HELPERS 
+//application/config/autoload.php 
+/*this is the line to autoload helpers so you don't have to load them on every controller */
+$autoload[ 'helper' ] = array( 'url' );
+
+//DATABASE CONFIGURATION
+//application/config/database.php 
+$db[ 'default' ] = array(
+	'hostname' = 'localhost',
+	'username' = '',
+	'password' = ''
+	//etc.
+);
+//inside Property model 
+public function connection_test(){
+	$this->load->database( 'default', TRUE );
+}
+//inside properties controller/ db_test page 
+public function db_test(){
+	$this->load->model( 'Property' );
+	$this->Property->connection_test();
+}
+
+//AUTOLOAD COMPONENTS
+//application/config/autoload.php 
+/*loading the model so you don't have to keep loading it in the controllers */
+$autoload[ 'model' ] = array( 'Property' );
+
+//MODELS AND DATABASES 
+/*after autoloading the model in the constructor of Property model*/
+public function __construct(){
+	parent::__construct();
+	$this->db = $this->load->database( 'default', TRUE );
+}
+//create a function to query the database 
+public function get_version(){
+	$result_set = $this->db->query( 'SELECT VERSION()' );
+	return $result_set;
+}
+//in the Properties controller inside show 
+public function show( $id ){
+	$data[ 'id' ] = $id;
+	$data[ 'name' ] = $this->Property->get();
+	$version = $this->Property->get_version();
+	$data[ 'version' ] = $version->conn_id->server_info;
+	$this->load->view( 'property/show', $data );
+}
+/* have a model for every table in the database */
+
+//DATABASE ACTIONS ON A TABLE
+//inside the Property model, create a function 
+public function all(){
+	$result_set = $this->db->get( 'properties' );
+	return $result_set->result_query();
+}
+//inside the Properties controller 
+//inside the index function
+$data[ 'properties' ] = $this->Property->all();
+//inside the template 
+foreach( $properties as $property ){
+	var_dump( $property );
+}
+
+//FORMS
+//inside Property model get()
+public function get( $id ){
+	$where[ 'id' ] = $id;
+	//return db object
+	//properties table 
+	$this->db->get_where( 'properties', $where );
+}
+public function update( $id, $new_data ){
+	$where[ 'id' ] = $id;
+	$this->db->update( 'properties', $new_data, $where );
+}
+//inside the Properties controller edit function 
+public function edit( $id ){
+	$data[ 'property' ] = $this->Property->get( $id );
+	$this->load->view( 'layout/header' );
+	$this->load->view( 'properties/edit', $data );
+	$this->load->view( 'layout/footer' );
+}
+//inside the edit template 
+echo $property[ 'name' ];
+echo $property[ 'description' ];
+/*inside the Properties controller edit function add update functionality, check if the browser is sending post data*/
+if( $_POST ){
+	$name = $this->input->post( 'name' );
+	$description = $this->input->post( 'description' );
+	$new_data[ 'name' ] = $name;
+	$new_data[ 'description' ] = $description;
+	$this->Property->update( $id, $new_data ); //line 157
+	//redirect to index 
+	redirect( 'properties/index' );
+}
+
+//SESSIONS
+//config/config.php
+$config[ 'sess_save_path' ] = sys_get_temp_dir();
+//config/autoload.php 
+$autoload[ 'libraries' ] = array( 'session' );
+//inside Properties controller add set_filter page function 
+public function set_filter(){
+	$session_data[ 'selected_filter' ] = $this->input->get( 'filter' );
+	$this->session->set_userdata( $session_data );
+}
+/*inside index form template in the form action attribute */
+echo site_url( 'properties/set_filter' );
+//inside Properties controller index page function add:
+$data[ 'selected_filter' ] = $this->session->selected_filter;
+
+//HEADERS
+//inside Properties controller create 
+public function kml_export(){
+	$this->output->set_content_type( 'application/xml' );
+	//download
+	$this->output->set_content_type( 'application/octet-stream' );
+	//force file download re-name 
+	header( 'Content-Disposition: inline; filename="renamed.kml"');
+	$this->load->view( 'properties/kml_export' );
+}
+//inside Properties controller create view image function 
+public function view_image(){
+	$image = file_get_contents( 'image/url.jpg');
+	$this->output->set_content_type( 'jpeg' )->set_output( $image );
+} 
+
+//FILE UPLOADS
+//inside Properties controller in the edit page function add form helper 
+$this->load->helper( 'form' );
+//create upload function 
+public function do_upload(){
+	$config[ 'upload_path' ] = './uploads/';
+	$config[ 'allowed_types' ] = 'gif|jpg|png';
+	$this->load->library( 'upload', $config );
+	$this->upload->do_upload[ 'image_file' ];
+	//get image name 
+	$data = $this->upload->data();
+	return $data[ 'file_name' ];
+}
+//call do_upload() from the edit page function add:
+if( $_FILES ){
+	$this->do_upload();
+}
+//in the form template replace html <form method=... with:
+echo form_open_multipart('');
+//from the edit page function add:
+$image = FALSE;
+if( $_FILES ){
+	$image = $this->do_upload();
+}
+if( $image ){
+	$new_data[ 'image' ] = $image;
+}
+//change upload location
+$config[ 'upload_path' ] = './assets/images/';
+
+//FORM VALIDATATION
+$this->load->library( 'form_validation' );
+//set validation rules
+$this->form_validation->set_rules( 'name', 'Name', 'required' );
+$this->form_validation->set_rules( 'description', 'Description', 'required' );
+//enforce rules 
+if( $this->form_validation->run() ){
+	//update database code here
+}
+//show errors on form template 
+if( form_error( 'name' ) ){
+	echo form_error( 'name' );
+}
+if( form_error( 'description' ) ){
+	echo form_error( 'description' );
+}
+
+//ERROR LOGGING 
+//config/config.php 
+$config[ 'log_threshold' ] = 2;
+//custom log 
+log_message( 'debug', 'test bug' );
+//this will log form data entered
+log_message( 'debug', 'Form parameters' . print_r( $_POST, true ) ); 
+//check the log folder
+
+//COMPOSER
+/*in codeigniter/application/libraries/ create a library class file ( Composer_loader.php ) to autoload libraries from Composer */
+class Composer_loader{
+	public function __construct(){
+		include( './vendor/autoload.php' );
+	}
+}
+//load this library in config.php file 
+$autoload[ 'libraries' ] = array( 'session', 'Composer_loader' );
+/*in Composer.json file 
+"require-dev": {
+	"fzaninotto/Faker": "dev-master"
+}
+this will create fake names in your code 
+cmd> composer install 
+installs all dependencies vendor folder
+now use the faker library */
+$faker = Faker\Factory::create();
+$data[ 'user_name' ] = $faker->name;

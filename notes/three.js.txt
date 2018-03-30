@@ -1,0 +1,635 @@
+/* threejs.org/docs/index.html#Manual/Introduction/Creating_a_scene */
+
+<style>
+	body{ margin:0; }
+	canvas{ width:100%; height:100% }
+</style>
+<body>
+<script>
+
+/*In order to display anyhting you need:
+	1. scene
+	2. camera
+	3. renderer*/
+
+/*scene*/
+var scene_width=400;
+var scene_height=300;
+var scene=new THREE.Scene();
+
+/*camera
+Field of view : how much of the scene 
+Aspect Ratio : window width/window height 
+Near clipping plane : render optimization
+Far clipping plane : render optimization*/
+var view_angle=45;
+var aspect=scene_width / scene_height;
+var near=0.1;
+var far=1000;
+var camera=new THREE.PerspectiveCamera( view_angle, aspect, near, far );
+var renderer=new THREE.WebGLRenderer();
+renderer.setSize( scene_width, scene_height );
+/*change background color for the scene
+you can use hex,css color styles '#ffffff' or 0xffffff or rgb(255,255,255) */
+renderer.setClearColor(0xffffff);
+/*adds a canvas element to display the scene*/
+document.body.appendChild( renderer.domElement );
+
+/* it can be added to an element */
+var container=$( '#container' );
+container.append( renderer.domElement );
+//or 
+document.getElementById('webgl').append( renderer.domElement );
+
+/* responsive renderer */
+window.addEventListener( 'resize', () => {
+	var width=window.innerWidth;
+	var height=window.innerHeight;
+	renderer.setSize( width, height );
+	camera.aspect=width / height;
+	camera.updateProjectionMatrix();
+});
+</script>
+
+/*PerspectiveCamera( <FOV degrees>, <ASPECT RATIO>, <NEAR CLIPPING PLANE>, <FAR CLIPPING PLANE>)
+FOV - the extent of the scene that is seen on the display at any given moment.
+ASPECT RATIO - use width of the element divided by the height.
+NEAR/FAR CLIPPING PLANES - objects further away from the camera than the value of far or closer than near
+	won't be rendered. For performance reasons.*/
+
+/*WebGLRenderer()
+setSize( <WIDTH>,<HEIGHT>,<BOOL updateStyle> )
+updateStyle: false will render at half resolution, given that your <canvas> has 100% width and height.*/
+
+/*Adding the cube
+THREE.BoxGeometry(width,height,depth)*/
+var geometry=new THREE.BoxGeometry( 1, 1, 1 );
+var material=new THREE.MeshBasicMaterial( { color:0x00ff00 } );
+var cube=new THREE.Mesh( geometry, material );
+//position the cube 
+cube.position.y=cube.geometry.parameters.height/2;
+scene.add( cube );
+//move the camera 5 units from the z-axis
+camera.posiiton.z=5;
+//point the camera to the box 
+//points are vectors so point to a vector at position 0,0,0
+camera.lookAt( new THREE.Vector3(0,0,0) );
+
+/*BoxGeometry contains the vertices and faces of the cube.
+MeshBasicMaterial used to color the geometry.
+Mesh is an object that takes a geometry, applies the material, which we can insert into the scene.
+scene.add() by default will place elements at (0,0,0) coordinates so you have to move the camera position.*/
+
+/*Animation Loop*/
+function animate(){
+	//this will call itself every animation frame
+	requestAnimationFrame( animate );
+	//animate the cube
+	cube.rotation.x+=0.1;
+	cube.rotation.y+=0.1;
+	renderer.render( scene, camera );
+}
+/*requestAnimationFrame() pauses when the user navigates to another browser tab
+saves processing power and battery*/
+
+animate();
+
+/*******************************************************************************************
+OBJECTS & PROPERTIES
+*******************************************************************************************/
+/* scene is parent of all the objects added 
+you can add objects to other objects creating a parent-child relationship
+if parent moves, child objects follow 
+add a box in a plane object and add the plane to the scene*/
+plane.add(box);
+scene.add(plane);
+
+/*get object by name using the parent*/
+plane.name='plane-1';
+var scene.getObjectByName('plane-1');
+plane.rotation.y += 0.001; //will move both the plane and the box 
+plane.rotation.x += 0.001; //will move both the plane and the box 
+
+/*traverse(callback()) will act on all child objects*/
+scene.traverse((child)=>child.scale.x += 0.001);
+
+/*grouping*/
+var group=new THREE.Group();
+
+/*vertices*/ 
+//in the update function 
+var elapsed_time=clock.getElapsedTime();
+var plane=scene.getObjectByName('plane-1');
+var plane_geometry=plane.geometry; //array
+plane_geometry.vertices.forEach((vertex,index)=>vertex.z=Math.sin((elapsed_time+index*0.1)*0.005));
+//animate 
+plane_geometry.verticesNeedUpdate=true;
+
+/*******************************************************************************************
+CAMERAS
+*******************************************************************************************/
+/*perspective : changes size with distance from camera
+orthographic: technical drawings and isometric games such as Diablo
+THREE.OrthographicCamera(left plane,right plane,top plane,bottom plane,near plane,far plane)*/
+var camera=new THREE.OrthographicCamera(-15,15,15,-15,1,1000);
+
+/*Field of view : how much of the scene 
+Aspect Ratio : window width/window height 
+Near clipping plane : render optimization
+Far clipping plane : render optimization*/
+var view_angle=45;
+var aspect=scene_width / scene_height;
+var near=0.1;
+var far=1000;
+var camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,1,1000);
+camera.position.x=10;
+camera.position.y=10;
+camera.position.z=-18;
+camera.lookAt(new THREE.Vector3(0,0,0);
+
+/*******************************************************************************************
+SERVER
+*******************************************************************************************/
+
+/*three.js is available as an NPM package*/
+npm install three
+
+/*importing*/
+var THREE=require( 'three' );
+var scene=new THREE.Scene();
+
+/*ES6 importing*/
+import * as THREE from 'three';
+const scene=new THREE.Scene();
+
+/*Import selected parts*/
+import {Scene} from 'three';
+const scene=new Scene();
+
+/*Testing server Node.js*/
+npm install http-server -g
+
+//run it from the local directory
+http-server . -p 8000
+
+//Python 2.x server
+python -m SimpleHTTPServer
+
+//Python 3.x
+python -m http.server
+
+//PHP
+php -S localhost:8000
+
+/*******************************************************************************************
+LINES
+*******************************************************************************************/
+var renderer=new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+var camera=new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 1, 500 );
+camera.position.set( 0, 0, 100 );
+camera.lookAt(new THREE.Vector3( 0, 0, 0 ) );
+var scene=new THREE.Scene();
+//create the material for the line
+var material=new THREE.LineBasicMaterial( { color:0x0000ff } );
+/*Geometry or BufferGeometry with some vertices*/
+var geometry=new THREE.Geometry();
+geometry.vertices.push( new THREE.Vector3( -10, 0, 0 ) );
+geometry.vertices.push( new THREE.Vector3( 0, 10, 0 ) );
+geometry.vertices.push( new THREE.Vector3( 10, 0, 0 ) );
+var line=new THREE.Line( geometry, material );
+//add it to the scene
+scene.add( line );
+screen.render( scene, camera );
+	
+/*******************************************************************************************
+MATERIAL & TEXTURES
+*******************************************************************************************/
+/* Basic, 
+Phong : control highlights, shininess, sharper (higher values)
+Blinn, 
+Lambert : non-shiny, rubber, clay, stone 
+Constant
+Standard : realistic, requires more computation */
+var geometry=new THREE.BoxGeometry( 2, 2, 2 );
+
+/*material for each side of the cube
+DoubleSide : will show texture in front & back of face
+BackSide : will show texture in back face only
+FrontSide : will show texture in front face only*/
+
+//environment map: cubemap
+var cube_material=[ new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'img/1.png' ), 
+																								side:  THREE.DoubleSide } ),
+									new THREE.MeshPhongMaterial( { map: new THREE.TextureLoader().load( 'img/2.png' ), 
+																								side:  THREE.DoubleSide } ),
+									new THREE.MeshBlinnMaterial( { map: new THREE.TextureLoader().load( 'img/3.png' ), 
+																								side:  THREE.DoubleSide } ),
+									new THREE.MeshLambertMaterial( { map: new THREE.TextureLoader().load( 'img/4.png' ), 
+																								side:  THREE.DoubleSide } ),
+									new THREE.MeshConstantMaterial( { map: new THREE.TextureLoader().load( 'img/5.png' ), 
+																								side:  THREE.DoubleSide } ),
+									new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'img/6.png' ), 
+																								side:  THREE.DoubleSide } )  ];
+var material=new THREE.MeshFaceMaterial( cube_material );
+var cube=new THREE.Mesh( geometry, material );
+scene.add( cube );
+camera.position.z = 3;
+
+//cubemap reflection example 2 
+var path='/assets/cubemap/';
+var format='.jpg';
+var urls=[path+'px'+format,
+			path+'nx'+format,
+			path+'py'+format,
+			path+'ny'+format,
+			path+'pz'+format,
+			path+'nz'+format];
+var reflection_cube=new THREE.CubeTextureLoader().load(urls);
+reflection_cube.format=THREE.RGBFormat;
+scene.background=reflection_cube;
+			
+/*control material*/
+var sphere_material=returnMaterial('phong','rgb(255,255,255)');
+var folder_1=gui.addFolder('light_1');
+folder_1.add(light_left,'intensity',0,10);
+folder_1.add(light_left.posiiton,'x',-5,15);
+folder_1.add(light_left.posiiton,'y',-5,15);
+folder_1.add(light_left.posiiton,'z',-5,15);
+var folder_2=gui.addFolder('light_2');
+folder_2.add(light_right,'intensity',0,10);
+folder_2.add(light_right,'x',-5,15);
+folder_2.add(light_right,'y',-5,15);
+folder_2.add(light_right,'z',-5,15);
+var folder_3=gui.addFolder('materials');
+folder_3.add(sphere_material,'shininess',0,1000); //roughness, metalness
+folder_3.add(plane_material,'shininess',0,1);
+folder_3.open();
+
+//texture maps 
+var texture_loader = new THREE.TextureLoader();
+plane_material.map = texture_loader.load('concrete.jpg');
+//bump map 
+plane_material.bumpMap=texture_loader.load('concrete.jpg');
+plane_material.bumpScale=0.01; //height of bump valley/pit 
+//roughness map allow variations to the reflections of a surface 
+plane_material.roughnessMap=texture_loader.load('concrete.jpg');
+//metalness 
+plane_material.metalness=0.1;
+plane_material.roughness=0.7;
+//environment map for reflection 
+plane_material.envMap=reflection_cube;
+sphere_material.envMap=reflection_cube;
+//wrap the texture on the object 
+var texture=plane_material.map;
+texture.wrapS=THREE.RepeatWrapping; //how the texture wraps on the surface 
+texture.wrapT=THREE.RepeatWrapping;
+texture.repeat.set(1.5,1.5); //higher number for more detail
+//using a loop 
+var maps=['map','bumpMap','roughnessMap'];
+maps.forEach(map_name=>{
+	var texture=plane_material[map_name];
+	texture.wrapS=THREE.RepeatWrapping; 
+	texture.wrapT=THREE.RepeatWrapping;
+	texture.repeat.set(1.5,1.5); 
+});
+
+/*******************************************************************************************
+LIGHTING & BACKGROUND
+*******************************************************************************************/
+/*point : e.g. light-bulb 
+directional : e.g. sun 
+spot : 
+ambient : does not cast shadows, applies to all objects equally
+RectAreaLight : 2D light sources, not ready for production animations */
+
+//var ambient_light=new THREE.AmbientLight( <hex color>, <intensity> );
+var ambient_light=new THREE.AmbientLight( 0xFFFFFF,  4 );
+
+//var point_light=new THREE.PointLight( <hex color>, <intensity>, <distance limit> );
+
+//var directional_light=new THREE.DirectionalLight( <hex color>, <intensity> );
+directional_light.position.set( 0, 1, 0 );
+
+var spot_light=new THREE.SpotLight( 0xFF45F6, 25 );
+spot_light.position.set( 0, 3, 0 );
+
+scene.add( ambient_light );
+
+/*fog : New THREE.FogExp2(color,density)*/
+scene.fog = new THREE.FogExp2(0xffffff,0.2);
+
+/*you can use hex,css color styles '#ffffff' or 0xffffff or rgb(255,255,255) */
+renderer.setClearColor(0xffffff);
+
+/*shadows
+object.castShadow=true
+object.receiveShadow=true*/
+
+//shadow maps adjustment
+light=new THREE.SpotLight(0xffffff,intensity);
+light.shadow.bias=0.001;
+//shadow maps resolution 
+light.shadow.mapSize.width=2048;
+light.shadow.mapSize.height=2048;
+
+//camera helper fov 
+var helper=new THREE.CameraHelper(directionalLight.shadow.camera);
+
+/*to find the light, add an object to it*/
+var pointLight=returnPointLight(1);
+pointLight.position.y=1.25;
+var sphere=returnSphere(0.05);
+pointLight.add(sphere);
+scene.add(pointLight);
+
+/*******************************************************************************************
+ANIMATION 
+*******************************************************************************************/
+/*Math.randow()*/
+var boxGrid=scene.getObjectByName('boxGrid');
+boxGrid.children.forEach((child)=>{child.scale.y=Math.random();child.position.y=child.scale.y/2;});
+
+/*Math.sin() & Math.cos()*
+for continuous values*/
+var clock=new THREE.Clock();
+var time_elapsed=clock.getElapsedTime();
+/*add to update function*/
+boxGrid.children.forEach((child,index)=>{
+					child.scale.y=(Math.sin(time_elapsed+index)+1)/2+0.001; //keeps from going to 0 point 
+					child.position.y=child.scale.y/2;
+					});
+/*noise
+https://github.com/josephg/noisejs*/
+<script src="perlin.js"></script>
+boxGrid.children.forEach((child,index)=>{
+					var x=time_elapsed*5+index;
+					child.scale.y=(noise.simplex2(x,x)+1)/2+0.001; //keeps from going to 0 point 
+					child.position.y=child.scale.y/2;
+					});
+					
+/*rigs*/
+var camera_y_position=new THREE.Group();
+var camera_z_position=new THREE.Group();
+var camera_z_rotation=new THREE.Group();
+var camera_x_rotation=new THREE.Group();
+var camera_y_rotation=new THREE.Group();
+camera_y_position.name='camera_y_position';
+camera_x_rotation.name='camera_x_rotation';
+camera_z_position.name='camera_z_position';
+camera_z_rotation.name='camera_z_rotation';
+camera_y_rotation.name='camera_y_rotation';
+camera_z_rotation.add(camera);
+camera_y_position.add(camera_z_rotation);
+camera_z_position.add(camera_y_position);
+camera_x_rotation.add(camera_z_position);
+camera_y_rotation.add(camera_x_rotation);
+scene.add(camera_y_rotation);
+camera_x_rotation.rotation.x=-Math.PI/2; //looking from the top to bottom 
+camera_y_position.posiiton.y=1;
+camera_z_position.posiiton.z=100;
+
+//controller for camera to test animation direction 
+gui.add(camera_z_position.position,'z',0,100);
+gui.add(camera_x_rotation.rotation,'x',-Math.PI,Math.PI);
+gui.add(camera_y_rotation.rotation,'y',-Math.PI,Math.PI);
+gui.add(camera_z_rotation.rotation,'z',-Math.PI,Math.PI);
+
+//inside update function for animation 
+var camera_z_position_object=scene.getObjectByName('camera_z_position');
+camera_z_position_object.posiiton.z -=0.25;
+var camera_z_rotation_ojbect=scene.getObjectByName('camera_z_rotation');
+camera_z_rotation_ojbect.rotation.z=noise.simplex2(time_elapsed*1.5,time_elapsed*1.5)*0.02;
+var camera_x_rotation_object=scene.getObjectByName('camera_x_rotation');
+if(camera_x_rotation_object.x < 0){
+	camera_x_rotation_object.rotation.x += 0.01;
+}
+	
+/*Tween.js 
+control duration, timing, and style of animation using easing curves*/
+<script src="Tween.min.js"></script>
+new TWEEN.Tween({val:100})
+	.to({val:-50},12000)
+ 	.onUpdate(()=>camera_z_position.posiiton.z=this.val)
+	.start();
+new TWEEN.Tween({val:-Math.PI/2})
+	.to({val:0},6000)
+	.delay(1000)
+	.easing(TWEEN.Easing.Quadratic.InOut)
+	.onUpdate(()=>camera_x_rotation.rotation.x=this.val)
+	.start();
+new TWEEN.Tween({val:0})
+	.to({val:Math.PI/2},6000)
+	.delay(1000)
+	.easing(TWEEN.Easing.Quadratic.InOut)
+	.onUpdate(()=>camera_y_rotation.rotation.y=this.val)
+	.start();
+	
+/*******************************************************************************************
+MODEL LOADING
+*******************************************************************************************/
+/*from Blender,Maya,Modo,3DSMax,Houdini, and more 
+download from turbosquid.com, sketchfab.com, clara.io 
+supported files: FBX,OBJ,STL 
+uses JSON file
+generated by downloading the plugin for your 3d editior such as Blender and saving it as JSON
+three.js-master/src/loaders/ObjectLoader.js*/
+var loader = new THREE.ObjectLoader();
+loader.load( 'models/head.json', head =>scene.add(head));
+//OBJLoader 
+<script src="OBJLoader.js"></script>
+var loader=new THREE.OBJLoader();
+var texture_loader=new THREE.TextureLoader();
+loader.load('head.obj',object=>{
+	var color_map=texture_loader.load('face_color.jpg');
+	var bump_map=texture_loader.load('face_disp.jpg');
+	var face_material=returnMaterial('standard','rgb(255,255,255)');
+	object.traverse(child=>{
+		if(child.name=='Plane'){
+			child.visible=false;
+		}
+		if(child.name=='Infinite'){
+			child.material=face_material;
+			face_material.roughness=0.875;
+			face_material.map=color_map;
+			face_material.bumpMap=bump_map;
+			face_material.metalness=0;
+			face_material.bumpScale=0.175;
+		}
+	});
+	object.scale.x=20;
+	object.scale.y=20;
+});
+
+/*******************************************************************************************
+INTERACTIVITY
+*******************************************************************************************/
+/*dat.GUI
+https://github.com/dataarts/dat.gui
+JS library to easily create user interfaces that control variables
+Provides a way to alter scene values in real time*/
+<!DOCTYPE html><html><head><title>Three.js</title>
+<style type="text/css">html,body{margin:0;padding:0;overflow:hidden}</style></head>
+<body>
+	<div id="webgl"></div>
+	<script src="Tween.min.js"></script>
+	<script src="perlin.js"></script>
+	<script src="dat.gui.min.js"></script>
+	<script src="three.js"></script>
+	<script src="OBJLoader.js"></script>
+	<script src="main.js"></script>
+</body></html>
+
+/*control light with dat.GUI*/
+var gui=new dat.GUI();
+pointLight.intensity=2;
+//gui.add(object,property,min,max)
+gui.add(pointLight,'intensity',0,10);
+gui.add(pointLight.position,'y',0,5);
+//control the soft edges of spotlight 
+gui.add(spotLight,'penumbra',0,1);
+
+/*controls*/
+<script src="javascript/OrbitControls.js"></script>
+controls=new THREE.OrbitControls( camera, renderer.domElement );
+/*add to update function for real time control
+controls.update();*/
+	
+/*other example*/
+var resume = $( '#resume' );
+var scene = $( '#scene_1' );
+$(resume).on( 'mouseenter', () => { 
+	var text = document.createElement( 'text-entity' );
+	text.setAttribute( 'id', 'resume-text' );
+	text.setAttribute( 'text', 'text: resume' );
+	text.setAttribute( 'position', '-25 15 -15' );
+	text.setAttribute( 'rotation', '0 45 0' );
+	text.setAttribute( 'scale', '4 4 4' );
+	scene.appendChild( text );
+	$( text ).on( 'click', () => { window.location.href= '/resume'; });
+ } );
+
+/*******************************************************************************************
+CODE SNIPPETS
+*******************************************************************************************/
+function returnBox(width,height,depth){
+	var geometry=new THREE.BoxGeometry(width,height,depth);
+	var material=new THREE.MeshBasicMaterial({color:0x00ff00});
+	var mesh=new THREE.Mesh(geometry,material);
+	mesh.castShadow=true;
+	return mesh;
+}
+function returnPlane(size){
+	/*size=width and depth in PlaneGeometry(width,depth)*/
+	var geometry=new THREE.PlaneGeometry(size,size);
+	var material=new THREE.MeshPhongMaterial({color:'rgb(120,120,120)',size:THREE.DoubleSide});
+	var mesh=new THREE.Mesh(geometry,material);
+	mesh.receiveShadow=true;
+	return mesh;
+}
+function returnSphere(size){
+	//SphereGeometry(size, width faces, height faces)
+	var geometry=new THREE.SphereGeometry(size,24,24);
+	var material=new THREE.MeshBasicMaterial({color:'rgb(255,255,255)',size:THREE.DoubleSide});
+	var mesh=new THREE.Mesh(geometry,material);
+	mesh.castShadow=true;
+	return mesh;
+}
+function returnPointLight(intensity){
+	light=new THREE.PointLight(0xffffff,intensity);
+	light.castShadow=true;
+	return light;
+}
+function returnDirectionalLight(intensity){
+	light=new THREE.DirectionalLight(0xffffff,intensity);
+	light.castShadow=true;
+	light.shadow.camera.left=-40;
+	light.shadow.camera.bottom=-40;
+	light.shadow.camera.right=40;
+	light.shadow.camera.top=40;
+	light.shadow.mapSize.width=4096;
+	light.shadow.mapSize.width=4096;
+	return light;
+}
+function returnAmbientLight(intensity){
+	//does not cast shadows 
+	light=new THREE.AmbientLight('rgb(10,30,50)',intensity);
+	return light;
+}
+function returnSpotLight(intensity){
+	light=new THREE.SpotLight(0xffffff,intensity);
+	light.castShadow=true;
+	light.shadow.bias=0.001;
+	light.shadow.mapSize.width=2048;
+	light.shadow.mapSize.height=2048;
+	return light;
+}
+function returnBoxGrid(amount,seperation_multiplier){
+	var group=new THREE.Group();
+	for(var i=0;i<amount;i++){
+		var object=returnBox(1,1,1);
+		object.position.x=i*seperation_multiplier;
+		object.posiiton.y=object.geometry.parameters.height/2;
+		group.add(object);
+		for(var k=0;k<amount;k++){
+			var object=returnBox(1,1,1);
+			object.position.x=i*seperation_multiplier;
+			object.posiiton.y=object.geometry.parameters.height/2;
+			object.posiiton.z=k*seperation_multiplier;
+			group.add(object);
+		}
+	}
+	group.posiiton.x=-(seperation_multiplier*(amount-1))/2;
+	group.posiiton.z=-(seperation_multiplier*(amount-1))/2;
+	return group;
+}
+function returnMaterial(type,color){
+	var selected_material;
+	var material_options={
+		color: (color===undefined) ? 'rgb(255,255,255)': color, 
+		wireframe:false 
+	};
+	switch(type){
+		case 'basic': selected_material=new THREE.MeshBasicMaterial(material_options);break;
+		case 'lambert': selected_material=new THREE.MeshLambertMaterial(material_options);break;
+		case 'phong': selected_material=new THREE.MeshPhongMaterial(material_options);break;
+		case 'standard': selected_material=new THREE.MeshStandardMaterial(material_options);break;
+		default: selected_material=new THREE.MeshBasicMaterial(material_options);break;
+	}
+	return selected_material;
+}
+function returnGeometry(type,size,material){
+	var geometry;
+	var faces=1;
+	switch(type){
+		case 'box':geometry=new THREE.BoxGeometry(size,size,size);break;
+		case 'cone':geometry=new THREE.ConeGeometry(size,size,256*faces);break;
+		case 'cylinder':geometry=new THREE.CylinderGeometry(size,size,size,32*faces);break;
+		case 'octahedron':geometry=new THREE.OctahedronGeometry(size);break;
+		case 'sphere':geometry=new THREE.SphereGeometry(size,32*faces,32*faces);break;
+		case 'tetrahedron':geometry=new THREE.TetrahedronGeometry(size);break;
+		case 'torus':geometry=new THREE.TorusGeometry(size/2,size/4,16*faces,100*faces);break;
+		case 'torusKnot':geometry=new THREE.TorusKnotGeometry(size/2,size/6,256*faces,100*faces);break;
+		default:break;
+	}
+	var object=new THREE.Mesh(geometry,material);
+	object.castShadow=true;
+	object.name=type;
+	return object;
+}
+function update(renderer,scene,camera,controls,clock){
+	renderer.render(scene,camera);
+	controls.update();
+	TWEEN.update();
+	var time_elapsed=clock.getElapsedTime();
+	requestAnimationFrame(()=>update(renderer,scene,camera,controls,clock));
+}
+
+
+
+
+
+
+
+

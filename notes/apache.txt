@@ -1,0 +1,416 @@
+rpm -q httpd
+rpm -q apache2
+
+red hat linux
+	
+	yum check-update httpd
+	yum update httpd > installs the packages
+
+To install packages
+
+	rpm -I <file_name>
+	
+To install apache
+	
+	download .tar file to /usr/src
+	uncompress: tar -zxvf <file_name>.tar.gz
+	see INSTALL file
+	./configure -prefix=<installation_path>
+	make 
+	make install
+	test: http://localpath , should get apache default page
+	
+On ubuntu
+
+	sudo atp-get install apache2
+
+On Windows
+
+	change Apache LocalSystem account
+	conf subdirectory
+	httpd.conf default configuration file with directives
+	htdocs where documents are served
+	
+	Command line
+		httpd -k install
+		httpd -k start
+		httpd -k stop
+		httpd -k restart
+		
+		apachectl [start] [stop] [restart] [graceful]
+		
+Directives
+
+	ex: ServerRoot <directoryname>
+	<IfModule> check if module is loaded
+		ex. <IfModule worker.c>
+				StartServers 4
+				MaxClients 300
+				MinSpareThreads 25
+				MaxSpareThreads 75
+				ThreadsPerChild 25
+				MaxRequestPerChild 0
+			</IfModule>
+	LoadModule Directive
+	Access Directive: Order deny, allow
+	mime.types configures files types
+
+Commands
+	apachectl 
+	vi, telnet, ssh, ps, netstat, grep
+	xinetd
+	host.allow/deny, TCP_WRAPPERS
+	
+Webmin: GUI Apache configurer
+
+	installs small webserer on port 10000
+	avoid using root account
+
+	Configure apache
+	modules: system, servers, networking, and hardware
+		system: boot and shutdown, account management, processes and sched commands, filesystem control and backup
+		
+		server: apache web server, DNS and DHCP server, MySQL server
+		
+		networking: network configuration, firewall, NFS export, etc
+		
+		hardware: system time, GRUB boot loader, etc.
+		
+	httpd -l: see modules installed
+	
+	./configure: enable or disable modules
+	modules are listed in the LoadModule directive in the httpd.conf file
+
+Virtual Hosting
+	many sites from one server
+	IP-based with port: ex. http://123.45.67.89:8904
+	
+	
+	
+	
+	name-based: NameVirtualHost directive, can use same ip address. DNS must be configured
+	Listen directive for each port in <VirtualHost> in http.conf
+	
+		NameVirtualHost *:80
+		
+		<VirtualHost *:80>
+			
+			ServerName east.example.org
+			
+			DocumentRoot /var/www/html/east
+		
+		</VirtualHost>
+		
+		<VirtualHost *:80>
+		
+			ServerName west.example.org
+			
+			DocumentRoot /var/www/html/west
+		
+		</VirtualHost>
+		
+		vi /etc/hosts
+		
+			enter the following:
+			
+				127.0.0.1 east.example.org
+				127.0.0.1 west.example.org
+		
+		
+	
+	htdocs/: where web content is served but can be changed
+	DocumentRoot directive, can be a relative path of the ServerRoot directive
+	
+Proxying
+	taking requests from clients and serving them from other sources
+	ProxyRequest directive to on
+	ProxyPassReverse directive
+	<Proxy>
+	
+Cashing
+	CacheRoot directive: location of cache directory
+	CacheSize directive: maximum size of caching
+	CacheMaxExpire: expiration time
+	CacheEnable directive: specify cachin of particular URL to memory or disk
+		mod_cache, mod_mem_cache, mod_disk_cache
+	CacheDisable: disable caching of specified URLs
+	command: htcacheclean maintains space restrictions
+	
+	
+CentOS
+
+	# as root
+	# yum install httpd
+	# service httpd start
+	# chkconfig httpd on
+	list open files command 
+		lsof -i | grep http : see open ports
+	error log:
+		/var/log/httpd/error_log
+	
+	sestatus > see if SELinux is on
+	setenforce 0 > 
+	
+Modules
+	/usr/lib64/httpd/modules
+	
+Configuration file
+	/etc/httpd/conf/httpd.conf
+	
+Listening port
+	port 80
+	you can restrict to listen on specific network interface
+
+Document root
+	http://example.com/foo.html
+	/var/www/html/foo.html
+	DocumentRoot "/var/www/html"
+
+Command line to filter out comments in the conf file
+	
+	grep -v '^#' /etc/httpd/conf/httpd.conf | less
+	
+Apache Access Control
+
+	create a file to store the user credentials
+	
+		# htpasswd -m -c librarians jim
+		-c: creates the file, no need to do this again
+
+	<Directory /var/www/html/east/admin>
+		
+		AuthType Basic
+		AuthName "Log in as a Librarian"
+		AuthUserFile /etc/httpd.conf/librarians
+		Require valid-user
+	
+	</Directory>
+	
+	Access based on client machine
+	
+	<Directory /var/www/html/east/admin>
+		
+		order deny, allow
+		
+		deny from all
+		
+		allow from 192.168.1.0/24
+	
+	</Directory>
+	
+.htaccess files
+
+	allow (some)configuration directives to be place in the content folders they apply to
+	
+	AllowOverride
+		none: nothing
+		All: everything
+		AuthConfig: user auth directives
+		FileInfo: various
+		Indexes: directives controlling the display of directory listings
+		Limit: directives controlling host access
+		
+		ex. AllowOverride AuthConfig Indexes
+		
+Secure Connections SSL (HTTPS protocol)
+
+	file > encrypted key > ciphertext > internet > ciphertext > decryption key > file
+	
+	file > public key > ciphertext > internet > ciphertext > private key > file
+	
+	Hash: one-way transformation. Cannot reverse enginner
+	
+		message:hello! > hash > 234fa223be230f
+		
+	Digital Signature
+	
+		file > copy > file (same)
+		
+		file > hash > private key > signature > copy > signature > public key > hash > file
+		
+	Digital Certificate
+	
+		confirms that site's domain name and public key really do belong together
+		
+	Obtaining Digital Certificate
+	
+		certification authority generates a public/private key pair
+		
+		website generates public/private key pair with url and info and requests to CAs
+		
+		CA returns a X509 Certificate
+		
+	SSL Connection
+	
+		browser > server > X509 > known CA public key > checks out > site is trusted
+		
+		session key encrypts web page and serves it back to the browser.
+
+Configuring Apache to use SSL
+	
+
+	mkdir /etc/httpd/ssl
+		
+		! directory to put the self signed certificate
+	
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/httpd/ssl/apache.key -out /etc/httpd/ssl/apache.crt
+
+		openssl req -x509: generate a self signed x509 certificate
+		-nodes: not going to encrypt the private key
+		-days 365: sets the expiration date
+		-newkey rsa:2048: generate a new 2048bit rsa(algorithm) key
+		-keyout /etc/httpd/ssl/apache.key: save location of the key
+		-out /etc/httpd/ssl/apache.crt: location of the certificate
+		
+		enter information for the certificate such as country, host name: east.example.org, email
+
+	openssl x509 -in apache.crt -text | less
+	
+		-in: input file
+		-text: text representation
+		
+	yum install mod_ssl
+
+		install the ssl module
+		
+	rpm -ql mod_ssl
+	
+		rpm: whats in the module
+		-ql: query module mod_ssl
+		
+	vi /etc/httpd/conf.d/ssl.conf
+	
+		edit the conf file
+	
+	Listen 443	
+		
+		listens to port 443 (https)
+
+	NameVirtualHost *:443
+	
+	<VirtualHost *:443>
+	
+		DocumentRoot "var/www/html/east"
+		ServerName east.example.org
+	
+	</VirtualHost>
+
+	SSLCertificateFile /etc/httpd/ssl/apache.crt
+	
+	SSLCertificateKeyFile /etc/httpd/ssl/apache.key
+	
+	:wq
+	
+		! write and quit
+		
+	hostname east.example.com
+	
+		change hostname of the machine
+		
+	vi /etc/httpd/conf/httpd.conf
+	
+		adjust server name directive
+	
+	ServerName east.example.org
+	
+	:wq
+	
+	service httpd restart
+	
+	browse to http://east.example.org
+	you get a warning for the self signed certificate which is not an official certificate provider.
+	
+Logging and Status Reporting
+
+	192.168.122.5 (remote host) - (remote login name) - (user name) [04/Nov/2012:14:35 +0000] (timestamp) "GET /manual HTTP/1.1" (first line of request) 200 (http response status) 7709 (number of bytes)
+	
+	LogFormat "%h %l %u %t \"%r\" %>s %b" common
+	
+		%h: remote host
+		%l: remote login
+		%t: timestamp
+		%r: the first line of the request
+		%>s: http response status
+		common: a nickname for this format
+		%D: time to serve taken
+		%(Referer)i: gives the url of the link used to get here
+		%P: process ID
+		%U: URL path requested
+		%{foo}e: the value of the environment variable foo
+		%{Content-type}o: value of the Content-type header line in the reply
+		%v: name of the server serving the request
+		
+		LogFormat "%h %t ... ${Referer}i" myformat
+		CustomLog logs/referer_log myformat
+
+Log File Analysis
+
+	number of visits
+	number of different visitors
+	duration of visits
+	load graph: busiest time of the day/week
+	most viewed page
+	entry page
+	exit page
+	domain or country of the visitor
+	user's browser and O/S
+	
+	Open source tools
+	
+		Analog
+		AWStats
+		Webaliser
+		
+	Proprietary tools include:
+	
+		Sawmill
+		Splunk
+		
+	ErrorLog directive specifies where apache will log operation errors
+	
+		ErrorLog /var/log/httpd/error_log
+		
+			! writes errors to the specified file
+			
+		ErrorLog "|/bin/somecommand" 
+		
+			! pipes error to the specified program
+		
+		ErrorLog syslog:local3
+		
+			! sends errors to the syslog
+			
+	Log Levels
+	
+		debug, info, notice, warn, error, crit, alert, emerg
+		
+	server-status
+	
+		snapshot of the server activity mapped to a specify URL by a Location container
+		
+		<Location /server-status>
+			SetHandler server-status
+			Oder deny, allow
+			Deny form all
+			Allow from 127.0.0.1
+		</Location>
+		
+		look at the url by going to 127.0.0.1/server-status
+	
+	server-info
+	
+		information on the server's configuration mapped to a URL by a Location container
+		you can see loaded modules, etc.
+		
+	vi /etc/httpd/conf/http.conf
+	
+	inside the VirtualHost container for the east website
+	
+		CustomLog /var/log/httpd/access_log_east common
+	
+	tail /var/log/httpd/error_log
+	
+		looks at the end of the log file
+		
+	
+	

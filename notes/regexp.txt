@@ -1,0 +1,191 @@
+/* 
+/ start and ends with / flags (g, i, m)
+
+	g: global
+	i: case sensitive
+	m: multi-line
+*/
+// match digit 
+\d 
+// match non-digit 
+\D
+// match space 
+\s
+// match non-space 
+\S
+// match word character 
+\w
+// match non-word character 
+\W
+// match any single character except line break
+/.
+// space that follows a whole word 
+\b
+var str = "visit w3schools";
+var patt = /\bw3/g; //w3 
+// match 1 or more characters
+n+
+// 0 or 1 repetition
+n?
+// ,? optional comma
+// 0 or more repetitions of the preceding character
+n*
+// 0 or more occurrences of any character
+.*
+// specific # of repetitions 
+{n} 
+/*
+	ex. \d{5} 5 digits in a row. 
+	ex. \d{1,5} 1 or 5 digits
+	ex. .{4} exactly 4 occurrences of any character
+ */
+// \ escaping symbols used in regexp
+
+	()*+?[]\^{}|
+/*	
+	\e escape white space
+	\f form fee
+	\n new line
+	\r carriage return
+	\t tab
+*/	
+//matches one instance of the set
+[ ] 
+	/*
+	ex. Calen[ea]r = Calender or Calendar 
+	ex. [a-z] = one of any lower-case letter
+	ex. [0-9] = one of any digit
+	ex. [A-Fa-z0-9] = any capital letter, lower-case letter, any number
+	*/
+// or
+| 
+// (Jennifer|Jen|Jenny)
+
+//grouping
+( ) 
+// \n references (...) groups from the beginning of the regexp
+// reference the beginning of a line of text
+^ 
+	/*
+	ex. (^Cat\s.+$) find Cat
+	ex. ^mask = mask size
+	ex. ^mask = no match in "unmask" because it does not start with mask
+	*/
+// references the end of a line of text
+$ 
+	/*
+	ex. temp$ = high-temp
+	ex. temp$ = no match in "temperature" because it does not end with temp.
+	*/
+// negative lookahead
+(?!) 
+	/*
+	does not match anything that follows the "!"
+		ex. match a "q" not followerd by a "u"
+	*/	
+	q(?!u)
+// positive lookahead	
+(?=) 
+	/*
+	match a "q" followed by a "u"
+	*/
+		q(?=u)
+		
+/* If you want to store the match of the regex inside a lookahead, you have to put capturing parentheses around the regex inside the lookahead, like this: (?=(regex)) */
+
+
+	
+//EXAMPLES:
+
+	/a{0,}/g = "" matches empty string due to the 0
+	
+	/a*/g = 0 to infinity
+	
+	/a+/g = 1 to infinity
+	
+	/a?/g = "" matches empty string due to optional
+	
+	/<.+>/g = "<p>foo</p>"
+	
+	/<.+?>/g = "<p>" or "</p>" matches fewer
+	
+	/[abc]/g = "a" or "b" or "c" or "aabccca"
+	
+	/[a-z]/g = every lower case letter
+	
+	/[a-z0-9]+/g = multiple ranges
+	
+	/\w/g = letters numbers and underscore
+	
+	/\w+/g = any number of letters
+	
+	/\d+/g = digits
+	
+	/\s+/g = any white space
+	
+	/[\w-]+/g = match numbers with hyphens
+	
+	
+	function wordCount(text){
+	
+		return text.match( /\w+/g ).length;
+	
+	}//end function
+	
+	function wordCount(text){
+	
+		return text.split( /\s+/ ).length;
+	
+	}//end function
+	
+	/^#([a-f\d]{3}){1,2}$/i.test(str); //match hex color
+	
+		^# starts with hash
+		([a-f\d]{3}) a group set of 3 characters from a-f or digits from 0-9
+		{1,2} once or twice the above group
+	
+	/[^a-f]/g = negates letters between a through f
+	
+	function stripHTML( str ){
+	
+		return str.replace( /<.+?>/g, '' );
+	
+	}//end function
+
+	function stripHTML( str ){
+	
+		return str.replace( /<[^>]+>/g, '' );
+	
+	}//end function
+	
+	/{ab|ba}/g = "ab" or "ba"
+	
+	/(?:Java|ECMA)Script/g
+	
+		?: opt out of capturing Java|ECMA
+		
+	/^a/g = match a only in the beginning
+	
+	/a$/g = match a only in the end
+	
+	/\b/g = word boundary between \w and \W
+	
+	/\B/g = non word boundary between \w and \W or \W and \W
+	
+	/a(?=b)/g = look ahead. match the "a" when a "b" follows
+	
+	/a(?!b)/g = negative look ahead match a not followed by b
+	
+	/('|").+?\1/g = 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

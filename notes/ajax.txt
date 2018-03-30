@@ -1,0 +1,79 @@
+Asynchronous JavaScript And XML
+
+Request without reload
+
+JavaScript for heavy lifting
+
+talks to server through XHR (XML Http Request)
+
+
+
+
+var request = new XMLHttpRequest();
+request.open('GET', 'data.txt');
+request.onreadystatechange = function(){
+	
+	if( (request.readyState === 4) && (request.status === 200) ){
+		console.log(request);
+		document.writeln(request.responseText);
+	}//end if
+
+}//end function
+request.send();
+
+if data.txt was data.xml
+replace line 6:
+	returns the whole xml
+	console.log(request.responseXML);
+	
+	returns tag / node from xml file
+	console.log(request.responseXML.getElementsByTagName('name')[1]);
+	or
+	console.log(request.responseXML.getElementsByTagName('name')[1].childNodes[0]);
+	or
+	console.log(request.responseXML.getElementsByTagName('name')[1].firstChild);
+	or without quotes	console.log(request.responseXML.getElementsByTagName('name')[1].firstChild.nodeValue);
+	
+JSON javascript object notation
+[{},{},{},...] <-- json object
+
+	[{
+	"name": "mario",
+	"occupation": "programmer" 
+	},
+	{
+	"name": "mario",
+	"occupation": "programmer" 
+	},
+	{
+	"name": "mario",
+	"occupation": "programmer" 
+	}]
+	
+	if data.txt was data.json
+	replace line 6:
+		var items = JSON.parse(request.responseText);
+		console.log(items);
+		
+		to loop:
+			for (var key in items){
+				items[key].name; <-- returns the name
+			}
+
+JQuery
+
+	$.getJSON( 'data.json', function(data){ //<-- data is passed from data.json
+		console.log(data);
+	});
+	
+	replace line 55:
+		$.each(data, function(key, val){{
+			output = val.name;
+		});
+		$('#update').html(output);
+		or
+		$('#update').append(output);
+		or
+		$('#update').prepend(output);
+		
+		

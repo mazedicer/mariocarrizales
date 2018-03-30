@@ -1,0 +1,20 @@
+{
+  "name": "mariocarrizales",
+  "version": "1.0.0",
+  "description": "mariocarrizales.com website",
+  "main": "index.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/mazedicer/mariocarrizales"
+  },
+  "author": "MCBRG",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.9.0",
+    "gulp-minify": "^1.0.0"
+  }
+}

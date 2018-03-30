@@ -1,0 +1,937 @@
+/* Modules 
+a way to refer to javascript files.
+specific block of code pertaining to a component.
+*/
+
+/* Backbone has two dependencies: core jQuery library, and core underscore library.
+The order is important: jQuery, underscore, and then backbone. */
+
+/* BackboneJS provides various building blocks such as models, views, events, routers and collections for assembling the client side web applications.
+
+When a model changes, it automatically updates the HTML of your application. */
+
+<div id="container"></div>
+
+var AppView = Backbone.View.extend({
+	//el - stands for element. Every view has an element associated with HTML content
+	//will be rendered in this case el returns <div id="container"></div>
+	el: '#container',
+	//first function call when this view is instantiated.
+	initialize: function(){
+		this.render();
+	},
+	// $el - cached jQuery object(el), in which you can use jQuery functions
+	// It still references the same el DOM object el 
+	// to push content
+	render: function(){
+		this.$el.html( "<h1>Hello Man!</h1>" );
+	}
+});
+var appView = new AppView();
+
+//structure arrows: up,down,right,left: alt: 30,31,16,17
+
+/* Router --[HTTP Request]--► View 
+								|
+								|
+								▼
+							  Events 
+			  model ----------|    |---------► Collection 
+				▲									▲
+				|									|
+				|									|
+				 ----------► Data Source ◄----------
+
+*/
+
+//HTTP Request come from the router 
+
+/*Router 
+Routes the client side and connects them to actions and events using URLs*/
+
+/*View 
+Displays the response for the user request by the router.
+Don't contain HTML.
+Used to reflect how your data model looks like.
+Updated independently when the model changes.
+Logical chunk of UI in the DOM.*/
+
+/*Model
+A Model takes the HTTP request from the Events passed by the View using the Router and synchronizes the data from the database and sends the response back to the client.*/
+
+/*Collection 
+Set of models which binds events, when the model has been modified in the collection.
+Contains a list of models that can be processed in the loop and supports sorting and filtering.
+When creating a collection, we can define what type of model that colleciton is going to have
+along with the instance of properties. Any event triggered on a model will also trigger on the colleciton in the model.
+
+It also takes the request from the view, bind events and synchronizes the data with the requested data and sends the response back to the HTTP client.*/
+StudentModel = Backbone.Model.extend({
+	default: {
+		name: "unknown"
+	}
+});
+StudentCollection = Backbone.Collection.extend({
+	model: StudentModel
+});
+var jon = new StudentModel();
+var vick = new StudentModel();
+var math_class_students = new StudentCollection( [ jon, vick ] );
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/*Events 
+/////////////////////////////////////////////////////////////////////////////////////////
+object.on( event, callback, [context]) 
+binds event to an object and executes a callback whenever an event is fired.
+context - object that can be passed to a callback.*/
+//create myVal object and extend it with Backbone.Events method 
+var myVal = _.extend( { name: 'console.log' }, Backbone.Events );
+//the on() method will bind callback to an object and invoke it when an event triggers 
+myVal.on( 'myFunct', function(){
+	//code to execute 
+});
+//trigger the myFunc event on object myVal 
+myVal.trigger( 'myFunc' );
+
+//________________________________________________________________________________________
+/* object.off( event, callback, [context] )
+removes callback functions or all events from an object.*/
+//Here creating an object 'myVal' and extending with Backbone.Events method
+var myVal = _.extend({name:'hello'}, Backbone.Events);
+var myFunc = function () {
+    console.log('Hello');
+};
+var myFunc1 = function () {
+    console.log('Welcome to TutorialsPoint');
+};
+//The on() method will bind the callback function to objects 'myFunc' and 'myFunc1'
+myVal.on('log',myFunc);
+myVal.on('log',myFunc1);
+console.log('Before using off event, values will be: ');
+//trigger() method callbacks for the given event and display the text defined 
+//in the 'myFunc' and 'myFunc1' functions
+myVal.trigger('log');
+//The off() method removes the callback for 'myFunc' and logs only text of 'myFunc1'
+myVal.off('log',myFunc);
+console.log("<br>");
+console.log('After using off event, values will be: ');
+myVal.trigger('log');
+
+//________________________________________________________________________________________
+/* object.trigger( event, [args] )
+invokes the callback functions for the given events.
+args - passes the values/arguments to the callback function.*/
+//Created an object 'myVal' and extended it using Backbone.Events method
+var myVal = _.extend({ 
+	title:'Tutorial', 
+	site:'console.logconsole.log.com'
+	}, 
+	Backbone.Events
+);
+//The on() method will bind the callback function to an object
+myVal.on('myFunc', function () {
+    console.log("The triggered value for site is: ");
+	//value of site will get displayed by referring the current object
+    console.log( this.site ); 
+});
+// The trigger() method triggers the 'myFunc' event on 'myVal'
+myVal.trigger('myFunc');
+
+//________________________________________________________________________________________		 
+/* obj.once( event, callback, [context] )
+just like the on event, but causes the bound callback to only fire once.*/
+//The created object 'myVal' is extended using Backbone.Events method
+ var myVal = _.extend({name:'TutorialsPoint!!!'}, Backbone.Events);
+
+ //The once() method causes the bound callback to only fire once before being removed
+ myVal.once('hello', function () {
+	console.log("The value after firing once is: ");
+	console.log(this.name);//name will get displayed by referring the current object
+ });
+//It triggers the 'hello' event on object 'myVal'
+ myVal.trigger('hello');
+
+//________________________________________________________________________________________
+/* object.listenTo( other, event, callback )
+informs one object to listen to an event on another object.
+other - name of the other object.*/
+//Create an object 'myVal' and 'myVal1' and extend them using Backbone.Events method
+ var myVal = _.extend( { name:'Hello..' }, Backbone.Events );
+ var myVal1 = _.extend( { name:'Welcome !' }, Backbone.Events );
+ //create the 'listenMe' callback function and invoke when one object 
+ //listens to particular event on another object
+ var listenMe = function() {
+	console.log( "The value is: " );
+	console.log( this.name );
+ };
+//The object 'myVal1' listens once for the 'listenMe' event triggered on object 'myVal'
+ myVal1.listenTo( myVal, 'listenMe', listenMe );
+//The 'myVal' has no listenMe event and displays the value of 'myVal1'
+ myVal.trigger( 'listenMe' );
+
+//________________________________________________________________________________________
+/* obj.stopListening( other, event, callback )
+can be used to stop listening to events on the other objects.*/
+//The 'myVal1' stops listening to specific event on 'myVal' and displays nothing
+myVal1.stopListening(myVal,'listenMe');
+
+/*object.listenToOnce(other, event, callback)
+causes the listenTo occur only once before the callback function is being removed.*/
+//The object 'myVal1' listen once for the 'listenMe' event triggered on object 'myVal'
+myVal1.listenToOnce(myVal, 'listenMe', listenMe);
+
+//________________________________________________________________________________________
+/* events property */
+events: {
+	"click #DOM_ELEMENT_ID" : "callThisFunction",
+	"mouseover .class_name" : "callThisOtherFunction"
+},
+callThisFunction : function(){
+	//fire this code when <element id="DOM_ELEMENT_ID"> is clicked 
+}
+
+//Built-in Events 
+//adding model to a collection 
+"add"( model, collection, options )
+//remove model from a collection 
+"remove"( model, collection, options )
+//reset the collection content 
+"reset"( collection, options )
+//resort collection 
+"sort"( collection, options )
+//change a model's attributes 
+"change"( model, options )
+//when there is an update in an attribute 
+"change:[attribute]"( model, value, options )
+//fires when the model is destroyed
+"destroy"( model, collection, options )
+//used when a model or a collection starts requesting to the server
+"request"( model_or_collection, xhr, options )
+//used when a model or collection is synced successfully with the server 
+"sync"( model_or_collection, resp, options )
+//activates when there is an error in requesting to the server 
+"error"( model_or_collection, resp, options )
+//when there is a fail in model validation 
+"invalid"( model, error, options )
+//when there is a specific route match, this event can be used 
+"route:[name]"( params )
+//when there is a match with any route 
+"route"( route, params )
+//used by history when there is a match with any route 
+"route"( router, route, params )		
+//fires for all the triggered events by the passing event name as the first argument 
+"all"
+
+//////////////////////////////////////////////////////////////////////////////////////
+/* Models 
+contain dynamic data and its logic: Conversions, validations, computed properties, and access control fall under the Model category. */
+//singleXModel.js
+var app = app || {};
+app.singleX = Backbone.Model.extend({
+	defaults: {
+		color: "red",
+		img: "images/red.jpg"
+	},
+	//runs on instantiation and changes 
+	initialize: function(){
+		//use get() function 
+		this.get("name");
+		this.get("price");
+		this.on("change", function(){
+			//fire this code when any changes occur 
+		});
+		this.on("change:price", function(){
+			//fire this code when price property changes 
+		});
+	}
+	
+});
+
+//creating a collection 
+//allXsCollection.js 
+var app = app || {};
+app.XsCollection = Backbone.Collection.extend({
+	model: app.singleX;
+});
+
+//xApp.js 
+var redX = new app.singleX({
+	name: "rex x",
+	price: 5,
+	color: "red",
+	link: "redX"
+});
+//make a change/add with set() and to fire the this.on code of this model class 
+redX.set( "price", 20 );
+//converts to json like 
+console.log( redX.toJSON() );
+//add to collection 
+var xGroup = new app.XsCollection([
+	redX, blueX, greenX, //...
+]);
+//convert collection to json like 
+console.log( xGroup.toJSON() );
+//remove redX from collection 
+xGroup.remove( redX );
+//add redX to collection 
+xGroup.add( redX );
+//adding the collection to the view 
+var xGroupView = new app.allXView({ collection: xGroup });
+//jQuery is targeting allXs element in index.html
+$( "#allX" ).html( xGroupView.render().el );
+
+//creating views 
+//singleXView.js
+var app = app || {};
+//the view of a single model view
+app.singleXView = Backbone.View.extend({
+	tagName: "article",
+	className: "xListItem",
+	//target the xElement at index.html 
+	template: _.template( $( "#xElement" ).html() ),
+	//render builds the element with the above attributes 
+	render: function(){
+		var xTemplate = this.template( this.model.toJSON() );
+		this.$el.html( xTemplate );
+		return this;
+	}
+});
+//create a template 
+//index.html 
+<script id="xElement" type="text/template">
+	//lodash syntax, 
+	//the hash creates a routerable link 
+	<a href="#<%= link %>">
+		<img src="<% img %>" alt="%= name %>" />
+	</a>
+	<ul>
+		<li>Name: <%= name %></li>
+		<li>Price: <%= price %></li>
+		<li>Color: <%= color %></li>
+	</ul>
+//allXView.js 
+var app = app || {};
+//the view for all the Xs 
+app.allXView = Backbone.View.extend({
+	//optional properties will automatically create the el, $el properties by calling 
+	// this.el, this.$el 
+	//can be a div, span, etc.. 
+	// e.g. <span class="cake" id="span1"></span>
+	// tagName: "span",
+	// className: "cake",
+	// id: "span1"
+	tagName: "section",
+	render: function(){
+		this.collection.each( this.addX, this );
+		// returning this allows chaining with other render methods 
+		return this;
+	},
+	addX: function( X ){
+		var XView = new app.singleXView( { model: X } );
+		//$el is jQuery reference to the element in this view, which is the section tag.
+		this.$el.append( XView.render().el );
+	}
+});
+
+//________________________________________________________________________________________
+/*Backbone.Model.extend( properties, [classProperties] )
+extends the backbone.Model class while creating your own backbone Model.
+properties - instance properties for the Model class.
+classProperties - attached to the constructor.*/
+customModel = Backbone.Model.extend({
+	initialize: function(){
+		//fire when instantiated 
+	}
+});
+var custom_model = new customModel;
+
+//________________________________________________________________________________________
+/*initialize - when model instance created, the class' constructor gets called. Watches for changes.
+new Model( attributes, options )
+attributes - define properties of a model 
+options - */
+
+//________________________________________________________________________________________
+//Model.set( model_property, value ) - sets the value of an attribute in the model 
+var  Person = Backbone.Model.extend();
+var person = new Person();
+person.set( { fname: "John", lname:"Smith"} );
+console.log( "Name of the person: ", person.get( 'fname' ) );
+
+//________________________________________________________________________________________
+//Model.get( model_property ) - gets ....
+
+//________________________________________________________________________________________ 
+//Model.escape - like get but returns HTML-escaped version
+var  Person = Backbone.Model.extend();
+var person = new Person();
+person.set({name: "John"});
+console.log( person.escape("name") ); 
+
+//________________________________________________________________________________________
+//Model.has( has - returns true if attribute not empty, non-null, non-undefined 
+var Company = Backbone.Model.extend();
+var company = new Company();
+company.set( { Name: "Tutorial", comp_site: "console.logconsole.log.com" } );
+if(company.has( 'comp_site' ) ) {
+	console.log("The model Company has site: True");
+} else {
+	document.write("The model Company has site: False");
+}
+
+//________________________________________________________________________________________
+//model.unset( model_attribute ) - removes an attribute from a model 
+company.unset( 'comp_name' ); 
+
+//________________________________________________________________________________________
+//model.clear( options ) - removes all attributes including id from model 
+
+//________________________________________________________________________________________ 
+//id - to identify model entity
+var  Person = Backbone.Model.extend ({
+	defaults: {
+	   id: 26
+	}
+});
+var person = new Person();
+console.log( "Id of the model: ", person.get( 'id' ) );
+
+//________________________________________________________________________________________ 
+//idAttribute - Defines a model's unique identifier which contains the name of the member of the class which will be used as id.
+
+//________________________________________________________________________________________
+//cid - auto generated client-id which uniquely identifies the model on the client 
+var  Person = Backbone.Model.extend();
+var person = new Person(); //person.cid = c1
+var person = new Person({id: 1}); //person.cid = c2 
+
+//________________________________________________________________________________________
+//attributes - attributes defines property of a model 
+
+//________________________________________________________________________________________ 
+//model.changed - Changes all the attributes that have changed after setting the attributes using the set() method
+Player = Backbone.Model.extend ({
+	defaults: {
+		p_name: 'Mario',
+		country: 'Mexico'
+	},
+	initialize: function () {
+		this.bind( "change:p_name", function ( model ) {
+			var name = model.get( "p_name" );
+			var ctry = model.get( "country" );
+		});
+	}
+});
+var person = new Player();
+document.write("<b>Before changing the name attribute, its value is:</b> ", 
+person.get("p_name"));
+person.set({ p_name: 'Carlos' });
+document.write("<br><b>After changing the name attribute, its value is:</b> ", 
+person.get("p_name"));
+//Before changing the name attribute, its value is: Mario
+//After changing the name attribute, its value is: Carlos 
+
+//________________________________________________________________________________________
+//defaults - Sets a default value to a model, that means if the user doesn't specify any data, the model won't fall with an empty property
+Player = Backbone.Model.extend ({
+	defaults: {
+		p_name: 'Mario',
+		country: 'Mexico'
+	}
+});
+
+//________________________________________________________________________________________
+//toJSON - Returns a copy of the attributes as an object for JSON stringification.
+
+//________________________________________________________________________________________
+/*model.sync( method, model, options )
+to communicate with the server and to represent the state of a model.
+method - CRUD operation
+model - save to this model 
+options - fires success or error message depending if method succeeded.*/
+var details = new Backbone.Model ({
+    fname: "Mario",
+    lname: "Carrizales"
+});
+Backbone.sync = function( method, model ) {
+    document.write( method + ": " + model.get( 'fname' )+ " " + model.get( 'lname' ) );
+};
+details.save(); //create: Mario Carrizales
+
+//________________________________________________________________________________________
+/* model.fetch( options ) - Accept the data from the server by delegating sync() method in the model
+options - parameters such as id, name, etc. */
+Backbone.sync = function( method, model ) {
+    document.write( method + ": " + JSON.stringify( model ) );
+};
+var person = new Backbone.Model ({
+    Country:"Mexico",
+    Name:"Mario Carrizales"
+});
+person.fetch(); //read: { "Country":"Mexico", "Name": "Mario Carrizales" } 
+
+//________________________________________________________________________________________
+//save - Saves the data of the model by delegating to sync() method which reads and saves the model every time when a Backbone calls it
+var details = new Backbone.Model ({
+    name: "Hi..",
+    site: "Welcome to Tutorial"
+});
+Backbone.sync = function(method, model) {
+    document.write( method + ": " + model.get('name')+ " " +model.get('site') );
+    model.set('id', 1);
+};
+details.save();
+document.write( "<br>" );
+details.save( { name : "Hello console.log!"} );
+//create: Hi.. Welcome to Tutorial
+//update: Hello console.log! Welcome to Tutorial
+
+//________________________________________________________________________________________		 
+//destroy - Destroys or removes the model from the server by using the Backbone.sync method which delegates the HTTP "delete" request.
+Backbone.sync = function(method, model) {
+    document.write(method + ": " + JSON.stringify(model)+"<br>");
+    model.set('id',1);
+};
+var details = new Backbone.Model ({
+    Country:"Mexico",
+    Name:"Mario Carrizales"
+});
+details.save();
+details.destroy();
+//create: {"Country":"Mexico","Name":"Mario Carrizales"}
+//delete: {"Country":"Mexico","Name":"Mario Carrizales","id":1}
+
+//________________________________________________________________________________________ 
+//model.validate( attributes, options ) - If the input is invalid, it returns a specified error message or if the input is valid, it doesn't specify anything and simply displays the result
+//options − It includes true as an option to validate the attributes
+var Person = Backbone.Model.extend ({
+	defaults: {
+	   name: 'john',
+	   age: 25,
+	   occupation: 'working'
+	},
+	initialize : function() {
+	   this.on( "invalid", function( model, error ) {
+		  document.write( error );
+	   });
+	},
+	validate: function( attributes ) {
+	   if ( attributes.age < 25 ) {
+		  return 'Person age is less than 25, please enter the correct age!!! ';
+	   }
+	   if ( ! attributes.name ) {
+		  return 'please enter the name!!!';
+	   }
+	},
+ });
+ var person = new Person();
+ person.on( 'invalid', function() {
+	this.arguments;
+ });
+ person.set( { age : '20' }, { validate : true } );
+
+//________________________________________________________________________________________ 
+//validationError - displays the validation error, if the validation fails or after the invalid event is triggered.
+
+//________________________________________________________________________________________
+//isValid - checks the model state by using the validate() method and also checks validations for each attribute.
+var Person = Backbone.Model.extend ({
+            defaults: {
+               name: '',
+               age: 25,
+            },
+            validate: function( attributes ) {
+               if ( attributes.name == '') {
+                  document.write("please enter the name!!!!");
+               }
+            }
+         });
+         var person = new Person ({
+            name: 'John'
+         });
+         document.write( "The passed value for attribute 'name' is: ", person.isValid() );
+//The passed value for attribute 'name' is: true 
+
+//________________________________________________________________________________________
+//url - used for the instance of the model and returns the url to where the model's resource is located
+var MyModel = Backbone.Model.extend ({
+    urlRoot: '/tutorial/backbonejs'
+});
+var mymodel = new MyModel ({ 
+    id: "models" 
+});
+document.write( mymodel.url() );
+//tutorial/backbonejs/models 
+
+//________________________________________________________________________________________
+//urlRoot - Enables the url function by using the model id to generate the URL
+
+//________________________________________________________________________________________ 
+//model.parse( response, options ) - Returns the model's data by passing through the response object and represents the data in the JSON format
+//response − It is passed using response raw object and returns attributes to be set on the model
+//options − It includes true as an option which represents data in JSON format.
+var myData = {
+            "values": [{
+               "fname": "Mario",
+               "lname": "Carrizales",
+               "country": "Mexico"
+            }]
+         };
+var Person  = Backbone.Model.extend ({
+            parse : function( response, options ) {
+               document.write(JSON.stringify( response ));
+            }
+         });
+var person = new Person( myData, { parse: true } );
+//{"values":[{"fname":"Mario","lname":"Carrizales","country":"Mexico"}]} 
+
+//________________________________________________________________________________________ 
+//model.clone() - create a deep copy of a model or to copy one model object to another object
+var Person  = Backbone.Model.extend();
+var person = new Person ({
+            p_name: 'Mario Carrizales',
+            country: 'Mexico'
+         });
+var details = person.clone();
+         
+//output would be a deep clone of Person Model
+document.write(JSON.stringify(details));
+//{"p_name":"Mario Carrizales","country":"Mexico"} 	
+ 
+//________________________________________________________________________________________ 
+//hasChanged - Returns true, if the attribute gets changed since the last set
+var person = new Backbone.Model ({
+            name: 'john'
+});
+document.write('Has name changed (before set) = ' + person.hasChanged());
+person.set( 'name', 'smith', {silent: true} );
+document.write('<br>Has name changed (after set) =' + 
+person.hasChanged());
+
+			
+//________________________________________________________________________________________
+//isNew - Determines whether the model is a new or an existing one.
+//If the model is not saved to the server and does not yet have an id, it is considered to be new. This method helps to determine this state.
+var Person = Backbone.Model.extend ({
+            defaults: {
+               title: 'TutorialsPoint'
+            }
+         });
+var person = new Person();
+document.write(person.isNew());
+
+//________________________________________________________________________________________
+//model.changedAttributes( attributes ) - It returns the model's attributes that have changed since the last set or else becomes false, if there are no attributes
+var values = new Backbone.Model ({
+            name1: 'Mario',
+            name2: 'Carlos',
+            name3: 'Eduardo'
+         });
+values.on('change', function() {
+            document.write("The changed attributes are: ");
+            document.write(JSON.stringify(values.changedAttributes()));
+         });
+values.set ({
+            name1: 'Enrique',
+            name2: 'Jazmin'
+         });
+//The changed attributes are: {"name1":"Enrique","name2":"Jazmin"} 
+		 
+		 
+//________________________________________________________________________________________
+//model.previous( attribute ) - determines the previous value of the changed attribute
+var model = new Backbone.Model ({
+            id:1,
+            player:'Mario'
+         });
+         model.set('id', '02');
+         document.write("Value of id after set: ", JSON.stringify(model.changedAttributes()));
+         document.write("<br>");
+         document.write("The previous value of id is: ", model.previous('id'));
+//Value of id after set: {"id":"02"}
+//The previous value of id is: 1 
+
+//________________________________________________________________________________________
+//model.previousAttributes() - Return a copy of the model's previous attributes. Useful for getting a diff between versions of a model, or getting back to a valid state after an error occurs
+var model = new Backbone.Model ({
+            id:01,
+            player:'Mario',
+            country:'Mexico'
+         });
+model.set('id', '02');
+document.write("All the attributes returned by the previousAttributes() method are: ");
+document.write("<br>");
+document.write( JSON.stringify( model.previousAttributes() ) );
+
+//underscore methods
+//_.keys( object ) - to access the object's enumerable properties 
+
+//_.values( object ) - to get values of object's properties
+
+//describes the object's properties in terms of key value pairs
+_.pairs( object )
+//returns the copy of object, in which keys have become the values and vice versa
+_invert( object )
+//returns the copy of object and indicates which keys to pick up
+_.pick( object, *keys )
+//returns the copy of object and indicates which keys to omit
+_.omit( object, *keys )
+
+///////////////////////////////////////////////////////////////////////////////////
+/* Collections 
+Ordered sets of models.
+Extend the collection class to create your own collection.
+Any event triggered on a model in a collection will also be triggered on the collection allowing you to listen for changes to specific attributes in any model in a collection.*/
+//Extends the backbone's collection class to create a collection
+extend 
+//To specify the model class, we need to override the model property of the collection class
+model
+//When a model instance is created, it is invoked by defining the initialize function when the collection is created.
+initialize
+//Array of models which are created inside the collections
+models 
+//Returns the copy of the attributes of a model using the JSON format in the collection
+toJSON 
+//represents the state of the model and uses the Backbone.sync to display the state of the collection
+sync 
+//Add a model or array of models to the collection
+add 
+//Removes a model or array of models from the collection
+remove 
+//resets the collection and populates with new array of models or will empty the entire collection
+reset 
+//used to update the collection with a set of items in a model. If any new model is found, the items will be added to that model
+set 
+//used to retrieve the model from a collection by using the id or cid
+get 
+//Retrieve the model from a collection by using specified index
+at 
+//similar to the add() method which takes the array of models and pushes the models to the collection
+push 
+//similar to the remove() method which takes the array of models and removes the models from the collection
+pop 
+//Add a specified model at the beginning of a collection
+unshift 
+//removes the first item from the collection
+shift 
+//Displays the shallow copy of the elements from the collection model.
+slice 
+//Counts the number of models in the collection
+length 
+//sort the items in the collection
+comparator 
+//Sorts the items in the collection and uses comparator property in order to sort the items
+sort 
+//Retrieves the attributes from the model in the collection
+pluck 
+//used to display the model by using the matched attribute in the collection
+where 
+//returns the model, that matches the specified attribute in the collection
+findWhere
+//creates an instance of the collection and returns where resources are located
+url 
+//Returns the collection's data by passing through the response object and represents the data in JSON format
+parse 
+//returns the shallow copy of the specified object.
+clone 
+//extracts the data from the model in the collection using the sync method
+fetch 
+//creates a new instance of the model in the collection
+create 
+
+//underscore methods 
+//Iterates each of the elements in the collection using the iteratee function
+_.each( list, iteratee, [context] )
+//maps each value and displays them in a new array of values using the iteratee function
+_.map( list, iteratee, [context] )
+//reduces the list of values into a single value and it also known as inject and foldl
+_.reduce( list, iteratee, memo, [context] )
+//the right associative version of reduce
+_.reduceRight( list, iteratee, memo, [context] )
+//finds each value and returns the first one which passes the predicate or test
+_.find( list, predicate, [context] )
+//filters each value and returns the array of values which passes the predicate or test
+_.filter( list, predicate, [context] )
+//returns the rejected elements in the list which do not pass the predicted values
+_.reject( list, predicate, [context] )
+//returns true, if elements in the list pass the predicted values
+_.every( list, predicate, [context] )
+//returns true, if elements in the list pass the predicted values
+_.some( list, predicate, [context] )
+//returns true, if a value is present in the list
+_.contains( list, value, [fromIndex])
+//invokes the method name using methodName() on each value in the list
+_.invoke( list, methodName, *arguments )
+//specifies the maximum value in the list
+_.max( list, [iteratee], [context] )
+//specifies the minimum value in the list
+_.min( list, [iteratee], [context] )
+//returns the sorted elements in the ascending order by using iteratee in the list
+_.sortBy( list, [iteratee], [context] )
+//divides the collection values into the sets, grouped by using the iteratee in the list
+_.groupBy( list, [iteratee], [context] )
+//returns the shuffled copy of the list
+_.shuffle( list )
+//defines an array of the list
+_.toArray( list )
+//defines the number of values in the list
+_.size( list )
+//specifies the first element of the array in the list
+_.first( array, [n] )
+//returns everything, but specifies the last entry of the array in the list
+_.initial( array, [n] )
+//specifies the last element of the array in the list
+_.last( array, [n] )
+//defines the remaining elements in the array
+_.rest( array, [index] )
+//returns the values of all instances which are removed in the list.
+_.without( array, *values )
+//returns the value if it is found at a specified index or returns -1, if it is not found.
+_.indexOf( array, value, [isSorted] )
+//returns the last occurrence of the value in the array or returns -1, if it is not found
+_.indexOf( array, value, [fromIndex] )
+//returns true if there are no values in the list
+_.isEmpty( object )
+//returns a wrapped object 
+_.chain( obj )
+
+////////////////////////////////////////////////////////////////////////////////////
+/* Router 
+Required for links, bookmarks, and share URL locations in the app */
+//extends the backbone's router class
+extend 
+//defines the URL representation of applications objects
+routes
+//creates a new constructor for the router instantiation
+initialize 
+//creates a route for the router 
+route 
+//used to update the URL in the applications 
+navigate 
+//used when a route matches its corresponding callback 
+execute 
+
+////////////////////////////////////////////////////////////////////////////////////
+/* History 
+keeps track of history, matches the appropriate route, fires callbacks to handle events and enables the routing in the application*/
+//start - starts listening to routes and manages the history for bookmarkable URLs 
+// options include pushState, hasChanged
+Backbone.history.start( options )
+
+//'Router' is a name of the router class 
+var Router = Backbone.Router.extend({
+	//the 'routes' maps URLs with parameters to functions on your router 
+	routes: {
+		"myroute": "myFunction"
+	},
+	//the function 'myFunction' defines the links for the route on the browser
+	myFunction: function( myroute ){
+		document.write( myroute );
+	}
+});
+//'router' is an instance of the Router 
+var router = new Router();
+//start listening to the routes and manages the history for bookmarkable URLs 
+Backbone.history.start();
+
+<body>
+	<a href="#route1">Route1</a>
+	<a href="#route2">Route2</a>
+	<a href="#route3">Route3</a>
+</body>
+
+//output: src/history/start.htm#route1, src/history/start.htm#route2, ...
+
+////////////////////////////////////////////////////////////////////////////////////
+/* Sync */
+//Backbone.sync - Persist the state of the model to the server
+
+//Backbone.ajax - defines custom ajax function
+
+//.emulateHTTP -  If your web server does not support REST or HTTP approach, then turn on the Backbone.emulateHTTP 
+
+//.emulateJSON - used to handle the requests encoded with application/json by setting the method to true 
+
+
+////////////////////////////////////////////////////////////////////////////////////
+/* View 
+reflect "how your data model looks like". They represent the model's data to the user. They provide the idea behind the presentation of the model's data to the user. It handles the user input events, binds events and methods, renders model or collection and interacts with the user
+*/
+//extend - extends the Backbone.View class to create a custom view class.
+
+//initialize - instantiates the view by using the new keyword.
+
+//el - defines which element to be used as the view reference.
+
+//$el - represents the jQuery object for the view's element.
+
+//setElement - specifies the existing DOM element to a different DOM element.
+
+//attributes - They can be used as DOM element attributes on the view class.
+
+//$(jQuery) - It is used as a selector that contains the $ function and runs queries within the view's element.
+
+//template - While rendering the view, template creates reusable copies of markup and provides access to instance data.
+
+//render - contains the logic for rendering a template.
+//'ViewDemo' is a name of the view class
+ var ViewDemo = Backbone.View.extend ({
+	//'el' uses '#mydiv' as the view reference
+	el: $('#mydiv'),
+	//'template' provides access to instance property data when rendering the view
+	template: _.template("Welcome to <%= name %>"),
+	//This function is called when the view is instantiated
+	initialize: function() {
+	   this.render();
+	},
+	//'render' provides the logic required to construct the view
+	render: function() {
+	   //'$el' is cached object that push the content defined within it and
+	   //display the value of 'name' when 'template' access the data
+	   this.$el.html(this.template({name: 'Tutorial'}));
+	}
+ });
+ //'myview' is an instance of the 'ViewDemo' class
+ var myview = new ViewDemo();
+ // example 2
+//there are different styles to create the same functionality 
+//define a template 
+<script type="text/template" id="ourTemplate">
+	<span>Hello</span>
+</script>
+//define el 
+<div id="unique"></div>
+//create the view 
+TheView = Backbone.View.extend({
+	initialize: function(){
+		this.render();
+	},
+	render: function(){
+		//using _.template function to compile it into template, then feed it into el
+		var template = _.template( $("#outTemplate").html(), {} );
+		this.$el.html( template );
+	}
+});
+$( document ).ready( function(){
+	var aView = new TheView( { el: $("#unique") } );
+});
+/*result 
+<div id="unique">
+	<span>Hello</span>
+</div>
+*/
+
+//remove - Removes a view from the DOM.
+
+//delegateEvents - Binds elements to the specified DOM elements with callback methods to handle events.
+
+//undelegateEvents - It removes delegate events from the view.
+
+////////////////////////////////////////////////////////////////////////////////////
+/* Utility
+The utility class defines a set of methods used for implementing the backbone utility*/
+
+//Backbone.noConflict - displays the original value of Backbone object and allows to store reference to a backbone.
+
+//Backbone.$ - allows Backbone to use particular object as DOM library.
+

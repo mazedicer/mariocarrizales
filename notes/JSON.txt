@@ -1,0 +1,47 @@
+Object syntax
+var obj = {
+	user: "mario",
+	age: 37,
+	country: "USA"
+}
+
+var obj1 = {
+	user1: obj
+}
+
+obj1.user1.user //returns mario
+obj1["user1"]["user"] //returns mario
+
+With Arrays
+var meats =  ["beef", "pork", "lamb"];
+var obj2 = {
+	array1: meats
+}
+
+obj2.array1[2] //returns lamb
+
+JSON user.json file
+{
+	"user": "mario",
+	"age": 37,
+	"country": "USA"
+}
+
+var data = JSON.parse( some_ajax_request.responseText );
+
+in PHP, the object requested is echoed by php 
+instead of user.json do user.php.
+<?php
+header( "Content-Type application/json" );
+$json_data = '{
+	"user1": {
+		"user": "user": "John",
+		"age": 22,
+		"country": "usa"
+	}
+}';
+echo $json_data;
+
+or $json_data = file_get_contents( "user.json" );
+
+

@@ -1,0 +1,493 @@
+https://docs.nodejitsu.com/articles/HTTP/servers/how-to-create-a-HTTPS-server/
+
+//GLOBALS
+global.console.log( "hello" );
+//same as 
+console.log( "hello" );
+/* every node js file created is its own module and every 
+variable created is scoped inside that module and not the global 
+namespace */
+
+//variable interpolation / template string ${variable}
+var variable = "Me";
+console.log( "You and ${variable}" );
+
+//__dirname : displays directory where file is located 
+//__filename : displays the same as __dirname + file name 
+
+//globals require() method gives us tools for working with paths 
+var path = require( 'path' );
+console.log( `You and ${path.basename(__filename)}` );
+//extracts the file name only 
+//////////////////////////////////////////////////////////
+//globals process
+//////////////////////////////////////////////////////////
+//app.js 
+process.argv //values stored in an array 
+const grab = ( flag )=>{
+	var index = process.argv.indexOf( flag );
+	return ( index === -1 ) ? null : process.argv[ index+ 1 ];
+}
+var greeting = grab( '--greeting' );
+var user = grab( '--user' );
+if( !user || !greeting ){
+	console.log( "You blew it!" );
+}else{
+	console.log( `Welcom ${user}, ${greeting}` );
+}
+//run app.js code 
+>cmd node app --user alex --greeting "hello!"
+
+//standard output stdout 
+process.stdout.write( "hello" );
+//standard input stdin listening for data 
+process.stdin.on( 'data', ()=>{
+	process.stdout.write( data.toString().trim() );
+});
+//CTR-C to stop 
+//to exit 
+process.exit();
+process.on( 'exit', ()=>{
+	process.stdout.write( "process exit" );
+	//.clearLine() removes last line 
+	//.cursorTo( <int> ) moves cursor to position <int>
+});
+//////////////////////////////////////////////////////////
+//CORE MODULES 
+//////////////////////////////////////////////////////////
+var path = require( 'path' ); //path functions 
+var util = require( 'util' ); //utilities such as logging 
+var v8 = require( 'v8' ); //memory usage stats 
+var readline = require( 'readline' ); //handles stdin and stdout 
+path.basename( __filename );
+var dir_uploads = path.join( __dirname, 'www', 'files', 'uploads' );
+//.../www/files/uploads 
+//utils 
+util.log( dir_uploads );
+//v8 
+util.log( v8.getHeapStatistics() );
+//////////////////////////////////////////////////////////
+//readline 
+//////////////////////////////////////////////////////////
+var rl = readline.createInterface( process.stdin, process.stdout );
+rl.question( "question?", ( answer )=>{
+	rl.setPrompt( "question 2?" ); // another way to ask
+	rl.prompt(); //displays the setPrompt question2
+	//console.log( answer );
+	rl.on( 'line', ( saying )=>{
+		rl.setPrompt( "question 3?" );
+		rl.prompt();
+		console.log( saying );
+		rl.close(); //exit readline instance 
+	});
+});
+rl.on( 'close', ()=>{
+	//%s string placeholder, %j json placeholder 
+	console.log( "%s %j", { name: "mario" }, jsonObj );
+});
+//////////////////////////////////////////////////////////
+//Event emitter 
+//////////////////////////////////////////////////////////
+var events = require( 'events' );
+var emitter = new events.EventEmitter(); //EventEmitter() is a constructor 
+emitter.on( 'customEvent', ( msg, status )=>{
+	console.log( status + ' ' msg );
+});
+emitter.emit( 'customEvent', 'hello', 200 );
+
+//event emitter inheritance 
+var EventEmitter = require( 'events' ).EventEmitter;
+var util = require( 'util' );
+var Person = ( name )=>{
+	this.name;
+};
+util.inherits( Person, EventEmitter );
+var ben = new Person( "Ben" );
+ben.on( 'speak', ( said )=>{
+	console.log( this.name + ' said ' + said );
+});
+ben.emit( 'speak', 'I said it' );
+//////////////////////////////////////////////////////////
+//Modules exports 
+//////////////////////////////////////////////////////////
+//bin/Person.js 
+var EventEmitter = require( 'events' ).EventEmitter;
+var util = require( 'util' );
+var Person = ( name )=>{
+	this.name;
+};
+util.inherits( Person, EventEmitter );
+module.exports = Person; //exporting the Person object 
+//Mario.js 
+var Person = require( './bin/Person' );  //importing bin/Person.js 
+var mario = new Person( "Mario" );
+
+//Child porcesses spawn() and exec() can run external processes found on user environment
+open . //opens up explorer in mac 
+explore . //opens explorer in windows 
+open -a Terminal . //opens a new terminal in mac 
+open cmd . //opens a new cmd window in windows 
+
+var exec = require( 'child_process' ).exec; 
+exec( "open http://www.linkedin.com" ); //will open linkedin on default browser 
+exec( "open cmd ." );
+exec( 'dir', ( err, stdout )=>{
+	if( err ){
+		throw err;
+	}
+	console.log( 'Listing finished' );
+	console.log( stdout );
+});
+//child processes spawn()
+var spawn = require( 'child_process' ).spawn;
+var cp = spawn( 'node', [ 'alwaysTalking' ] ); //node alwaysTalking.js 
+cp.stdout.on( 'data', ( data )=>{
+	console.log( data.toString() );
+});
+cp.on( 'close', ()=>{
+	console.log( 'child process end' );
+	process.exit();
+});
+setTimeout( ()=>{
+	cp.stdin.write( 'stop' ); //will stop alwaysTalking process 
+}, 4000 );
+
+//////////////////////////////////////////////////////////
+//FileSystem
+//////////////////////////////////////////////////////////
+//listing contents of directory 
+var fs = require( 'fs' );
+
+//blocking request Sync 
+var files = fs.readdirSync( './lib' ); 
+console.log( files ); //returns an array of files 
+
+//non blocking Async needs a callback 
+fs.readdir( './lib', ( err, files )=>{
+	if( err ){
+		throw err;
+	}
+	console.log( files );
+});
+
+//filesystem read file contents default binary encoding read with Buffer class 
+//readFile( <file_to_read>, <read_mode>, callback )
+var contents = fs.readFileSync( './lib/saying.md', 'UFT-8' );
+//non blocking Async 
+fs.readFile( './lib/saying.md', 'UFT-8', ( err, contents )=>{
+	if( err ){
+		console.log( err );
+	}
+	console.log( contents );
+});
+console.log( contents );
+
+//filesystem iteration 
+var fs = require( 'fs' );
+var path = require( 'path' );
+fs.readdir( './lib', ( err, files )=>{
+	files.forEach( ( fileName )=>{
+		var file = path.join( __dirname, 'lib', fileName );
+		var stats = fs.statSync( file );
+		if( stats.isFile() && fileName !== '.DS_Store' ){
+			fs.readFile( file, 'UTF-8', ( err, contents )=>{
+				console.log( contents );
+			});
+		}
+	});
+});
+
+//filesystem writing & appending 
+//writeFile( <file-to-create>, <content-to-put>, callback )
+//appendFile( <file-to-append>, <content-to-append>, callback<optional> )
+var md = 'text for file';
+fs.writeFile( 'sample.md', md.trim(), ( err )=>{
+	console.log( 'file create' );
+});
+
+//filesystem create directory mkdir( <dir_to_make>, callback )
+if( fs.existsSync( 'lib' ) ){
+	//directory exists 
+}else{
+	fs.mkdir( 'lib', ( err )=>{
+		if( err ){
+			//...
+		}
+	});
+}
+
+//filesystem move / rename 
+//renameSync( <file-to-rename>, <name-to-rename-to> )
+fs.renameSync( './lib/project-config.js', './lib/config.json' );
+
+//move at same time 
+fs.rename( './lib/notes.md', './notes.md', ( err )=>{
+	if( err){
+		//...
+	} 
+});
+
+//filesystem delete file 
+try{
+	fs.unlinkSync( './lib/config.json' );
+}catch( err ){
+	//log err 
+}
+
+fs.unlink( 'notes.md', ( err )=>{
+	if( err ){
+		//log 
+	}
+});
+
+//filesystem move directory 
+fs.renameSync( './lib/logs', '/logs' );
+
+//filesystem remove directory 
+//cannot remove non-empty directories so chain forEach
+fs.readdirSync( './assets' ).forEach( ( fileName )=>{
+	fs.unlinkSync( './log/' + fileName );
+});
+fs.rmdir( './assets', ( err )=>{
+	if( err ){
+		throw err;
+	}
+	//log success 
+});
+
+//filesystem read streams
+var stream = fs.createReadStream( './chat.log', 'UTF-8' );
+var data = "";
+stream.once( 'data', (){
+	//log started reading...
+});
+stream.on( 'data', (chunk)=>{
+	process.stdout.write( chunk.length );
+	data += chunk;
+});
+stream.on( 'end', (){
+	//log finished reading... data.length 
+});
+//filesystem write stream 
+var stream = fs.createWriteStream( 'file.md' );
+stream.write( new_content ); //will keep writing content as append 
+
+//////////////////////////////////////////////////////////
+//HTTP Module 
+//////////////////////////////////////////////////////////
+//making an https request 
+var https = require( 'https' );
+var fs = require( 'fs' )
+var options = {
+	hostname: 'en.wikipedia.org',
+	port: 443, //secure port 
+	path: '/wiki/George_Washington',
+	method: 'GET'
+};
+var req = https.request( options, ( res )=>{
+	var responseBody = "";
+	//response data comes in as stream 
+	//log server started res.statusCode
+	//log headers res.headers 
+	res.setEncoding( 'UTF-8' );
+	res.once( 'data', (chunk)=>{
+		//log chunk 
+	});
+	res.on( 'data', (chunk)=>{
+		//log chunk 
+		responseBody += chunk;
+	});
+	res.on( 'end', ()=>{
+		fs.writeFile( 'george-washington.html', responseBody, ( err )=>{
+			if( err ){
+				throw err;
+			}
+		});
+	});
+});
+req.on( 'error', ( err )=>{
+	//log err.message
+});
+req.end();
+
+//HTTP web server createServer( callback( <request>, <response> ){} )
+//HTTPS needs a security certificate 
+var server = http.createServer( ( req, res )=>{
+		//writeHead( <status code>, <js literal with headers> )
+		// text/plain 
+		//res.writeHead( 200, { 'Content-Type': 'text/plain' } );
+		//res.end( 'Hello from server' );
+		res.writeHead( 200, { 'Content-Type': 'text/html' } );
+		res.end( `<!DOCTYPE html>
+					<html>
+						<head>
+							<title>my server</title>
+						</head>
+						<body>
+							<h1>my server</h1>
+							<p>${req.url}</p>
+							<p>${req.method</p>
+						</body>
+					</html>` );
+});
+server.listen( 3000 );
+
+//HTTP file server 
+http.createServer(( req, res )=>{
+	//log req.method, req.url 
+	if( req.url === '/' ){
+		fs.readFile( './public/index.html', 'UTF-8', ( err, html )=>{
+			res.writeHead( 200, { 'Content-Type': 'text/html' } );
+			res.end( html );
+		});
+	}else if( req.url.match( /.css$/ ) ){
+		var cssPath = path.join( __dirname, 'public', req.url );
+		var fileStream = fs.createReadStream( cssPath, 'UTF-8' );
+		res.writeHead( 200, { 'Content-Type': 'text/css' } );
+		//pipe( <response_content> ) method readstram to writable stream 
+		fileStream.pipe( res );
+	}else if( req.url.match( /.jpg$/ ) ){
+		var imgPath = path.join( __dirname, 'public', req.url );
+		var imgStream = fs.createReadStream( imgPath ); //utf-8 not necessary
+		res.writeHead( 200, { 'Content-Type': 'image/jpeg' } );
+		//pipe( <response_content> ) method readstram to writable stream 
+		imgStream.pipe( res );
+	}else{
+		res.writeHead( 404, { 'Content-Type': 'text/plain' } );
+		res.end( '404 file not found' );
+	}
+}).listen( 3000 ); //chained listen method 
+
+//HTTP API GET Request 
+var data = require( './data/inventory' );
+http.createServer( ( req, res )=>{
+	if( req.url === '/' ){
+		res.writeHead( 200, { 'Content-Type': 'text/json' } );
+		res.end( JSON.stringify( data ) );
+	}else if( req.url === '/instock' ){
+		listInStock( res );
+	}else if( req.url === '/onorder' ){
+		listOnBackOrder( res );
+	}else{
+		res.writeHead( 404, { 'Content-Type': 'text/plain' } );
+		res.end( 'Requested data not found' );
+	}
+}).listen( 3000 );
+
+listInStock = ( res )=>{
+	var in_stock = data.filter( ( item )=>{
+		//boolean return 
+		return item.avail === 'in stock';
+	});
+	res.end( JSON.stringify( in_stock ) );
+}
+listOnBackOrder = ( res )=>{
+	var on_order = data.filter( ( item )=>{
+		//boolean return 
+		return item.avail === 'on back order';
+	});
+	res.end( JSON.stringify( on_order ) );
+}
+
+//HTTP API POST request 
+http.createServer( (req, res )=>{
+	if( req.method === 'GET' ){
+		res.writeHead( 200, { 'Content-Type', 'text/html' } );
+		fs.createReadStream( './public/form.html', 'UTF-8' )
+			.pipe( res );
+	}else if( req.method === 'POST' ){
+		var body = '';
+		req.on( 'data', ( chunk )=>{
+			body += chunk;
+		});
+		req.on( 'end', ()=>{
+			res.writeHead( 200, { 'Content-Type': 'text/html' } );
+			res.end( `
+				<p>${body}</p>
+			` );
+		});
+	}
+	
+}).listen( 3000 );
+
+//////////////////////////////////////////////////////////
+//UNIT TESTING with mocha and chai 
+//////////////////////////////////////////////////////////
+//chai is an assertion engine 
+//describe statements can be nested
+//mock a web server with nock to improve test speed 
+//SUT system under test can be modules
+var expect = require( 'chai' ).expect; //should | expect | assert  
+var tools = require( '../lib/tools' ); //printName() function here  
+var nock = require( 'nock' );
+describe( 'Tools', ()=>{
+	describe( 'printName()', ()=>{
+		it( 'should print the last name first', ()=>{
+			var results = tools.printName( { first: "Alex", last: "Banks" });
+			expect( results ).to.equal( "Banks, Alex" );
+		});
+	});
+	describe( 'loadWiki()', ()=>{
+		before( ()=>{
+			nock( 'https://en.wikipedia.org' )
+				.get( '/wiki/Abraham_Lincoln' )
+				.reply( 200, 'Mock Abraham Lincoln Page' );
+		});
+		it( 'Load Abraham Lincoln wiki page', ( done )=>{
+			tools.loadWiki( {
+				first: 'abraham',
+				last: 'lincoln'
+			}, ( html )=>{
+				expect( html ).to.be.ok; 
+				//using nock server 
+				//.to.equal( 'Mock Abraham Lincoln Page' )
+				done(); //mocha will wait for this variable to be invoked
+			};
+		});
+	});
+});
+
+//tools.js 
+var https = require( 'https' );
+module.exports = {
+	printName( person ){
+		return `${ person.last }, ${ person.first }`;
+	},
+	loadWiki( person, callback ){
+		var url = 'https://en.wikipedia.org/wiki/${person.first}_${person.last}';
+		https.get( url, ( res )=>{
+			var body = "";
+			res.setEncoding( 'UTF-8' );
+			res.on( 'data', (chunk)=>{
+				body += chunk;
+			});
+			res.on( 'end', ()=>{
+				callback( body );
+			});
+		});
+	}
+};
+  
+//rewire creates mock data instead of working with real data 
+//make a test folder/order-spec.js file 
+var expect = require( 'chai' ).expect;
+var rewire = require( 'rewire' );
+var order = rewire( '../lib/order' ); //our real data getting rewired 
+describe( 'ordering items', ()=>{
+	beforeEach( ()=>{
+		this.testData = [
+		{ sku: 'aaa', qty: 10 },
+		{ sku: 'bbb', qty: 0 },
+		{ sku: 'ccc', qty: 3 }
+		];
+		/*inventoryData = require( '../data/inventory' ) in order.js which is a 
+		 *inventory.json file.*/
+		order.__set__( 'inventoryData', this.testData ); //replacing real data with mock data 
+	});
+	it( 'order item when there are enough in stock', ( done )=>{
+		order.orderItem( 'ccc', 3, ()=>{
+			done();
+		});
+	});
+});
+

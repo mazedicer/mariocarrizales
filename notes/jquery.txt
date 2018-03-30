@@ -1,0 +1,369 @@
+$ = JQuery object
+
+$("document").ready( 
+	function(){
+	
+		alert("The Page is loaded");
+
+	}
+);
+
+Retrieve Content on the page
+
+CSS selector
+	tagname
+	#identifier
+	.className
+	tag.className
+	tag#id.className
+	*
+	$("p"); list of all the p
+	$("#id"); by id
+	$("li.a"); get all li with a class
+	$("ul .b"); decendent. get all b class inside a ul
+	
+	$("p").css("border", "3px solid red");
+	$("p, li.b") <-- selects p and li with b class
+	$("ul + p") <-- get p next to ul
+	$("#list1 ~ p") < get p siblings of list1
+	
+Filters
+
+	basic
+		
+		:first
+		:last
+		:even
+		:odd
+		:eq(n)
+		:gt(n)
+		:lt(n)
+		:header
+		:animated
+		:not(selector)
+	
+	$(".a:first").css()
+	$("p:first")
+	$("p:gt(1)")
+	$("p:not(p:eq(2))")
+
+DOM Attribute Filters
+
+	[attribute] <-- with attribute
+	[attribute=value] <-- attribute with specified value
+	[attribute!=value] <-- attribute without specified value
+	[attribute^=value] <-- attribute starts with specified value
+	[attribute$=value] <-- attribute ends with specified value
+	[attribute*=value] <-- attribute contains the specified value
+	[attFilter1][attFilterN] <-- match all filters
+	
+	$("p[class]").css("border","3px solid red")
+	$("p[id=para_1")
+	$("p[id^=para")
+	$("p[id^=para][lang*=en]")
+	$("a[href$=.pdf]")
+
+Content and Visibility filters
+
+	:contains(text) <-- contains the text string
+	:empty <-- empty element
+	:has(selector) <-- element with specified selector
+	:parent <-- all parent elements
+	:visible <-- only visible elements
+	:hidden <-- ony hidden elements
+	:nth-child(index)
+	:nth-child(even)
+	:nth-child(odd)
+	:nth-child(equation)
+	:first-child
+	:last-child
+	:only-child
+	
+	$("p:contains(3)") <-- contains text 3
+	$("p:parent")
+	$("ul:has(li[class=a])") <-- select ul that has li with class a
+	$("ul li:nth-child(3)") <-- 3rd li
+	$("ul li:nth-child(2n)") <-- every 2nd
+	
+Form Selectors and filters
+
+	:input
+	:text
+	:password
+	:radio
+	:checkbox
+	:submit
+	:reset
+	:image
+	:button
+	:file
+	
+	:enabled
+	:disabled
+	:checked
+	:selected
+	
+	$("form :input") <--selects all input elements
+	$("form :input:enabled") <-- select input elements that are enabled
+	$("form :checkbox:checked")
+	
+Traversing with function/property
+
+	size(), length <-- number of elements returned
+	get() <-- returns array of matched elements
+	get(index) <-- access a single element at specified index
+	find(expression) <-- search decendent elements that match
+	each(fn) <-- execute a function with the context of every matched element
+	
+	alert("There are " + $("p").length + "p elements");
+	var elems_array = $("li").get(); 
+	$("ul").find("li.b").css("border","1px solid");
+	$("p").each(
+		function(){
+			$(this).css(...);	
+		}
+	);
+	
+Chaining
+	
+	$(selector).fn1().fn2().fn3();
+	
+	$("a[href$=.pdf]").after("<img src='images/pdf_icon.gif'");
+	
+
+Creating, Setting, Getting content
+
+	var newHeader = $("<h1>My New Header</h1>"); 
+	
+	html()
+	html(newcontent)
+	text()
+	text(newtext)
+	
+	$("#list").html() <-- retuns html in the element
+	$("#list").html("This will replace") 
+	$("p:last").text("last paragraph")
+	
+Manipulate attributes
+
+	attr(name) <-- returns the value, returns undefined if no property
+	attr(properties) <-- sets a series of attributes
+	attr(key:value) <-- sets a property's value
+	removeAttr(name) <-- removes the attribute
+	
+	$("a").attr("target","_blank");
+	$("a").removeAttr("href");
+	$("img").attr({src:"images/spring.jpg", alt:"Spring"});
+	
+Inserting Dom Content
+
+	append(content) <-- appends content inside matched elements
+	appendTo(selector) <-- appends all of the matched elements to another
+	prepend(content)
+	prependTo(selector) 
+	after(content)
+	before(content) <-- inserts content before each of the matched elements
+	insertAfter(selector)
+	insertBefore(selector) <-- insert matched elements before another element
+	
+	$("p").append(" appended text");
+	$("p").append("prepended text ");
+	$("p:last").appendTo("p:first"); <-- grabs the last paragraph and puts it 	
+										 after first paragraph.
+	
+Wrapping, Replacing, Removing
+
+	wrap(html) <-- wraps each with html element
+	wrap(element) <-- wrap with element
+	wrapAll(html) <-- wraps all with html element
+	wrapAll(element) <-- wraps all into a single element
+	wrapInner(html) <-- wraps inner child content of each element
+	wrapInner(element) <-- wraps inner child content of each with an element
+	replaceWith(content) <-- replaces elements with content
+	replaceAll(selector) <-- replace elements matched by selector with matched 
+							 elements
+	empty() <-- removes child nodes
+	remove() <-- remove matched elements from the DOM
+	clone() <-- clone matched element and selects the clone
+	clone(bool) <-- clone matched elements with event handlers and selects clone
+	
+	$("p").wrap("<div style='border:3px solid red'>");
+	$("p").wrapAll("<div>");
+	
+CSS
+
+	css(name)
+	css(properties)
+		
+		var cssObj = {
+						'background-color' : '#ddd',
+						'font-weight' : 'bold',
+						'color' : 'rgba(2,2,1,1)'
+					}
+		$(this).css(cssObj);
+	
+	css(property, value) <-- sets a sing style property to a value on all
+							 matched elements, auto convert to pixels, except
+							 z-index, font-weight, opacity, zoom, and line-height
+							 
+	addClass(class)
+	hasClass(class)
+	removeClass(class)
+	toggleClass(class)
+	toggleClass(class, switch)
+	offset() <-- gets current offset in pixels
+	offsetParent() <-- returns jquery collection with the positioned parent
+	position() <-- gets the top and left relative to parent
+	scrollTop() <-- gets the scroll top offset
+	scrollTop(val) <-- sets the scroll top offset
+	scrollLeft()
+	scrollLeft(val)
+	height()
+	height(val)
+	width()
+	width(val)
+	innerHeight() <-- exclude border and include padding
+	innerWidth()
+	outerHeight(margin) <-- includes the border and padding, if margin set to
+							true, margin is also included
+	outerWidth(margin) <-- includes the border and padding, if margin set to 
+						   true, margin is also included
+						   
+	
+$("document").ready(	
+	function(){
+		
+		buildBookmarks('h3', 'header');
+	}
+);
+
+function buildBookmarks(strWichTag, sBookMarkNode){
+		
+	var cAnchorCount = 0;
+	var oList = $("<ul id='bookmarkslist'");
+	$("div:not([id=header])" + strWhichTag).each(
+		
+		function(){
+			
+			$(this).html("<a name='bookmark" + cAnchorCount + "'></a>" + 
+			$(this).html());
+			oList.append($("<li><a href='#bookmark" + cAnchorCount +"'> " +
+			$(this).text() + "</a></li>"));
+			
+		}
+	
+	);
+	
+	$("#" + sBookMarkNode).append(oList);
+}	
+	
+
+EVENTS
+
+	$(selector).bind(event, data, hadler)
+	$(selector).unbind(event, handler)
+	
+	event = string - blur, focus, load, resize, scroll, unload, beforeunload, 
+			click, dblclick, all mouse events, change, select, submit, keydown, 
+			keypress, keyup, error
+	
+	data = optional, passing data to event handler
+	
+	handler = function that handles event
+	
+	$("#evtTarget").bind("mouseover", highlight);
+	$("#evtTarget").bind("mouseleave", highlight);
+	
+	$("#evtTarget").bind("click", 
+		function(){
+			$("#evtTarget").unbind("mouseover", highlight);
+			$("#evtTarget").unbind("mouseleave", highlight);
+			$("#evtTarget").html('<p>Turned off highlight</p>')
+		}
+	);
+	
+	function highlight(evt){
+		$("#evtTarget).toggleClass("highlighted");
+	}
+
+CONVENIENT FUNCTIONS
+	
+	$(selector).click(fn);
+	$(selector).hover(fnOver, fnOut);
+	$(selector).toggle(fn1, fn2, fn3, ....); <-- fn called on every other click.
+	
+EVENT OBJECT
+
+	type - type of event (ex. "click")
+	target - element that issued the event
+	data - data passed to bind funciton
+	pageX, pageY - Coordinates of mouse when event happened, rel to doc
+	result - value returned by the last handler function
+	timestamp - time when event occurred
+	preventDefault() - prevents the browser from executing the default action
+	isDefaultPrevented() - return if prevented was called
+	stopPropagation() - stops bubbling of an event
+	isPropagationStopped() - returns if propagation was called
+	
+	
+	$("div").click( 
+		function(evt){
+			$(this).html("pageX: " + evt.pageX + " , pageY: " + evt.pageY + " , type " + evt.type + " . target " + evt.target)
+		}
+	)
+
+MISC FUNCTION
+
+	$(selector).one(type, data, handler) - runs once only
+	$(selector).trigger(event, data) - causes the browser to act as though the
+										user caused it
+	$(selector).triggerHandler(event, data) - tirggers all bound event handlers 
+											on a single element. no browser act,
+											bubbling, or live events.
+											
+ANIMATION
+
+	animate(params, duration, easing, callback)
+	
+		params - properties to animate
+		duration - in milliseconds
+		easing - linear or swing
+		callback - when animation completes you can call a function
+		stop() - stops all the animations on all the specified elements
+		
+		$(#the_div).animate(
+			{
+				width:"500px",
+				left:"500px",
+				fontSize: "24pt"
+			},
+			1000,
+			"linear"
+		);
+		
+SLIDING ANIMATION
+		
+	slideDown(speed, callback) - reveals and calls an optional function specified
+	slideUp(speed, callback) - hides
+	SlideToggle(speed, callback) - toggles reveal/hide
+	
+	speed - string, ex. "slow", "normal", "fast"
+			or
+			milliseconds
+	
+APACITY ANIMATION
+	fadeIn(speed, callback)
+	fadeOut(speed, callback)
+	fadeTo(speed, opacity, callback)
+	
+SHOWING HIDING
+
+	show()
+	show(speed, callback)
+	hide()
+	hide(speed, callback)
+	toggle()
+	toggle(switch) - toggle display based on switch true or false
+	toggle(speed, callback)
+	
+	

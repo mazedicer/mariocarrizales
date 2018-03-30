@@ -1,0 +1,36 @@
+/* -----------------------------------------------------
+MOVING CODE
+------------------------------------------------------*/
+CTRL SHIFT UP-Arrow : copy move line/selection up
+ALT SHIFT UP-Arrow : move line/selection up
+SHIFT ENTER : insert new line 
+ALT SHIFT F : format selection 
+/* -----------------------------------------------------
+SELECTING CODE 
+------------------------------------------------------*/
+CTRL SHIFT R : (rectangular selection mode) SHIFT + DOWN-arrow selects column
+CTRL J : add next match to selection 
+CTRL U : undo last selection change 
+CTRL SHIFT U : redo last selection change 
+CTRL SHIFT [ : select text between a set of parentheses, brackets, or curly braces 
+CTRL SHIFT CLICK : add to selection 
+ALT CLICK DRAG : select a column 
+ALT SHIFT UP-Arrow : add cursor to previous line 
+CTRL ALT L : split selection into lines 
+ESC : switch to single selection 
+/* -----------------------------------------------------
+EDITING CODE 
+------------------------------------------------------*/
+CTRL E or SHIFT DELETE : Delete current line 
+CTRL R : Rename
+CTRL U, then U : Convert selection to uppercase
+CTRL U, then L : Convert selection to lowercase
+CTRL U, then S : Toggle case of selection
+CTRL SHIFT C or CTRL / : wrap as comment
+/* -----------------------------------------------------
+INSPECT CODE
+------------------------------------------------------*/
+ALT INSERT : context menu to generate code 
+CTRL F12 : inspects members of a class
+ALT F12 : inspect hierarchy 
+CTRL CLICK : PHPDoc selection 

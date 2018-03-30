@@ -1,0 +1,355 @@
+/* chrome tools: react-detector, React Developer Tools */
+//  to start a react app
+create-react-app
+// will minify everything and make it ready to go live
+npm run build 
+/* Component lifecycle
+hooks for creation, lifetime, and teardown for components */
+//sets state see example below 
+getInitialState(){}
+//default props see example below 
+getDefaultProps(){}
+//before the render see example below 
+componentWillMount(){}
+//required	
+render(){} 
+//after the render
+componentDidMount(){}
+//before component is unmpunted	
+componentWillUnmount(){}
+
+
+/* Updating*/
+//change object and affect state 
+componentWillReceiveProps(){} 
+/*before render
+nextProps - new prop 
+nextState - new state 
+can be used to check old prop, old state and determine if re-render is necessary */
+shouldComponentUpdate( nextProps, nextState ){}
+//before render
+componentWillUpdate(){} 
+//required  
+render(){} 
+//after update 	
+componentDidUpdate(){}
+
+//one way to render 
+<div id="react-container"></div>
+<script type="text/babel">
+	ReactDOM.render(
+		<ul>
+			<li>1</li>
+			<li>2</li>
+			<li>3</li>
+		</ul>,
+		document.getElementById( 'react-container' )
+	);
+</script>
+//one way to create a component  
+var MyComponent = React.createClass({
+	render(){
+		return <div>
+			<h1>Hello Fucker</h1>
+			<p>React Component</p>
+		</div>
+		}
+});
+	ReactDOM.render( <MyComponent/>, document.getElementById( "react-container" ) );
+//2nd way to create a component 
+class MyComponent extends React.Component {
+	render(){
+		return <div>
+			<h1>Hello World</h1>
+			<p>This is my first React component!</p>
+		</div>
+	}
+}
+ReactDOM.render( <MyComponent />,
+		document.getElementById( 'react-container' ) )
+//3rd way to create a component 
+const MyComponent = () => {
+	return <div>
+				<h1>Hello World</h1>
+				<p>This is my first React component!</p>
+			</div>
+	}
+ReactDOM.render( <MyComponent />, document.getElementById( 'react-container' ) )
+
+///////////////////////////////////////////////////////////////////
+// PROPERTIES props 
+///////////////////////////////////////////////////////////////////
+var MyComponent = React.createClass({
+	render() {
+		return <div>
+			<h1>{ this.props.text }</h1>
+			<p>This is my first React component!</p>
+		</div>
+	}
+})
+ReactDOM.render( <MyComponent text="This is a prop!" />,
+                document.getElementById('react-container'))
+//child props 
+var MyComponent = React.createClass({
+	render() {
+		return <div>
+			// MyComponent.props.text 
+			<h1>{ this.props.text }</h1>
+			// MyComponent.props.children
+			<p>{ this.props.children }</p>
+		</div>
+}
+})
+ReactDOM.render(
+	<div>			
+		<MyComponent text="This is a prop!">
+			Child Prop 1
+		</MyComponent>
+		<MyComponent text="This is a prop!">
+			Child Prop 2
+		</MyComponent>
+		<MyComponent text="This is a prop!">
+			Child Prop 3
+		</MyComponent>
+	</div>, document.getElementById('react-container') )
+
+///////////////////////////////////////////////////////////////////
+// EVENTS onClick  
+///////////////////////////////////////////////////////////////////
+var Note = React.createClass({
+	edit(){
+		alert( "event 1" )
+	},
+	remove(){
+		alert( "event 2" )
+	},
+	render(){
+		return <div className="note">
+		<p>{ this.props.children }</p>
+			<span>
+				<button onClick={ this.edit }>Edit</button>
+				<button onClick={ this.remove }>X</button>
+			</span> 
+		</div>
+			}
+		})
+ReactDOM.render( <Note>Child Prop</Note>, document.getElementById( "react-container") );
+
+///////////////////////////////////////////////////////////////////
+// STATE 
+///////////////////////////////////////////////////////////////////
+var Checkbox = React.createClass({
+	//setup a state in this case checked 
+	getInitialState(){
+		return { checked: true }
+	},
+	handleCheck(){
+		this.setState( { checked: !this.state.checked } )
+	},
+	render(){
+		var msg = ( this.state.checked ) ? "checked" : "unchecked"
+		return <div>
+			<input type="checkbox"
+				onChange={ this.handleCheck }
+				//syncs the checkbox checked/unchecked with state 
+				defaultChecked={ this.state.checked } /> 
+			<p>This box is { msg }</p>
+		</div>
+	}
+})
+ReactDOM.render( <Checkbox/>, document.getElementById( 'react-container') )
+
+///////////////////////////////////////////////////////////////////
+// SPA (Single Page App) Basic rendering of a form and another
+///////////////////////////////////////////////////////////////////
+var Note = React.createClass({
+	getInitialState(){
+		return { editing: false }
+	},
+	edit(){
+		this.setState( { editing: true } )
+	},
+	save(){
+		this.setState( { editing: false } )
+	},
+	remove(){
+		alert( "removing note" )
+	},
+	renderForm(){
+		return <div className="note">
+			<textarea></textarea>
+			<button onClick={ this.save }>Save</button>
+		</div>
+	},
+	renderDisplay(){
+		return <div className="note">
+		<p>{ this.props.children }</p>
+			<span>
+				<button onClick={ this.edit }>Edit</button>
+				<button onClick={ this.remove }>X</button>
+			</span> 
+		</div>
+	},
+	render(){
+		return ( this.state.editing ) ? this.renderForm() : this.renderDisplay()
+	}
+	
+})
+ReactDOM.render( <Note/>, document.getElementById( 'react-container') )
+
+///////////////////////////////////////////////////////////////////
+// ELEMENT REFERENCE
+///////////////////////////////////////////////////////////////////
+var Note = React.createClass({
+	getInitialState() {
+		return {editing: false}
+    },
+	edit() {
+		this.setState({editing: true})
+    },
+    save() {
+		//assigning the textarea newText reference value to val 
+		var val = this.refs.newText.value 
+		this.setState({editing: false})
+    },
+    remove() {
+		alert("Removing Note")
+    },
+    renderForm() {
+		return (
+			<div className="note">
+				//adding the reference to textarea 
+				<textarea ref="newText"></textarea>
+				<button onClick={this.save}>SAVE</button>
+			</div>
+		)
+	},
+	renderDisplay() {
+		return ( 
+            <div className="note">
+                <p>{this.props.children}</p>
+                   <span>
+                      <button onClick={this.edit}>EDIT</button>
+                      <button onClick={this.remove}>X</button>
+                   </span>
+            </div>
+       )
+    },
+    render() {
+       return (this.state.editing) ? this.renderForm() : this.renderDisplay()
+	}
+})
+ReactDOM.render(<Note>Hello World</Note>, 
+  document.getElementById('react-container'))
+  
+///////////////////////////////////////////////////////////////////
+// PropTypes
+///////////////////////////////////////////////////////////////////
+var Board = React.createClass({
+	//set values you accept
+	propTypes: {
+		//count prop values 
+		count: function( props, propName ){
+			if( typeof props[ propName ] !== "number" ){
+				return new Error( "the count must be a number" );
+			}
+		}
+	},
+	render(){
+		return <div className='board'>
+		{ this.props.count }
+		</div>
+	}
+})
+//count prop in Board 
+ReactDOM.render( <Board count={10} />, document.getElementById( 'react-container' ) )
+
+///////////////////////////////////////////////////////////////////
+// Display Array of elements and Key
+///////////////////////////////////////////////////////////////////
+var Board = React.createClass({
+	//set values you accept
+	propTypes: {
+		//count prop values 
+		count: function( props, propName ){
+			if( typeof props[ propName ] !== "number" ){
+				return new Error( "the count must be a number" );
+			}
+		}
+	},
+	getInitialState(){
+		return {
+			notes: [ "note1", "note2", "note3", "note4" ]
+		}
+	},
+	render(){
+		return <div className='board'>
+			{ this.state.notes.map( (note, i)=>{
+				//note the key prop, it is required for the re-render and state 
+				return <Note key={i}>{note}</Note>
+			})}
+		</div>
+	}
+}
+ReactDOM.render( <Board count={10} />, document.getElementById( 'react-container' ) )
+
+///////////////////////////////////////////////////////////////////
+// componentWillMount() fires before render 
+///////////////////////////////////////////////////////////////////
+//in this example, the note will be displayed in a random position
+componentWillMount(){
+	//apply style={this.style} to note element 
+	this.style = {
+		right: this.randomBetween( 0, window.innerWidth - 150, 'px' ),
+		top: this.randomBetween( 0, window.innerHeight - 150, 'px' )
+	}
+},
+randomBetween( x, y, s ){
+	return ( x + Math.ceil( Math.random() * ( y-x ) ) ) + s 
+}
+
+///////////////////////////////////////////////////////////////////
+// getDefaultProps() sets default properties 
+///////////////////////////////////////////////////////////////////
+var Box = React.createClass({
+	getDefaultProps(){
+		return{
+			backgroundColor: 'green',
+			height: 200,
+			width: 200
+		}
+	},
+	render(){
+		return <div id='myDiv'>
+					//applying the default props 
+					<div style={ this.props }></div>
+					<section style={ this.props }></div>
+				</div>
+	}
+})
+ReactDOM.render( <Box />, document.getElementById( 'react-container' );
+
+///////////////////////////////////////////////////////////////////
+// componentDidUpdate() with applying state to element 
+///////////////////////////////////////////////////////////////////
+var Box = React.createClass({
+	getInitialState(){
+		return{
+			backgroundColor: 'green',
+			height: 200,
+			width: 200
+		}
+	},
+	update(){
+		this.setState( { backgroundColor: 'red' } )
+	},
+	componentDidUpdate(){
+		alert( "Component updated!" )
+	},
+	render(){
+		return 		//applying the state 
+					<div style={ this.state }
+					onClick={ this.update } ></div>
+	}
+})
+ReactDOM.render( <Box />, document.getElementById( 'react-container' );

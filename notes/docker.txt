@@ -1,0 +1,284 @@
+docker.com
+windows
+download docker box
+Docker quickstart will create a virtual box
+net cap 
+docker run --net=host -ti ubuntu:14.04 bash
+nc 
+
+linux
+sudo apt-get update
+install certificates
+sudo apt-get install apt-transport-https ca-certificates
+sudo apt-key adv --keyserver hkp://p80.pool.sks...
+sudo vim /etc/apt/sources.list.d/docker.list 
+paste this: 
+	deb https://apt.dockerproject.org/repo ubuntu-xenial main
+sudo apt-get install docker-engine
+sudo service docker start
+sudo docker run hello-world
+add users to add user to the docker group to avoid typing sudo
+sudo groupadd docker 
+sudo usermod -aG docker mario 
+log out
+log in
+run docker 
+docker run -ti debian bash 
+
+//docker flow 
+docker image //shows docker images
+REPOSITORY: ubuntu 
+TAG: latest
+IMAGE ID: asddror554545
+CREATED: 2 hours ago 
+SIZE: 122 MB
+
+//run an image 
+// -ti (terminal interactive)
+docker run -ti ubuntu:latest bash 
+cat /etc/lsb-release //gives you distrubution info 
+//look at running images $FORMAT to display horizontal
+docker ps --format=$FORMAT
+
+//stopped container: a container that was stopped 
+// -a shows all containers 
+docker ps -a 
+
+// -l show last container 
+docker ps -l --format=$FORMAT
+
+//take containers and make images 
+//docker run 
+docker run -ti ubuntu bash 
+touch my_file
+
+//docker commit 
+docker commit <container id>
+//returns a new image 
+
+//give images names 
+docker tag <image id> my-image 
+docker images //displays the images 
+//runs the image with the my_file in it 
+docker run -ti my-image bash 
+//create that image and create another
+docker commit <contaner name> <name of new image>
+docker image //show the images 
+
+//running things in docker with run 
+//have one main process and can be given names 
+//--rm just run and not keep, deletes when exit 
+docker run --rm -ti ubuntu sleep 5 //will run for 5 sec.
+//-c command 
+docker run -ti ubuntu bash -c "sleep 3; echo all done"
+
+//-d detach, leaves running in the background
+docker run -d -ti ubuntu bash
+//go back  
+docker attach <image name> 
+//find
+docker ps 
+
+//docker exec start another process  
+docker exec -ti <container name> bash 
+//another shell in that container 
+
+//logs 
+docker run --name example -d ubuntu bash -c "lose /etc/password"
+//docker logs <container name>
+docker logs example //displays logs 
+//killing containers 
+docker run -ti ubuntu bash 
+docker kill <container name>
+docker ps -l //shows last container to exit 
+
+//memory limits 
+docker run --memory <max memory> <image> command 
+//cpu limits 
+docker run --cpu-shares //relative to other containers 
+docker run --cpu-quota //limit in general 
+
+//don't let containers fetch dependencies when they start 
+//is better to include their dependencies
+//don't leave important things in unnamed stopped containers 
+
+//networking
+//group containers in private networks 
+//exposing ports and linking containers inner:outer
+docker run --rm -ti -p 45678:45678 -p 45679:45679 --name echo-server ubuntu:14.04 bash 
+//-lp listen port 
+nc -lp 45678 | nc -lp 45679 //forwarding data from port to port 
+//find ip 
+docker-machine ip
+192.168.99.100
+nc 192.168.99.100 45678 
+//send data that will be piped 
+sending data
+nc 192.168.99.100 45679
+sending data 
+
+docker run --rm -ti ubuntu:14.04 bash 
+nc <ip address> <port>
+//port: find ports dynamically
+//fix the ports inside the container 
+docker run --rm -ti -p 45678 -p 45679 --name echo ubuntu:14.04 bash 
+//in another terminal 
+//receiving connections from anywhere port 32770 and 32769
+docker port echo 
+45678/tcp -> 0.0.0.0:32770
+45679/tcp -> 0.0.0.0:32769
+//exposing UDP
+//docker run -p outside-port:inside-port/protocol(tcp/udp)
+docker run -p 1234:1234/udp 
+
+//connecting between containers client to host 
+docker run -ti --rm -p 1234:1234 ubuntu:14.04 bash
+//listen to port 
+nc -lp 1234
+//in another terminal get ip 
+docker-machine ip 
+<ip address>
+docker run -ti --rm ubuntu:14.04 bash 
+nc <ip address> 1234 hello //will route to that container 
+
+//linking directly 
+docker run -ti --rm --name server ubuntu:14.04 bash 
+nc -lp 1234 
+//in another terminal 
+docker run --rm -ti --link server --name client ubuntu:14.04 bash 
+nc server 1234
+hello 
+cat /etc/hosts 
+
+//docker has private networks 
+//these have built in nameservers that fix the links
+//you must create the networks in advance
+//docker network create <network-name> 
+docker network create example 
+docker run --rm -ti --net=example --name server ubuntu:14.04 bash 
+nc -lp 1234
+
+//another terminal 
+docker run --rm -ti --link server --net=example --name client ubuntu:14.04 bash 
+nc server 1234
+hello //will appear in other machine 
+//private services private to a container 
+docker run -p 127.0.0.1:1234:1234/tcp 
+
+//docker images SIZE does not mean it takes up that much for each image 
+docker ps -l --format=$FORMAT 
+docker commit <id> my-image-14
+docker commit <id> my-image-14:v2.1 //adds v2.1 tag 
+//remove image from the system 
+docker rmi <id> 
+
+//sharing data between container and hosts 
+//volumes: virtual discs to store and share data 
+persistent: permanent 
+ephemeral: not permanent
+not part of image 
+
+//share folder data with host is the same just pass the path to file 
+docker-machine ssh
+mkdir example
+ls /home/docker/example/ //will show nothing 
+docker run -tim -v /home/docker/example:/shared-folder ubuntu bash 
+cd /shared-folder/
+ls //will show nothing 
+touch my-data 
+exit 
+ls example/ //will show 
+my-data 
+
+//create folder in container volumes-from 
+docker run -ti -v /shared-data ubuntu bash 
+echo hello > /shared-data/data-file 
+//in another terminal 
+docker ps -l 
+docker run -ti --volumes-from <container> ubuntu bash 
+
+//docker registries 
+docker search ubuntu 
+docker login 
+docker pull debian:sid
+docker tag debian:sid mario/test-image:v1
+docker push mario/test-image:v1
+
+//don't push images with passwords in dockerhub 
+//clean up images regularly
+//how much you trust containers you fetch 
+
+//dockerfiles small program to create an image 
+docker build -t name-of-result . 
+//. in the current directory
+//saves in docker registry 
+//caching saves time so that commands don't run twice
+//not shell script 
+//each line is its own call to docker run 
+//Dockerfile
+FROM <image>
+RUN echo "building simple docker image."
+CMD echo "Hello Container"
+
+mkdir example
+cd example 
+ls 
+vim Dockerfile
+FROM busybox
+RUN echo "building simple docker image."
+CMD echo "Hello Container"
+//build it 
+docker build -t hello .
+//run it 
+docker run --rm hello 
+hello container 
+
+vim Dockerfile
+	FROM debian:sid 
+	RUN apt-get -y update 
+	RUN apt-get install vim 
+	CMD ["bin/vim", "/tmp/notes"]
+docker build -t example/vimer .
+docker run --rm -ti example/vimer //will open vim editor
+
+vim Dockerfile 
+	FROM example/vimer 
+	ADD notes.txt /notes.txt 
+	CMD ["/bin/vimer","/notes.txt"]
+
+vim notes.txt 
+	TODO: learn more about dockerfiles 
+
+docker build -t example/notes .
+docker run -ti --rm example/notes.txt //will open notes.txt 
+
+//FROM what image do you start from 
+//must be the first command in your Dockerfile 
+//MAINTAINER defines the author of this Dockerfile 
+//RUN runs the command line
+	RUN unzip install.zip /opt/install/
+	RUN echo hello docker 
+//ADD adds local file and more 
+	ADD run.sh /run.sh 
+	ADD project.tar.gz /install/ 
+	ADD https://project.example.com/download/1.0/project.rpm /project/
+//ENV sets environment variables 
+	ENV DB_HOST=db.production.example.com 
+	ENV DB_PORT=5432 
+//ENTRYPOINT and CMD specifies the start of the command run 
+//CMD specifies the whole command to run 
+//shell form 
+	vim notes.txt 
+//exec form 
+	["/bin/vim","notes.txt"]
+//EXPOSE maps a port into the container 
+	EXPOSE 8080 
+//VOLUME defines shared or ephemeral volumes 
+//Avoid defining shared folders in Dockerfiles
+//WORKDIR sets the directory the container starts in 
+	WORKDIR /install/
+//USER sets which user the container will run as 
+	USER mario 
+	USER 1000
+//use small base images, such as Alpine 
+//build images you share public from Dockerfiles 

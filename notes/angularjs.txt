@@ -1,0 +1,1023 @@
+$http   
+mudeR625dqkGzS
+047C58043KQj9ucX
+root
+osonegro99
+rtsp://user:pass@192.168.100.3:6667/blinkhd
+
+<!DOCTYPE html>
+<html ng-app="MyApp">
+	<head>
+		<title>Mario's Data</title>
+		<script src="js/angular.js"></script>
+		<script src="js/app.js"></script>
+	</head>
+	<body ng-controller="MyController">
+		<button ng-click="getData()">Show Data</button>
+	</body>
+</html>
+
+var MyApp = angular.module( "MyApp", [] );
+
+MyApp.controller( "MyController", function( $scope, $http ){
+	$scope.data = {
+		name: "Mario",
+		last_name: "Carrizales"
+	};
+	
+	$scope.getData = function(){
+		$http.post( "process/process-data.php", { mario_data: $scope.data, data_no_scope: "some" } )
+		.success( function( data ){
+			alert( data );
+		} )
+		.error( function( data ){
+			alert( "Error Message" );
+		} );
+	};
+	
+} );
+
+<?php
+	$post_data = file_get_contents( "php://input" );
+	$data_object = json_decode( $post_data );
+	echo $data_object->mario_data->name;
+	//or
+	echo $data_object->data_no_scope;
+
+////////////////////////////////////////////////////
+https://www.youtube.com/watch?v=OPxeCiy0RdY&list=PLGLfVvz_LVvRo7634CgU8vyD_NPtODwjE
+Modules: components
+Directives: bind data to html 
+Scope: objects to represent data 
+Expressions: 
+Services:
+
+angulartut.html 
+
+<!doctype html>
+	<html ng-app="app1">
+		<head>
+			<title>Angular JS</title>
+		</head>
+	<body>
+		<div ng-controller="ctrl1">
+			<span>Values:</span>
+			<input type="text" ng-model="first" />
+			<input type="text" ng-model="second" />
+			<button ng-click="updateValue()">Sum</button>
+			{{calculation}}
+			<p>5+5 = {{5+5}}</p>
+			<p>Your first value is {{first}}</p>
+			<p>Your second value is <span data-ng-bind="second"></span>
+			<ul>
+				<li ng-repeat="capital in capitals">
+					{{'City: ' + capital.city + ', State: ' + captial.state}}
+				</li>
+			</ul>
+		</div>
+		<script src="js/angular.min.js"></script>
+		<script src="js/exam1.js"></script>
+	</body>
+	</html>
+	
+js/exam1.js
+
+var app1 = angular.module( 'app1', [] );
+app1.controller( 'ctrl1', function( $scope ){
+	$scope.first = 1;
+	$scope.second = 1;
+	$scope.updateValue = function(){
+		$scope.calculation = $scope.first + ' $ ' $scope.second + ' = ' + ( +$scope.first + +$scope.second );
+	}
+} );
+
+////////////////////////////////////////////////////
+
+angulartut2.html
+
+<!doctype html>
+	<html ng-app="app2">
+		<head>
+			<title>Angular JS 2</title>
+		</head>
+	<body>
+		<h4 ng-controller="ctrl1">First random number: {{randomNum1}}</h4>
+		<h4 ng-controller="ctrl1">Second random number: {{randomNum2}}</h4>
+		<h4 ng-controller="bad_ctrl">I'm feeling {{bad}}</h4>
+		<h4 ng-controller="good_ctlr">I'm feeling {{good}}</h4>
+		
+		<script src="js/angular.min.js"></script>
+		<script src="js/exam2.js"></script>
+	</body>
+	</html>
+	
+js/exam2.js
+
+var app2 = angular.module( 'app2', [] );
+app2.controller( 'ctrl1', function( $scope ){
+	$scope.randomNum1 = Math.floor((Math.random()* 10) + 1 );
+	$scope.randomNum2 = Math.floor((Math.random()* 10) + 1 );
+} );
+app2.controller( 'bad_ctrl', function( $scope ){
+	var bad_feelings = [ "disregarded", "uninportant", "rejected", "powerless" ];
+	$scope.bad = bad_feelings[ Math.floor( ( Math.random() * 4 ) ) ];
+	
+} );
+app2.controller( 'good_ctrl', function( $scope ){
+	var good_feelings = [ "pleasure", "awesome", "lovable", "inner peace" ];
+	$scope.good = good_feelings[ Math.floor( ( Math.random() * 4 ) ) ];
+	
+} );
+
+////////////////////////////////////////////////////
+
+angulartut3.html
+
+<!doctype html>
+	<html ng-app="app3" ng-cloak>
+		<head>
+			<title>Angular JS 3</title>
+			<style>
+				[ ng\:cloak ], [ng-cloak], .ng-cloak {
+					display: none;
+				}
+			</style>
+		</head>
+	<body>
+		<div id="grocery_list" ng-controller="grocery_list_controller">
+			<h3 class="list_title">{{groceries.length}} groceries to get</h3>
+			<ol>
+				<li>{{groceries[0].item}}</li>
+			</ol>
+			<ol start="2">
+				<li ng-repeat="grocery in groceries" ng-if="$index > 0">
+				{{grocery.item}} {{$index}}
+				</li>
+			</ol>
+			<table>
+				<tr ng-repeat-start="grocery in groceries">
+					<td>{{grocery.item}}</td>
+				</tr>
+				<tr ng-repeat-end>
+					<td>{{grocery.purchased}}</td>
+				</tr>
+			</table>
+			
+			<label>Change first item: </label>
+			<input ng-model="groceries[0].item" />
+			
+			<h3>Grocery List</h3>
+			<div ng-include="'grocerylist.html'"></div>
+			<label>
+			<input type="checkbox" ng-model="show_list">Show Unorderd List</label>
+			<ng-include src="getList()"></ng-include>
+			
+			<label>Type a number 1 - 4:
+				<input type="text" ng-model="some_number" />
+			</label>
+			<div ng-switch="some_number">
+				<p ng-switch-when="1">you entered 1</p>
+				<p ng-switch-when="2">you entered 2</p>
+				<p ng-switch-when="3">you entered 3</p>
+			</div>
+		</div>
+		
+		<script src="js/angular.min.js"></script>
+		<script src="js/exam3.js"></script>
+	</body>
+	</html>
+
+grocerylist.html 
+
+<ol>
+	<li ng-repeat="grocery in groceries">
+		{{grocery.item}}
+	</li>
+</ol>
+
+ulgrocerylist.html 
+
+<ul>
+	<li ng-repeat="grocery in groceries">
+		{{grocery.item}}
+	</li>
+</ul>
+
+js/exam3.js
+
+var app3 = angular.module( 'app3', [] );
+app2.controller( 'grocery_list_controller', function( $scope ){
+	$scope.groceries = [ 
+		{ item: "Tomatoe", purchased: false },
+		{ item: "Potatoe", purchased: false },
+		{ item: "Bread", purchased: false },
+		{ item: "Humus", purchased: false }
+	];
+	$scope.getList = function(){
+		return $scope.show_list ? "ulgrocerylist.html" : "grocerylist.html";
+	}	
+} );
+
+////////////////////////////////////////////////////
+
+angulartut4.html
+
+<!doctype html>
+	<html ng-app="app4" ng-cloak>
+		<head>
+			<title>Angular JS 4</title>
+			<style>
+				[ ng\:cloak ], [ng-cloak], .ng-cloak {
+					display: none;
+				}
+			</style>
+		</head>
+	<body>
+		<div ng-controller="event_controller">
+			<input ng-blur="blur = blur + 1"
+				ng-click="click = click + 1"
+				ng-dblclick="dblclick = dblclick + 1"
+				ng-copy="copy = copy + 1"
+				ng-paste="paste = paste + 1"
+				ng-cut="cut = cut + 1"
+				ng-focus="focus = focus + 1"
+				ng-model="confirmed"
+				ng-change="change = change + 1"
+				ng-keydown="keydown( $event )"
+				ng-mouseenter="mousein = mousein + 1"
+				ng-mouseleave="mouseleave = mouseleave + 1"
+			/>
+			<h4>Blur Events: {{blur}}</h4>
+			<h4>Click Events: {{click}}</h4>
+			<h4>Doubleclick Events: {{dblclick}}</h4>
+			<h4>Copy Events: {{copy}}</h4>
+			<h4>Paste Events: {{paste}}</h4>
+			<h4>Cut Events: {{cut}}</h4>
+			<h4>Focus Events: {{focus}}</h4>
+			<h4>Change Events: {{change}}</h4>
+			<h4>Keypress Events: {{kdKey}}</h4>
+			<h4>Mouseenter Events: {{mousein}}</h4>
+			<h4>Mouseleave Events: {{mouseleave}}</h4>
+		</div>
+	<script src="js/angular.min.js"></script>
+		<script src="js/exam4.js"></script>
+	</body>
+	</html>
+	
+js/exam4.js
+
+var app4 = angular.module( 'app4', [] );
+app4.controller( 'event_controller', function( $scope ){
+	$scope.blur = 0;
+	$scope.click = 0;
+	$scope.dblclick = 0;
+	$scope.copy = 0;
+	$scope.paste = 0;
+	$scope.cut = 0;
+	$scope.focus = 0;
+	$scope.change = 0;
+	
+	$scope.keydown = function( e ){
+		$scope.kdkey = String.fromCharCode( e.KeyCode );
+	}
+	
+	$scope.mouseenter = 0;
+	$scope.mouseleave = 0;
+	
+} );
+////////////////////////////////////////////////////
+ENABLE / DISABLE
+
+<p>
+	<button ng-disabled="disable_button">Button</button>
+</p>
+<p>
+	<input type="checkbox" ng-model="disable_button" />
+</p>
+
+var app4 = angular.module( 'app4', [] );
+app4.controller( 'event_controller', function( $scope ){
+	
+	$scope.disable_button = true;
+	
+} );
+
+////////////////////////////////////////////////////
+
+HIDE / SHOW 
+
+<input type="checkbox" ng-model="day_time_button">Morning
+
+<p ng-hide="day_time_button">Good Morning</p>
+<p ng-hide="!day_time_button">Good Evening</p>
+
+var app4 = angular.module( 'app4', [] );
+app4.controller( 'event_controller', function( $scope ){
+	
+	$scope.day_time_button = true;
+	$scope.capitals = [
+		{ "city": "Montgomery", "state": "Alabama" },
+		{ "city": "Juneau", "state": "Alaska" },
+		{ "city": "Phoenix", "state": "Arizona" },
+		{ "city": "Little Rock", "state": "Arkansas" },
+	];
+	
+} );
+////////////////////////////////////////////////////
+
+STYLE
+
+<style>
+.blue_text { color: blue }
+.bold_text { font-style: bold }
+</style>
+<select ng-model="text_styling">
+	<option value="blue_text">Blue Text</option>
+	<option value="bold_text">Bold Text</option>
+</select>
+
+<p ng-class="text_styling">Text</p>
+
+<table>
+	<tr ng-repeat="item in capitals" ng-class-even="'blue_text'"
+	ng-class-odd="'bold_text'">
+		<td>{{item.city}}</td>
+		<td>{{item.state}}</td>
+	</tr>
+</table>
+
+////////////////////////////////////////////////////
+
+VALIDATION
+
+<style>
+input.ng-dirty.ng-invalid {
+	border.color: red;
+}
+
+<h3>Grocery List</h3>
+<table>
+	<thead>
+		<tr>
+			<td>Item</td>
+			<td>Purchased</td>
+		</tr>
+	</thead>
+	<tr ng-repeat="grocery in groceries">
+		<td>{{grocery.item}}</td>
+		<td>
+			<input type="checkbox" ng-model="grocery.purchased" />
+		</td>
+	</tr>
+</table>
+<br>
+<label>New Item:
+	<input type="text" ng-model="new_item" />
+</label>
+<button ng-click="addItem( new_item )">Add Item</button>
+<h4>{{missing_new_item_error}}</h4>
+
+$scope.groceries = [ 
+		{ item: "Tomatoe", purchased: false },
+		{ item: "Potatoe", purchased: false },
+		{ item: "Bread", purchased: false },
+		{ item: "Humus", purchased: false }
+	];
+
+$scope.addItem( new_item ){
+	if( !( new_item === undefined || new_item === "" ) ){
+		$scope.groceries.push( 
+			{ item: new_item, purchased: false }
+		);
+		$scope.missing_new_item_error = "";
+	}else{
+		$scope.missing_new_item_error = "Enter Item!";
+	}
+}
+
+////////////////////////////////////////////////////
+FORM VALIDATION
+
+<form name="user_form" ng-submit="SaveUser( user_info )">
+
+	<label>First Name:</label>
+	<input type="text" name="fname" ng-model="user_info.fname" ng-required="true" ng-minlength="2" />
+	<label>Last Name:</label>
+	<input type="text" name="lname" ng-model="user_info.lname" ng-required="true" ng-minlength="2" />
+	
+	<span class="error-message" ng-show="user_form.fname.$dirty && user_form.fname.$error.required">
+		Must Enter a first name
+	</span>
+	<span class="error-message" ng-show="user_form.fname.$dirty && user_form.fname.$error.minlength">
+		Must be a minimum of 2 characters
+	</span>
+	
+	<label>Street:</label>
+	<input type="text" name="street" ng-model="user_info.street" ng-required="true" ng-minlength="6" ng-pattern="regular extression here" />
+	
+	<span class="error-message" ng-show="user_form.street.$dirty && user_form.street.$error.required">
+		Must Enter a number street and street type
+	</span>
+	
+	<label>Subscribe:</label>
+	<input type="checkbox" name="subscribe" ng-mode="user_info.subscribe" ng-true-value="'subscribe'" ng-false-value="'Dont subscribe'" />
+	
+	<label>Delivery Method:</label>
+	<select name="delivery" ng-model="user_info.delivery" ng-required="true">
+		<option value="email">Email</option>
+		<option value="mail">Mail</option>
+	</select>
+	
+	<input type="submit" value="Save" ng-disabled="user_info.$invalid" />
+	
+	<ul>
+		<li ng-repeat="item in user">
+			{{'User:'+ item.fname + item.lname + item.street + item.subscribe}}
+		</li>
+	</ul>
+</form>	
+
+.js 
+
+$scope.user = [
+	{ fname: "mario", lname: "carr", street: "street", subscribe: "subscribe", delivery: "email" }
+];
+$scope.saveUser = function( user_info ){
+	if( $scope.user_form.$valid ){
+		$scope.user.push( {
+			fname: user_info.fname,
+			lname: user_info.lname,
+			street: user_info.street,
+			subscribe: user_info.subscribe,
+			deliver: user_info.delivery
+		} );
+		console.log( "User Saved" );
+	}else{
+		console.log( "Error" );
+	}
+};
+
+////////////////////////////////////////////////////
+ROOT SCOPE (share data between two controllers)
+controller 1
+<p>
+Search Hero: <input type="text" ng-model="hero_name">
+<button ng-click="getHeroData()">Submit</button>
+<br>
+{{hero_data}}
+<br>
+controller 2
+Hero Name: <input type="text" ng-model="hero_name">
+Real Name: <input type="text" ng-model="real_name">
+<button ng-click="addHero( real_name, hero_name )">Add</button>
+
+.js 
+
+app6.controller( "hero_controller", function( $scope, $rootScope ){
+	$scope.hero = [
+		{ real_name:"bruce", hero_name:"batman" },
+		{ real_name:"clark", hero_name:"superman" }
+	];
+	$scope.getHeroData = function(){
+		heroSearch( $scope.hero_name );
+	};
+	function heroSearch( name ){
+		$scope.hero_data = "Not found";
+		for( var i = 0; i < $scope.hero.length; i++ ){
+			if( $scope.hero[i].hero_name === name ){
+				$scope.hero_data = $scope.hero[i].real_name + " is " + $scope.hero[i].hero_name;
+			}
+		}
+	}
+	$scope.$on( "heroUpdated", function( event, args ){
+		$scope.hero.push( {
+			real_name: args.real_name, hero_name: args.hero_name
+		} );
+	} );	
+	$scope.addHero = function( real_name, hero_name ){
+		$rootScope.$broadcast( "heroUpdated", {
+			real_name: real_name, hero_name: hero_name
+		} );
+	};
+	
+} );
+////////////////////////////////////////////////////
+CONTROLLER INHERITANCE
+
+<div ng-controller="main_controller as parent">
+	Name: {{parent.name}}
+	Sound: {{parent.sound}}
+	<button ng-click="parent.animalClick()>Animal Data</button>
+</div>
+
+<div ng-controller="dog_controller as dog">
+	Name: {{dog.child.name}}
+	Sound: {{dog.child.sound}}
+	<button ng-click="dog.child.animalClick()>Dog  Data</button>
+	<button ng-click="dog.child.dogData()">More Dog Data</button>
+	<input ng-model="dog.child.bark">
+	<span>New Bark: {{dog.child.bark}}</span>
+</div>
+
+.js 
+
+app7.controller( 'main_controller', function(){
+	this.name = "animal";
+	this.sound = "grr";
+	this.animalClick = function(){
+		alert( this.name + " says " + this.sound );
+	};
+} );
+
+app7.controller( 'dog_controller', function( $controller ){
+	var child_controller = this;
+	child_controller.child = $controller( 'main_controller', {} );
+	child_controller.child.name = "dog";
+	child_controller.child.bark = "woof";
+	child_controller.dogData = function(){
+		alert( this.name + " says " + this.sound + " and " + this.bark );
+	};
+} );
+////////////////////////////////////////////////////
+FILTERS / CUSTOM FILTERS
+
+Make UPPERCASE <input type="text" ng-model="name">
+{{name | uppercase}}
+{{name | lowercase}}
+
+Currency <input type="text" ng-mode="money">
+{{money | currency}}
+
+<ul>
+	<li ng-repeat="student in student.gpas | filter:student_name | orderBy:'gpa'">
+		{{student.name + student.gpa}}
+	</li>
+</ul>
+
+<input type="text" ng-model="num_val">
+default: {{num_val | number}}
+no fractions: {{num_val | number:0}}
+negative 4 decimals: {{-num_val |number:4}}
+
+Date 1: {{curr_date | date: 'medium'}}
+Date 2: {{curr_date | date: "MM/dd/yyyy 'at' h:mma"}}
+
+Default: {{random_string}}
+10 Characters: {{random_string | limitTo:10}}
+
+<ul>
+	<li ng-repeat="item in random_array | limitTo:3">
+		{{item}}
+	</li>
+</ul>
+
+custom filter raining
+<ul>
+	<li ng-repeat="item in weather">
+		{{item.day}} {{item.rain | raining}}
+</ul>
+
+.js 
+
+$scope.students = [
+	{ name: "george", gpa: 3.5 },
+	{ name: "susy", gpa: 3.6 },
+	{ name: "paul", gpa: 3.2 },
+	{ name: "sue", gpa: 3.8 }
+];
+$scope.student = {
+	gpas:[
+		{ name: "george", gpa: 3.5 },
+		{ name: "susy", gpa: 3.6 },
+		{ name: "paul", gpa: 3.2 },
+		{ name: "sue", gpa: 3.8 }
+	]
+};
+$scope.curr_date = new Date();
+$scope.random_string = "lorem ipsum";
+$scope.random_array = [
+	"tomato", "potato", "bread", "raisins", "pickle"
+];
+
+$scope.weather = [
+	{ day:"monday", rain:false },
+	{ day:"tuesday", rain:true }
+];
+
+CUSTOM FILTERS
+make a file /filters.js
+angular.module( 'weather_filter', [] )
+.filter( 'raining', function(){
+	return function( input ){
+		return input ? '\u2602' : '\u2600';
+	}
+});
+} );
+////////////////////////////////////////////////////
+DIRECTIVES / ADD ATTRIBUTES / PROPERTIES
+
+What it is (see the clear definition of jQuery as an example)?
+A directive is essentially a function† that executes when the Angular compiler finds it in the DOM. The function(s) can do almost anything, which is why I think it is rather difficult to define what a directive is. Each directive has a name (like ng-repeat, tabs, make-up-your-own) and each directive determines where it can be used: element, attribute, class, in a comment.
+
+† A directive normally only has a (post)link function. A complicated directive could have a compile function, a pre-link function, and a post-link function.
+
+What practical problems and situations is it intended to address?
+The most powerful thing directives can do is extend HTML. Your extensions are a Domain Specific Language (DSL) for building your application. E.g., if your application runs an online shopping site, you can extend HTML to have "shopping-cart", "coupon", "specials", etc. directives -- whatever words or objects or concepts are more natural to use within the "online shopping" domain, rather than "div"s and "span"s (as @WTK already mentioned).
+
+Directives can also componentize HTML -- group a bunch of HTML into some reusable component. If you find yourself using ng-include to pull in lots of HTML, it is probably time to refactor into directives.
+
+What design pattern does it embody, or alternatively, how does it fit into the purported MVC/MVW mission of angularjs
+Directives are where you manipulate the DOM and catch DOM events. This is why the directive's compile and link functions both receive the "element" as an argument. You can
+
+define a bunch of HTML (i.e., a template) to replace the directive
+bind events to this element (or its children)
+add/remove a class
+change the text() value
+watch for changes to attributes defined in the same element (actually it is the attributes' values that are watched -- these are scope properties, hence the directive watches the "model" for changes)
+etc.
+In HTML we have things like <a href="...">, <img src="...">, <br>, <table><tr><th>. How would you describe what a, href, img, src, br, table, tr, and th are? That's what a directive is.
+
+<ul jql-directive>
+	<li id="barry">barry bonds</li>
+	<ul>
+		<li>avg: .289
+		<li>hr: 762
+		<li>obp: .444
+	</ul>
+	<li id="hank">hank aaron</li>
+	<ul>
+		<li>avg: .305
+		<li>hr: 755
+		<li>obp: .374
+	</ul>
+	<li id="ruth">babe ruth</li>
+	<ul>
+		<li>avg: .342
+		<li>hr: 714
+		<li>obp: .474
+	</ul>
+</ul>
+
+<h4>Children in list</h4>
+<span id="childer_list"></span>
+barry's number: <span id="barry_number"></span>
+is hank bold: <span id="hank_bold"></span>
+barry's ID: <span id="barry_id"></span>
+<button ng-click="unBold()">Toggle Bold</button>
+
+.js
+
+angular.module( 'app9', [] )
+.directive( "jqlDirective", function(){
+	return function( scope, element, attrs ){
+		var players = element.childer();
+		var list_of_players = "";
+		for( var i=0; i<players.length;i++ ){
+			if( players.eq(i).text() == "babe ruth" ){
+				players.eq(i).css( "color", "red" );
+				players.eq(i).attr( "number", "25" );
+			}
+			if( players.eq(i).text() == "hank aaron" ){
+				players.eq(i).addClass( "thick" );
+			}
+			list_of_players += players.eq(i).text;
+			
+			angular.element( document.querySelector( '#children_list' ) ).text( list_of_players );
+			
+			var barry_number = angular.element( document.querySelector( '#barry' ) ).attr( "number" );
+			
+			angular.element( document.querySelector( '#barry_number' ).text( barry_number );
+			
+			angular.element( document.querySelector( '#hank' ).removeClass( "thick" );
+			
+			var is_hank_bold = angular.element( document.querySelector( '#hank' ).hasClass( "thick" );
+			
+			angular.element( document.querySelector( '#hank_bold' ).text( is_hank_bold );
+			
+			var barry_id = angular.element( document.querySelector( '#barry' ).prop( "id" );
+			
+			angular.element( document.querySelector( '#barry_id' ).text( barry_id );
+			
+		}
+	}
+} )
+.controller( 'main_controller', function( $scope ){
+	$scope.unBold = function(){
+		angular.element( document.querySelector( '#hank' ).toggleClass( "thick" );
+	};
+} )
+
+////////////////////////////////////////////////////
+CUSTOM DIRECTIVE 
+
+<div bb-player-list="bb_players" array-item="name | uppercase">
+</div>
+
+.js 
+
+angular.module( 'app10', [] )
+.directive( 'bbPlayerList', function(){
+	return function( scope, element, attrs ){
+		var data = scope[ attrs[ "bbPlayerList" ] ];
+		if( angular.isArray( data ) ){
+		
+			var array_item = attr[ "array_item" ];
+			
+			var list_elem = angular.element( "<ul>" );
+			
+			element.append( list_elem );
+			
+			for( var i=0; i<data.length;i++ ){
+				list_elem.append( angular.element( '<li>' ).text( scope.$eval( array_item, data[i] ) ) );
+			}
+			
+			list_elem.after( angular.element( "<span id='mays'>").text( "Willy Mays" ));
+			
+			list_elem.prepend( angular.element( "<span id='cobb'>").text( "Ty Cobb" ));
+			angular.element( document.querySelector( '#mays' ) ).remove();
+			
+			var gehrigHTML = '<span id="gehrig">Lou Gehrig</span>';
+			
+			var replace_with = angular.element( gehrigHTML );
+			
+			angular.element( document.querySelector( '#cobb' ) ).replaceWith( replace_with );
+		}
+	};
+} )
+.controller( 'main_controller', function( $scope ){
+	$scope.bb_players = [
+		{ name: "barry", avg: 0.298, hr: 762, obp: 0.444 },
+		{ name: "hank", avg: 0.298, hr: 755, obp: 0.374 },
+		{ name: "babe", avg: 0.298, hr: 714, obp: 0.474 },
+		{ name: "tex", avg: 0.298, hr: 521, obp: 0.482 }
+	];
+} );
+
+CUSTOM DIRECTIVE 
+
+<player name="barry_bonds"></player>
+
+.js 
+
+app11.directive( "player", function(){
+	var directive = {};
+	directive.restrict = 'E';
+	directive.template = "{{player.name}} had a {{player.avg}} AVG with {{player.hr}} homeruns and a {{player.obp}} OBP";
+	directive.scope = { player: "=name"};
+	directive.compile = function( element, attributes ){
+		var link_function = function( $scope, element, attributes ){
+			element.bind( 'click', function(){
+				element.html( "Barry Disappeared" );
+			} ;)
+		}
+		return link_function;
+	}
+	return directive;
+} );
+app11.controller( 'main_controller', function( $scope ){
+	$scope.barry_bonds = { name: "barry", avg: 0.298, hr: 762, obp: 0.444 };
+} );
+////////////////////////////////////////////////////
+TRANSCLUSION
+
+<div ex-dir>Lorem ipsum</div>
+
+.js 
+
+app12.directive( "exDir", function(){
+	return {
+		transclude: true,
+		template: '<div><h4>{{more_lorem}}</h4></div><div ng-transclude></div>'
+	}
+} )
+.controller( 'main_controller', function( $scope ){
+	$scope.more_lorem = "The lorem ipsum story";
+} )
+////////////////////////////////////////////////////
+SERVICES
+
+.js 
+
+var app13 = angular.module( 'app13', [] );
+app13.service( 'hello_service', function(){
+	this.helloService = function(){
+		console.log( 'Hello Service' );
+	}
+} );
+app13.factory( 'hello_factory', function(){
+	var factory = {};
+	factory.helloFactory = function(){
+		console.log( 'Hello Factory' );
+	};
+	return factory;
+} );
+app13.controller( 'main_controller', function( hello_service, hello_factory ){
+	hello_service.helloService();
+	hello_factory.helloFactory();
+} );
+
+SERVICE 
+
+<input type="text" ng-mode="user_name">
+<button ng-click="greetUser( user_name )">Hello</button>
+
+URL: {{current_url}}
+PROTOCOL: {{current_protocol}}
+HOST: {{current_host}}
+PORT: {{current_port}}
+PATH: {{current_path}}
+SEARCH: {{current_search}}
+
+current time: {{time}}
+
+Message: <input type="text" ng-model="message">
+<button ng-click="$log.log( message )">log</button>
+<button ng-click="$log.warn( message )">warn</button>
+<button ng-click="$log.info( message )">info</button>
+<button ng-click="$log.error( message )">error</button>
+<button ng-click="$log.debug( message )">debug</button>
+
+<button ng-click="throwException()">Throw exception</button>
+
+<p get-player-info></p>
+
+.js 
+
+app14.controller( 'main_controller', function( $scope, $window, $location, $interval, $log, $exceptionHandler, $sanitize ){
+	
+	$scope.greetUser = function( user_name ){
+		$window.alert( user_name );
+	}
+	
+	$scope.current_url = $location.absURL();
+	$scope.current_protocol = $location.protocol();
+	$scope.current_host = $location.host();
+	$scope.current_port = $location.port();
+	$location.path( "#/the/path" );
+	$scope.current_path = $location.path();
+	$location.search( "random=stuff" );
+	$scope.current_search = $location.search();
+	
+	$interval( function(){
+		var hour = new Date().getHours();
+		var minutes = ( '0' + new Date().getMinutes() ).slice( -2 );
+		var seconds = ( '0' + new Date().getSeconds() ).slice( -2 );
+		$scope.time = hour + minutes + seconds;
+	}, 2000 );
+	
+	$scope.log = $Log;
+	
+	$scope.throwException = function(){
+		try{
+			throw new Error( "Exception thrown" );
+		}catch(e){
+			$exceptionHandler( e.message, "caught Exception" );
+		}
+	};
+} );
+app14.directive( "getPlayerInfo", function( $compile ){
+	return function( scope, element, attrs ){
+	
+		var player_list = '<ul><li ng-repeat="player in players">{{player.name}}</li></ul>';
+		
+		var list_elem = angular.element( player_list );
+		
+		var compileFunc = $compile( list_elem );
+		
+		compileFunc( scope );
+		
+		element.append( list_elem );
+		
+	}
+} )
+
+$http 
+
+<button ng-click="getData()">get data</button>
+{{players}}
+
+.js 
+
+var app15 = angular.module( 'app15', [] );
+
+app15.controller( 'main_controller', function( $scope, $http ){
+	
+	$scope.getData = function(){
+		$http.get( "player_data.json" ).success( function( data ){
+			$scope.players = data;
+		} )
+	};
+	
+} );
+////////////////////////////////////////////////////
+DIFFERENCE between PROVIDER, FACTORY, and SERVICE 
+
+Services
+
+Syntax: module.service( 'serviceName', function ); 
+Result: When declaring serviceName as an injectable argument you will be provided with an instance of the function. In other words new FunctionYouPassedToService().
+
+Factories
+
+Syntax: module.factory( 'factoryName', function ); 
+Result: When declaring factoryName as an injectable argument you will be provided with the value that is returned by invoking the function reference passed to module.factory.
+
+Providers
+
+Syntax: module.provider( 'providerName', function ); 
+Result: When declaring providerName as an injectable argument you will be provided with (new ProviderFunction()).$get(). The constructor function is instantiated before the $get method is called - ProviderFunction is the function reference passed to module.provider.
+
+Providers have the advantage that they can be configured during the module configuration phase.
+
+See here for the provided code.
+
+Here's a great further explanation by Misko:
+
+provide.value('a', 123);
+
+function Controller(a) {
+  expect(a).toEqual(123);
+}
+In this case the injector simply returns the value as is. But what if you want to compute the value? Then use a factory
+
+provide.factory('b', function(a) {
+  return a*2;
+});
+
+function Controller(b) {
+  expect(b).toEqual(246);
+}
+So factory is a function which is responsible for creating the value. Notice that the factory function can ask for other dependencies.
+
+But what if you want to be more OO and have a class called Greeter?
+
+function Greeter(a) {
+  this.greet = function() {
+    return 'Hello ' + a;
+  }
+}
+Then to instantiate you would have to write
+
+provide.factory('greeter', function(a) {
+  return new Greeter(a);
+});
+Then we could ask for 'greeter' in controller like this
+
+function Controller(greeter) {
+  expect(greeter instanceof Greeter).toBe(true);
+  expect(greeter.greet()).toEqual('Hello 123');
+}
+But that is way too wordy. A shorter way to write this would be provider.service('greeter', Greeter);
+
+But what if we wanted to configure the Greeter class before the injection? Then we could write
+
+provide.provider('greeter2', function() {
+  var salutation = 'Hello';
+  this.setSalutation = function(s) {
+    salutation = s;
+  }
+
+  function Greeter(a) {
+    this.greet = function() {
+      return salutation + ' ' + a;
+    }
+  }
+
+  this.$get = function(a) {
+    return new Greeter(a);
+  };
+});
+Then we can do this:
+
+angular.module('abc', []).config(function(greeter2Provider) {
+  greeter2Provider.setSalutation('Halo');
+});
+
+function Controller(greeter2) {
+  expect(greeter2.greet()).toEqual('Halo 123');
+}
+As a side note, service, factory, and value are all derived from provider.
+
+provider.service = function(name, Class) {
+  provider.provide(name, function() {
+    this.$get = function($injector) {
+      return $injector.instantiate(Class);
+    };
+  });
+}
+
+provider.factory = function(name, factory) {
+  provider.provide(name, function() {
+    this.$get = function($injector) {
+      return $injector.invoke(factory);
+    };
+  });
+}
+
+provider.value = function(name, value) {
+  provider.factory(name, function() {
+    return value;
+  });
+};
+
+

@@ -1,0 +1,54 @@
+Servlet
+	A java class 
+	resides in tomcat instance
+	java class runs on VM
+	no main method
+	Eclipese - New > Servlet
+		Project - SimpleServletProject
+		Source folder - /SimpleServletProject/src
+		Java package - org.kushik.javabrains
+		Class name - SimpleServlet
+		Superclass - javax.servlet.http.HttpServlet
+		Create Servlet
+			Name - SimpleServlet
+			URL mapping - /SimpleServlet - to access the web application
+			extends HttpServlet
+			doGet - method that tomcat executes on the console
+			ex,
+				protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+					PrintWriter write = response.getWriter();
+					writer.println(<h2>Hello in html</h2>);
+				}
+				
+The following line in code tells tomcat to run the code when going to urlPatterns location ex,
+http://localhost:8080/SimpleServletProject/SimpleServlet
+	@webServlet(description = "Simple servlet", urlPatterns = { "/SimpleServlet" ))
+	urlPatterns = /SimpleServlet - Annotation
+	
+Browser calls URL > makes Tomcat run request object and response object based on the parameters sent by browser/user.
+
+SimpleServletProject runs > goes to web.xml/Annotations
+response object contains content of the webpage
+
+web.xml - deployment descriptor, contains information for deploying and running the application
+<web-app xmln:xsi="http://www.w3.org/2001/XMLSchema-instance".more code goes here..>
+
+	<display-name>SimpleServletProject</display-name>
+	<!-- replaces annotation -->
+	<servlet>
+	
+		<servlet-name>xmlServlet</servlet-name>
+		<servlet-class>com.blogspot.javabrains.XmlServlet</servlet-class>
+	
+		<servlet-mapping>
+		
+			<servlet-name>xmlServlet</servlet-name>
+			<url-pattern>/xmlServletpath</url-pattern>
+		
+		</servlet-mapping>
+	
+	</servlet>
+	
+</web-app>
+
+MVC  - Model View Controller
